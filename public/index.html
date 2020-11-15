@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Warcraft: Demastered Edition</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="/socket.io/socket.io.js"></script>
+		<script src="js/index.js" type="text/javascript"></script>
+		<link href="css/dialog-styles.css" rel="stylesheet" type="text/css" />
+	</head>
+	<body>
+		<!-- Login Dialog Starts -->
+		<div id="login-dialog" class="dialog-popup">
+			<a href="#" class="close">Close</a>
+			<h4>Login</h4>
+			<form method="post" action="#">
+				<input type="text" id="loginName" placeholder="account name">
+				<input type="password" id="loginPassword" placeholder="password">
+				<button class="submit" type="button" id="loginButton">Login</button>
+			</form>
+		</div>
+		<!-- Login Dialog Ends-->
+		<!-- Register Dialog Starts -->
+		<div id="register-dialog" class="dialog-popup">
+			<a href="#" class="close">Close</a>
+			<h4>Register</h4>
+			<form method="post" action="#">
+				<input type="text" id="accountName" placeholder="account name"> <br>
+				<input type="password" id="password" placeholder="password"> <br>
+				<input type="password" id="repeatPassword" placeholder="reenter password"> <br>
+				<input type="text" id="displayName" placeholder="Display name"> <br>
+				<button class="submit" type="button" id="registerButton">Register</button>
+			</form>
+		</div>
+		<!-- Register Dialog Ends-->
+		<!-- register / login links (located near the top right -->
+		<div id="topLinks">
+			<a href="#" data-selector="#register-dialog" class="dialog-link">Register</a>
+			<a href="#" data-selector="#login-dialog" class="dialog-link">Login</a>
+		</div>
+		<!-- Main Header-->
+		<h1>Warcraft: Demastered</h1>
+		<br><br>
+		<h2>What is Warcraft:Demastered?</h2>
+		<p>In a digital demasturization of a popular title we bring you 
+			the experience of war in all it's horror and glory as it was 
+			in 1996. </p>
+		<p> type more cool words here! This page advertises the game. </p>
+		<p> show awesome screenshots from other games so the user becomes
+			underwhelmed when they reach actual gameplay.</p>
+		<div id="dialog-overlay" title="Click here to close the dialog"></div>
+	</body>
+	<footer>
+		<h6>Monterey Bay CST 336 - Team Project 1</h6>
+	</footer>
+</html>

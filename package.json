@@ -1,0 +1,25 @@
+{
+  "name": "cst336-tp1",
+  "version": "1.0.0",
+  "description": "This is a small game made for CST 336 at CSU Monterey",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsullivan89/cst336-tp1.git"
+  },
+  "author": "David Sullivan, Andrew Hinea, Brandon Lee, and Justin Dinkelbach",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dsullivan89/cst336-tp1/issues"
+  },
+  "homepage": "https://github.com/dsullivan89/cst336-tp1#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.6",
+    "socket.io": "^3.0.1"
+  }
+}
