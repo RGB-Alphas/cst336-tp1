@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var socket = io();
+	// var socket = io();
 
 	// the input elements on the login form
 	var loginName = document.getElementById("loginName");
@@ -14,6 +14,20 @@ $(document).ready(function() {
 	var accountDisplayName = document.getElementById("displayName");
 	var registerButton = document.getElementById("registerButton");
 
+	const input = document.querySelectorAll('input');
+
+	// added event listeners for all input fields 
+	// (enter key will submit any form from any input field)
+	input.forEach( inp => inp.addEventListener("keyup", function(event) {
+		// Number 13 is the "Enter" key on the keyboard
+		if (event.keyCode === 13) {
+	   	// Cancel the default action, if needed
+	  		//event.preventDefault();
+	  		// Trigger the button element with a click
+	  		$(this).closest('form').trigger('submit');
+		}
+	}));
+
 	$('a.dialog-link').click(function() {
 		var dialog_id = $(this).attr('data-selector');
 		$('#dialog-overlay').fadeIn(200);
@@ -23,18 +37,27 @@ $(document).ready(function() {
 			 'margin-left' : -($(dialog_id).width() + 4) / 2
 		});
 		return false;
-  });
+	});
 
-  accountName.addEventListener("keyup", function(event) {
-	// Number 13 is the "Enter" key on the keyboard
-	if (event.keyCode === 13) {
-	  // Cancel the default action, if needed
-	  event.preventDefault();
-	  // Trigger the button element with a click
-	  $("#app-conversation-input-submit").click();
-	}
-	
-});
+	$("#loginForm").submit(function(event) {
+		console.log($("#loginName").val());
+		console.log($("#loginPassword").val());
+	});
+
+	$("#loginButton").click(function(){
+		$("#loginForm").submit();
+	});
+
+	$("#registerForm").submit(function(event) {
+		console.log($("#accountName").val());
+		console.log($("#password").val());
+		console.log($("#repeatPassword").val());
+		console.log($("#displayName").val());
+	});
+
+	$("#registerButton").click(function(){
+		$("#registerForm").submit();
+	});
 
 	$('.dialog-popup a.close, #dialog-overlay').click(function() { 
 		$('.dialog-popup').fadeOut(200);
