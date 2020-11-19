@@ -1,5 +1,69 @@
+html{
+	min-height: 100%;
+	overflow: hidden;
+}
+
 body{
+	min-height: 100vh;
 	text-align: center;
+	background-color: #121a21;
+	color: #FFFFFF;
+}
+
+main{
+	margin-top: 6%;
+}
+
+#message{
+	letter-spacing: 1px;
+	margin: 2% 0;
+	color: lightgray;
+	display: block;
+}
+
+#input-username{
+	margin: 1% 0;
+	padding: .5%;
+	font-size: large;
+	border-radius: 5px;
+	border: none;
+	outline: none;
+	-webkit-box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6); 
+	box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6);
+}
+
+.main-button{
+	margin:  1%;
+	padding: .5%;
+	font-size: large;
+	border-radius: 5px;
+	background-color: steelblue;
+	color: white;
+	border: none;
+	outline: none;
+	-webkit-box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6); 
+	box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6);
+}
+
+button:hover{
+	background-color: lightsteelblue;
+}
+
+footer{
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+	line-height: 2;
+	color: lightgray;
+}
+
+.dialog-link{
+	text-decoration: none;
+	color: white;
+}
+
+#topLinks{
+	text-align: right;
 }
 
 #dialog-overlay {
@@ -24,21 +88,14 @@ body{
 	position: fixed;
 	top: 50%;
 	z-index: 99999; 
-
 	background: none repeat scroll 0 0 #CCCCCC;
-   border: 2px solid #222222;
-   border-radius: 3px 3px 3px 3px;
-   font-family: Verdana,Geneva,sans-serif;
-   padding: 10px;
+   	border: 2px solid #222222;
+   	border-radius: 3px 3px 3px 3px;
+   	font-family: Verdana,Geneva,sans-serif;
+   	padding: 10px;
 }
 
 .dialog-popup .close-button {
 	float: right;
 	margin: -26px -26px 0 0;
-}
-
-footer{
-	width: 100%;
-	position: fixed;
-	bottom: 0;
 }
