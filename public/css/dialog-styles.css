@@ -6,12 +6,12 @@ html{
 body{
 	min-height: 100vh;
 	text-align: center;
-	background-color: #121a21;
+	background-color: #222;
 	color: #FFFFFF;
 }
 
 main{
-	margin-top: 6%;
+	margin-top: 7%;
 }
 
 #message{
@@ -28,8 +28,8 @@ main{
 	border-radius: 5px;
 	border: none;
 	outline: none;
-	-webkit-box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6); 
-	box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.3); 
+	box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.3);
 }
 
 .main-button{
@@ -41,8 +41,8 @@ main{
 	color: white;
 	border: none;
 	outline: none;
-	-webkit-box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6); 
-	box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.3); 
+	box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.3);
 }
 
 button:hover{
