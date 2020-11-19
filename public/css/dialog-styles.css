@@ -1,3 +1,7 @@
+body{
+	text-align: center;
+}
+
 #dialog-overlay {
 	background: #000;
 	bottom: 0;
@@ -31,4 +35,10 @@
 .dialog-popup .close-button {
 	float: right;
 	margin: -26px -26px 0 0;
+}
+
+footer{
+	width: 100%;
+	position: fixed;
+	bottom: 0;
 }
