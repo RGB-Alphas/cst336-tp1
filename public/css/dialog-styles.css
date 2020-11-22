@@ -11,13 +11,13 @@ body{
 }
 
 main{
-	margin-top: 7%;
+	margin-top: 10%;
 }
 
 #message{
 	letter-spacing: 1px;
-	margin: 1.5% 0;
-	color: lightgray;
+	margin: 1% 0;
+	color: lightyellow;
 	display: block;
 }
 
