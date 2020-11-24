@@ -50,6 +50,10 @@ app.get('/lobby', (req, res, next) => {
   res.render("authenticated/lobby.html");
 });
 
+app.get('/game', (req, res, next) => {
+  res.render("authenticated/game.html");
+});
+
 server.listen(port, () => {
   if(port == 3000)
     console.log("Server is running on 'http://localhost:%d/'.", port);
