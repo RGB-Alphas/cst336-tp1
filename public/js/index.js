@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	// var socket = io();
+	var socket = io();
 
 	// the input elements on the login form
 	var loginName = document.getElementById("loginName");
@@ -39,15 +39,22 @@ $(document).ready(function() {
 		return false;
 	});
 
+	/* Login Form Begin */
 	$("#loginForm").submit(function(event) {
-		console.log($("#loginName").val());
-		console.log($("#loginPassword").val());
+		event.preventDefault();
+		const loginName = $("#loginName").val()
+		const loginPassword = $("#loginPassword").val();
+		
+		socket.emit('login_request', { name: loginName, pass: loginPassword });
+
 	});
 
 	$("#loginButton").click(function(){
 		$("#loginForm").submit();
 	});
+	/* Login Form End */
 
+	/* Register Form Begin */
 	$("#registerForm").submit(function(event) {
 		console.log($("#accountName").val());
 		console.log($("#password").val());
@@ -58,10 +65,20 @@ $(document).ready(function() {
 	$("#registerButton").click(function(){
 		$("#registerForm").submit();
 	});
+	/* Register Form End */
 
 	$('.dialog-popup a.close, #dialog-overlay').click(function() { 
 		$('.dialog-popup').fadeOut(200);
 		$('#dialog-overlay').fadeOut(200);
 		return false;
 	});
+
+	/* SOCKET EVENTS */
+	socket.on('login_sucess'), (data) => {
+
+	};
+
+	socket.on('login_denied'), (data) => {
+
+	};
 });

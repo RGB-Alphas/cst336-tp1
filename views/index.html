@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
-		<title>Warcraft: Demastered Edition</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="/socket.io/socket.io.js"></script>
-		<script src="js/index.js" type="text/javascript"></script>
-		<link href="css/dialog-styles.css" rel="stylesheet" type="text/css" />
-	</head>
+		<title>CST-336 Midterm</title>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" 
+		 href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+		 integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" 
+		 crossorigin="anonymous">
+	 	<link rel="stylesheet" href="../css/styles.css" type="text/css">
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		 <script src="/socket.io/socket.io.js"></script>
+	 	<script src="../js/index.js" type="text/javascript"></script>
+  </head>
 	<body>
 		<!-- Login Dialog Starts -->
 		<div id="login-dialog" class="dialog-popup">
 			<a href="#" class="close">Close</a>
 			<h4>Login</h4>
-			<form method="post" action="#" id="loginForm">
-				<input type="text" id="loginName" placeholder="account name">
-				<input type="password" id="loginPassword" placeholder="password">
+			<form method="get" action="/auth" id="loginForm">
+				<input type="text" name="loginName" id="loginName" placeholder="account name">
+				<input type="password" name="loginPassword" id="loginPassword" placeholder="password">
 				<button class="submit" type="button" id="loginButton">Login</button>
 			</form>
 		</div>
@@ -24,7 +28,7 @@
 		<div id="register-dialog" class="dialog-popup">
 			<a href="#" class="close">Close</a>
 			<h4>Register</h4>
-			<form method="post" action="#" id="registerForm">
+			<form method="get" action="#" id="registerForm">
 				<input type="text" id="accountName" placeholder="account name"> <br>
 				<input type="password" id="password" placeholder="password"> <br>
 				<input type="password" id="repeatPassword" placeholder="reenter password"> <br>
