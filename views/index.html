@@ -16,7 +16,7 @@
 			<h4>Login</h4>
 			<form method="get" action="/auth" id="loginForm">
 				<input type="text" name="loginName" id="loginName" placeholder="account name">
-				<input type="password" name="loginName" id="loginPassword" placeholder="password">
+				<input type="password" name="loginPassword" id="loginPassword" placeholder="password">
 				<button class="submit" type="button" id="loginButton">Login</button>
 			</form>
 		</div>
@@ -26,10 +26,10 @@
 			<a href="#" class="close">Close</a>
 			<h4>Register</h4>
 			<form method="post" action="/register" id="registerForm">
-				<input type="text" id="accountName" placeholder="account name"> <br>
-				<input type="password" id="password" placeholder="password"> <br>
-				<input type="password" id="repeatPassword" placeholder="reenter password"> <br>
-				<input type="text" id="displayName" placeholder="Display name"> <br>
+				<input type="text" name = "accountName" id="accountName" placeholder="account name"> <br>
+				<input type="password" name="password" id="password" placeholder="password"> <br>
+				<input type="password" name="repeatPassword" id="repeatPassword" placeholder="reenter password"> <br>
+				<input type="text" name="displayName" id="displayName" placeholder="Display name"> <br>
 				<button class="submit" type="button" id="registerButton">Register</button>
 			</form>
 		</div>
@@ -43,6 +43,7 @@
 			<a id="brand" href="/"><img src="https://fontmeme.com/permalink/201119/174e93a13c86923a9400b72bdd4dbcb8.png" alt="Tag" border="0"></a><br><br>
 			<span id="message" class="my-4"><em>Show no Sphere!</em></span>
 			<br>
+			<span><%= message %></span><br>
 			<a href="#" data-selector="#register-dialog" class="btn btn-info text-light m-2 dialog-link">Register</a>
 			<a href="#" data-selector="#login-dialog" class="btn btn-info text-light m-2 dialog-link">Login</a>
 		</main>

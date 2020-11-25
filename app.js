@@ -6,6 +6,8 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 
+// import { AddUser, VerifyUser } from './services/registrar.js';
+var registry = require('./services/registrar');
 const port = process.env.PORT || 3000;
 
 var jsonParser = bodyParser.json();
@@ -31,14 +33,41 @@ io.on('connection', (client) => {
 });
 
 app.get('/', (req, res, next) => {
-  res.render('index.html');
+  const message = "Please register or sign in.";
+  res.render('index.html', {message: message});
+});
+
+app.post('/register', (req, res, next) => {
+  const name = req.query.accountName;
+  const password = req.query.password;
+  const alias = req.query.displayName;
+  var userAdded = registry.AddUser(name, password, alias);
+  if(userAdded) {
+    const message = "You may log into your new account.";
+    res.render('index.html', {message: message});
+  }
+  else {
+    const message = "Registration Failed: User already exists.";
+    res.render('index.html', {message: message});
+  }
+
 });
 
 app.get('/auth', function (req, res) {
   // validate user
   console.log(req.query.loginName);
+  console.log(req.query.loginPassword);
   const name = req.query.loginName;
-  res.redirect(`/authenticated/${name}`);
+  const password = req.query.password;
+
+  var userVerified = registry.VerifyUser(name, password);
+  if(userVerified)
+    res.redirect(`/authenticated/${name}`);
+  else {
+    const message = "Invalid login";
+    res.render('index.html', {message: message });
+  }
+    
 });
 
 app.get('/authenticated/:loginName', (req, res, next) => {
@@ -47,7 +76,7 @@ app.get('/authenticated/:loginName', (req, res, next) => {
   res.render("authenticated/lounge.html", {name: name });
 });
 
-app.get('/lobby', (req, res, next) => {
+app.get('/lobby/:lobbyID', (req, res, next) => {
   res.render("authenticated/lobby.html");
 });
 

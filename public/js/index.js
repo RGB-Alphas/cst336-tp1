@@ -42,7 +42,7 @@ $(document).ready(function() {
 	/* Login Form Begin */
 	$("#loginForm").submit(function(event) {
 		// event.preventDefault();
-		const loginName = $("#loginName").val()
+		const loginName = $("#loginName").val();
 		const loginPassword = $("#loginPassword").val();
 		
 		// socket.emit('login_request', { name: loginName, pass: loginPassword });
