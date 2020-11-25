@@ -2,6 +2,8 @@
 var userProfiles = [];
 let UserID = 10000; // user id's start at 10,000 (for now)
 
+module.exports = { profiles: userProfiles };
+
 (function() {
 
 	module.exports.AddUser = function(accountName, password, alias) {
@@ -36,6 +38,22 @@ module.exports.VerifyUser = function(name, password) {
 	else
 	{
 		return true;
+	}
+};
+
+module.exports.GetAliasByUserName = function(userName) {
+
+	var user = userProfiles.find(profile => 
+		profile.name === userName);
+	
+	if(user === undefined)
+	{
+		return "Unknown Player";
+	}
+	else
+	{
+		console.log(user);
+		return user.alias;
 	}
 };
 

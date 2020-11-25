@@ -79,7 +79,10 @@ app.get('/authenticated/:loginName', (req, res, next) => {
   res.render("authenticated/lounge.html", {name: name });
 });
 
-app.get('/lobby/:lobbyID', (req, res, next) => {
+app.get('/lobby', function (req, res) {
+  const name = req.query.lobbyName;
+  const password = req.query.lobbyPassword;
+  console.log(`Lobby Created: name: ${name}, ${password}.`);
   res.render("authenticated/lobby.html");
 });
 
