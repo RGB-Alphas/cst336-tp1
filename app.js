@@ -37,7 +37,7 @@ app.get('/', (req, res, next) => {
   res.render('index.html', {message: message});
 });
 
-app.post('/register', (req, res, next) => {
+app.get('/register', function (req, res) {
   const name = req.query.accountName;
   const password = req.query.password;
   const alias = req.query.displayName;
@@ -55,10 +55,13 @@ app.post('/register', (req, res, next) => {
 
 app.get('/auth', function (req, res) {
   // validate user
+  console.log("/auth");
   console.log(req.query.loginName);
   console.log(req.query.loginPassword);
   const name = req.query.loginName;
   const password = req.query.password;
+
+  registry.GetUserCredentials();
 
   var userVerified = registry.VerifyUser(name, password);
   if(userVerified)
