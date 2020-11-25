@@ -41,11 +41,11 @@ $(document).ready(function() {
 
 	/* Login Form Begin */
 	$("#loginForm").submit(function(event) {
-		event.preventDefault();
+		// event.preventDefault();
 		const loginName = $("#loginName").val()
 		const loginPassword = $("#loginPassword").val();
 		
-		socket.emit('login_request', { name: loginName, pass: loginPassword });
+		// socket.emit('login_request', { name: loginName, pass: loginPassword });
 
 	});
 
@@ -72,13 +72,4 @@ $(document).ready(function() {
 		$('#dialog-overlay').fadeOut(200);
 		return false;
 	});
-
-	/* SOCKET EVENTS */
-	socket.on('login_sucess'), (data) => {
-
-	};
-
-	socket.on('login_denied'), (data) => {
-
-	};
 });

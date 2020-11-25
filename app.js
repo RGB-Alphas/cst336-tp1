@@ -36,14 +36,15 @@ app.get('/', (req, res, next) => {
 
 app.get('/auth', function (req, res) {
   // validate user
-  console.log(req.query);
   console.log(req.query.loginName);
-  res.redirect('/authenticated');
+  const name = req.query.loginName;
+  res.redirect(`/authenticated/${name}`);
 });
 
-app.get('/authenticated', (req, res, next) => {
-  console.log(req.query.loginName);
-  res.render("authenticated/lounge.html");
+app.get('/authenticated/:loginName', (req, res, next) => {
+  console.log(req.params.loginName);
+  const name = req.params.loginName;
+  res.render("authenticated/lounge.html", {name: name });
 });
 
 app.get('/lobby', (req, res, next) => {
