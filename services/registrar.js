@@ -2,11 +2,24 @@
 var userProfiles = [];
 let UserID = 10000; // user id's start at 10,000 (for now)
 
+module.exports = { profiles: userProfiles };
+
 (function() {
 
 	module.exports.AddUser = function(accountName, password, alias) {
-		id = UserID++;
-		const user = { id, accountName, password, alias };
+		const id = UserID;
+
+		console.log("User Details:");
+		console.log(`${accountName}, ${password}, ${alias}`);
+
+		// account exists, exit
+		if(userProfiles.find(profile => profile.name === accountName))
+			return false;
+
+		// it's unique, let's add it.
+		const user = {"id": id, "name": accountName, "password": password, "alias": alias};
+		console.log("Adding: ");
+		console.log(user);
 		userProfiles.push(user);
 		UserID++;
 		return true; // make this return false if the user name is unavailable
@@ -14,10 +27,44 @@ let UserID = 10000; // user id's start at 10,000 (for now)
 
 module.exports.VerifyUser = function(name, password) {
 	
-	userProfiles.forEach(user => {
-		if(user.name === name && user.password === password) {
+	var user = userProfiles.find(profile => 
+		profile.name === name && 
+		profile.password === password);
+	
+	if(user === null)
+	{
+		return false;
+	}
+	else
+	{
 		return true;
-	}});
-	return false;
+	}
 };
+
+module.exports.GetAliasByUserName = function(userName) {
+
+	var user = userProfiles.find(profile => 
+		profile.name === userName);
+	
+	if(user === undefined)
+	{
+		return "Unknown Player";
+	}
+	else
+	{
+		console.log(user);
+		return user.alias;
+	}
+};
+
+module.exports.GetUserCredentials = function() {
+
+	console.log("User Profile: ");
+
+	userProfiles.forEach(profile => {
+		
+		console.log(profile);
+	})
+};
+
 }());
