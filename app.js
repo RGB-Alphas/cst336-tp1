@@ -7,7 +7,7 @@ const io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 
 // import { AddUser, VerifyUser } from './services/registrar.js';
-var registry = require('./services/registrar');
+var registry = require('./services/userRegistrar');
 const port = process.env.PORT || 3000;
 
 var jsonParser = bodyParser.json();

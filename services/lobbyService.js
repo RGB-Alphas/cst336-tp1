@@ -1,5 +1,5 @@
 module.exports = function(socket, client) {
-	client.on("login", function (data) {
+	client.on("join_lobby", function (data) {
 		
 		// socket.sockets.emit("login_success", data);
 
