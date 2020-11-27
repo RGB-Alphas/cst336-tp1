@@ -12,7 +12,7 @@
 		 <script src="/socket.io/socket.io.js"></script> 
 		 <script>
 			var userName = "<%= name %>";
-			console.log("Username: %s", userName);
+			// console.log("Username: %s", userName);
 		</script>
 		 <script src="../js/lounge.js" type="text/javascript"></script>
 	</head>
@@ -22,8 +22,18 @@
 			<a href="#" class="close">Close</a>
 			<h4>Create A lobby</h4>
 			<form method="get" action="/lobby" id="lobbyForm">
-				<input type="text" name="lobbyName" id="lobbyName" placeholder="lobby name">
-				<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="lobby password">
+				<input type="text" name="lobbyName" id="lobbyName" placeholder="lobby name"><br>
+				<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="lobby password"><br>
+				Capacity
+				<select id="lobbyCapacity" name="capacity">
+					<option value="2">2 Players</option>
+					<option value="3">3 Players</option>
+					<option value="4">4 Players</option>
+					<option value="5">5 Players</option>
+					<option value="6">6 Players</option>
+					<option value="7">7 Players</option>
+					<option value="8">8 Players</option>
+				</select><br>
 				<button class="submit" type="button" id="createButton">Create</button><br>
 				<span id="lobbyDialogValidation"></span>
 			</form>
@@ -34,7 +44,7 @@
 			<a href="#" class="close">Close</a>
 			<h4>Join A lobby</h4>
 			<div>
-				<ul>
+				<ul id="lobbyList">
 					<li>Name(count/capacity)</li>
 				</ul>
 			</div>

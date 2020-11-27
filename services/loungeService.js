@@ -33,7 +33,7 @@ module.exports = function(socket, client) {
 			onlineCount: usersOnline,
 			onlineUsers: userList,
 			lobbies: lobbyRegistry.GetAllLobbies(),
-			lobbyCount: lobbyRegistry.lobbyCount
+			lobbyCount: lobbyRegistry.GetLobbyCount()
 		});
 
 		client.to('lounge').broadcast.emit('user joined', {
@@ -49,7 +49,9 @@ module.exports = function(socket, client) {
 	client.on('lobby-add-request', (data) => {
 		const lobbyName = data.lobbyName;
 		const lobbyPassword = data.lobbyPassword;
-		var successful = lobbyRegistry.AddLobby(lobbyName, lobbyPassword);
+		const lobbyCapacity = data.lobbyCapacity;
+		const userAlias = userRegistry.GetAliasByUserName(client.username);
+		var successful = lobbyRegistry.AddLobby(lobbyName, lobbyPassword, userAlias, lobbyCapacity);
 
 		if(successful) {
 			// tell the client it was successful.
@@ -58,7 +60,10 @@ module.exports = function(socket, client) {
 			// tell everyone about this hot new lobby.
 			client.to('lounge').broadcast.emit('lobby created', {
 				name: lobbyName,
-				id: lobbyRegistry.GetLobbyID(lobbyName)
+				id: lobbyRegistry.GetLobbyID(lobbyName),
+				occupants: 1,
+				capacity: lobbyCapacity,
+				players: [ userAlias ]
 			});
 		} else {
 			client.emit('lobby-add-request-denied');

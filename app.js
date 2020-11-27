@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 
 // import { AddUser, VerifyUser } from './services/registrar.js';
 var registry = require('./services/userRegistrar');
+
 const port = process.env.PORT || 3000;
 
 var jsonParser = bodyParser.json();
@@ -55,13 +56,14 @@ app.get('/register', function (req, res) {
 
 app.get('/auth', function (req, res) {
   // validate user
-  console.log("/auth");
-  console.log(req.query.loginName);
-  console.log(req.query.loginPassword);
+  // console.log("/auth");
+  // console.log(req.query.loginName);
+  // console.log(req.query.loginPassword);
   const name = req.query.loginName;
   const password = req.query.password;
 
-  registry.GetUserCredentials();
+  // console prints a list of all user profiles
+  // registry.GetUserCredentials();
 
   var userVerified = registry.VerifyUser(name, password);
   if(userVerified)
@@ -74,16 +76,15 @@ app.get('/auth', function (req, res) {
 });
 
 app.get('/authenticated/:loginName', (req, res, next) => {
-  console.log(req.params.loginName);
+  // console.log(req.params.loginName);
   const name = req.params.loginName;
   res.render("authenticated/lounge.html", {name: name });
 });
 
 app.get('/lobby', function (req, res) {
   const name = req.query.lobbyName;
-  const password = req.query.lobbyPassword;
-  console.log(`Lobby Created: name: ${name}, ${password}.`);
-  res.render("authenticated/lobby.html");
+  // console.log(`Lobby Created: name: ${name}, ${password}.`);
+  res.render("authenticated/lobby.html", { lobbyName: name, });
 });
 
 app.get('/game', (req, res, next) => {

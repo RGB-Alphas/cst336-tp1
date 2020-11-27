@@ -2,32 +2,48 @@ $(document).ready(function() {
 
 	var socket = io();
 
+	// keep this stuff updated via socket events and append it to our UI.
+	var users = [];
+	var userCount = 0;
+	var lobbies = [];
+	var lobbyCount = 0;
+
 	console.log("Emitting: %s", userName);
 	socket.emit('enter_lounge', userName);
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
 		console.log("Users Online: %d", data.onlineCount);
+
+		users = data.onlineUsers;
+		userCount = data.onlineCount;
+		lobbies = data.lobbies;
+		lobbyCount = data.lobbyCount;
 		
 		for(var i = 0; i < data.onlineCount; i++)
 		{
 			// add these to the html of the user list ( <ul> will be fine ).
 			// see david's hw2 if you need to see how he did it (index.html and main.js)
 			const id = data.onlineUsers[i].sessionID; // for private messages.
-			const alias = data.onlineUsers[i].alias
+			const alias = data.onlineUsers[i].alias;
 			console.log("%s", alias);
-			//$("#<UL Tag ID").append(
-			//	`<li class="users-list-item">${data.onlineUsers[i]}</li>`)
+			
 		}
 
 		// we recieve lobbies as lists of lobby names. the user types or clicks the
 		// lobby name and clicks a button that will send a socket message
 		// to the server asking to join that lobby (names are unique, don't worry).
 		// see the lobby creation flow towards the bottom of this page.
+
 		for(var lobbyIndex = 0; lobbyIndex < data.lobbyCount; lobbyIndex++)
 		{
-			console.log(data.lobbies[lobbyIndex]);
-			console.log(data.lobbies[lobbyIndex].name);
+			var id = data.lobbies[lobbyIndex].id;
+			var name = data.lobbies[lobbyIndex].name;
+			var occupants = data.lobbies[lobbyIndex].occupants;
+			var capacity = data.lobbies[lobbyIndex].capacity;
+			console.log("Adding Lobby: %s", name);
+			$("#lobbyList").append(
+				`<li>${name} (${occupants}/${capacity})</li>`)
 		}
 	});
 
@@ -70,8 +86,17 @@ $(document).ready(function() {
 	// ////////////
 	// lobby events
 	socket.on('lobby created', (data) => {
-		const lobbyName = data.name;
-		const lobbyID = data.id; // don't show this visibly on the page.
+		var id = data.id; // dont show this but save it.
+		var name = data.name;
+		var occupants = data.occupants;
+		var capacity = data.capacity;
+		var host = data.players[0];
+		console.log("Adding Lobby: %s", name);
+		$("#lobbyList").append(
+			`<li>${name} (${occupants}/${capacity}) - Host: ${host}</li>`);
+		newLobby = { "id": id, "name": name, "capacity": capacity };
+		lobbies.push(newLobby);
+		console.log(`${host} has created a lobby: ${name}`);
 	});
 
 	socket.on('lobby destroyed', (data) => {
@@ -87,7 +112,8 @@ $(document).ready(function() {
 	$("#createButton").click(function(){
 		socket.emit('lobby-add-request', {
 			lobbyName: $("#lobbyName").val(),
-			lobbyPassword: $("#lobbyPassword").val()
+			lobbyPassword: $("#lobbyPassword").val(),
+			lobbyCapacity: $("#lobbyCapacity").val()
 		});
 		
 	});
