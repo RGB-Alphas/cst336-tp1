@@ -1,5 +1,10 @@
 
-var userProfiles = [];
+var userProfiles = [
+	{ "id": 9996, "name": "david.test", "password": "123", "alias": "FrostyBuns" },
+	{ "id": 9997, "name": "andrew.test", "password": "123", "alias": "CraftyPants" },
+	{ "id": 9998, "name": "justin.test", "password": "123", "alias": "TastyTreat" },
+	{ "id": 9999, "name": "brandon.test", "password": "123", "alias": "GoodyBag" }
+];
 let UserID = 10000; // user id's start at 10,000 (for now)
 
 module.exports = { profiles: userProfiles };
