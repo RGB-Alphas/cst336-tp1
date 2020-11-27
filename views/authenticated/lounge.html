@@ -43,17 +43,24 @@
 		<div id="join-lobby-dialog" class="dialog-popup">
 			<a href="#" class="close">Close</a>
 			<h4>Join A lobby</h4>
-			<div>
-				<ul id="lobbyList">
-					<li>Name(count/capacity)</li>
-				</ul>
-			</div>
+			<div><ul id="lobbyList" class="list"></ul></div>
 		</div>
 		<!-- Join Lobby Dialog Ends-->
 		<div class="container">
 			<div class="lounge border-thick border-g">
 				<h1>You've entered the lounge!</h1>
 				<p>Welcome back, <%= name %></p>
+				<div id="#playerListContainer">
+					<h4 id="playerListHeading"></h4>
+					<ul id="playerList" class="list"></ul>
+				</div>
+				<div id="chatContainer">
+					<div>
+						<ul id="messageList" class="message-list"></ul>
+					</div>
+					<span id="typingNotice"></span><br>
+					<input id="messageInput"><button id="messageSend">Send</button>
+				</div>
 				<a href="#" data-selector="#create-lobby-dialog" class="btn btn-info text-light m-2 dialog-link">Create</a>
 				<a href="#" data-selector="#join-lobby-dialog" class="btn btn-info text-light m-2 dialog-link">Join</a>
 			</div>

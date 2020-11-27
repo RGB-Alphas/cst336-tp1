@@ -5,10 +5,10 @@
 
 
 var lobbyList = [
-	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 0, "capacity": 0, "players": [] },
-	{ "id": 997, "name": "lobby2", "password": "123", "occupants": 0, "capacity": 0, "players": [] },
-	{ "id": 998, "name": "lobby3", "password": "123", "occupants": 0, "capacity": 0, "players": [] },
-	{ "id": 999, "name": "lobby4", "password": "123", "occupants": 0, "capacity": 0, "players": [] }
+	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 0, "capacity": 0, "players": [ "Generic Host" ] },
+	{ "id": 997, "name": "lobby2", "password": "123", "occupants": 0, "capacity": 0, "players": [ "Generic Host" ] },
+	{ "id": 998, "name": "lobby3", "password": "123", "occupants": 0, "capacity": 0, "players": [ "Generic Host" ] },
+	{ "id": 999, "name": "lobby4", "password": "123", "occupants": 0, "capacity": 0, "players": [ "Generic Host" ] }
 ];
 var lobbyCount = lobbyList.length;
 let LobbyID = 1000; // user id's start at 1,000 (for now)
