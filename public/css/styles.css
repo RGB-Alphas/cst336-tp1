@@ -10,6 +10,17 @@ body{
 	color: #FFFFFF;
 }
 
+main{
+	padding-top: 5%;
+}
+
+/* CHAT */
+.message-list {
+	overflow-y:scroll;
+	list-style-type: none;
+	padding: 0;
+}
+
 #lounge{
 	width: 50%;
 	min-height: 350px;
@@ -18,21 +29,21 @@ body{
 	margin: 0 auto;
 }
 
-#chat-container{
+#chatContainer{
 	min-height: 100%;
 	min-width: 65%;
 }
 
-#users-list{
+#playerList{
 	list-style-type: none;
 }
 
-#users-container{
+#playerListContainer{
 	min-height: 100%;
 	min-width: 20%;
 }
 
-#message{
+#messageList{
 	letter-spacing: 1px;
 	margin: 1% 0;
 	color: lightyellow;
