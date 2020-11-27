@@ -6,12 +6,30 @@ html{
 body{
 	min-height: 100vh;
 	text-align: center;
-	background-color: #222;
+	background-color: #292b2c;
 	color: #FFFFFF;
 }
 
-main{
-	margin-top: 5%;
+#lounge{
+	width: 50%;
+	min-height: 350px;
+	background: whitesmoke;
+	border-radius: 5px;
+	margin: 0 auto;
+}
+
+#chat-container{
+	min-height: 100%;
+	min-width: 65%;
+}
+
+#users-list{
+	list-style-type: none;
+}
+
+#users-container{
+	min-height: 100%;
+	min-width: 20%;
 }
 
 #message{
@@ -65,45 +83,6 @@ footer{
 #topLinks{
 	text-align: right;
 }
-
-.list {
-	padding: 0;
-	list-style-type: none;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.list-item {
-	color: white;
-	margin-left: 15px;
-	margin-right: 15px;
-	display: block;
-}
-
-/* CHAT */
-.message-list {
-	height: 200px;
-	overflow-y:scroll;
-}
-
-.message-sent {
-	text-align: right !important; 
-	color: yellow !important;
-	margin-right: 15px;
-}
-
-.message-received {
-	text-align: left !important;
-	color: greenyellow !important;
-	margin-left: 15px;
-}
-
-.avatar-margin {
-	margin-left: 15px;
-	margin-right: 15px;
-}
-
-/* DIALOGUE */
 
 #dialog-overlay {
 	background: #000;
