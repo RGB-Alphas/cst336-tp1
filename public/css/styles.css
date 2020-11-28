@@ -6,7 +6,7 @@ html{
 body{
 	min-height: 100vh;
 	text-align: center;
-	background-color: #343a40;
+	background-color: #394046;
 	color: #FFFFFF;
 }
 
@@ -17,7 +17,7 @@ body{
     box-shadow:         0px 0px 2px 0px rgba(50, 50, 50, 0.1);
 }
 
-.sidebarBtn:hover{
+.loungeBtn:hover{
 	background-color: #343a40!important;
 	transition: all .3s linear;
 }
@@ -51,6 +51,10 @@ body{
 
 .rounded{
 	border-radius: 10px!important;
+}
+
+input{
+	outline: none;
 }
 
 .panel{
@@ -174,7 +178,7 @@ footer{
 .dialog-popup {
 	height: 20%;
 	width: 25%;
-	background-color: #343a40;
+	background-color: #394046;
 	display: none;
 	z-index: 99999; 
    	border-radius: 10px;
