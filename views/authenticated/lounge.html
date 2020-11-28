@@ -8,65 +8,74 @@
 		 integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" 
 		 crossorigin="anonymous">
 	 	<link rel="stylesheet" href="../css/styles.css" type="text/css">
+	 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		 <script src="/socket.io/socket.io.js"></script> 
-		 <script>
+		<script src="/socket.io/socket.io.js"></script> 
+		<script>
 			var userName = "<%= name %>";
 			// console.log("Username: %s", userName);
 		</script>
-		 <script src="../js/lounge.js" type="text/javascript"></script>
+		<script src="../js/lounge.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<!-- Create Lobby Dialog Starts -->
-		<div id="create-lobby-dialog" class="dialog-popup">
-			<a href="#" class="close">Close</a>
-			<h4>Create A lobby</h4>
-			<form method="get" action="/lobby" id="lobbyForm">
-				<input type="text" name="lobbyName" id="lobbyName" placeholder="lobby name"><br>
-				<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="lobby password"><br>
-				Capacity
-				<select id="lobbyCapacity" name="capacity">
-					<option value="2">2 Players</option>
-					<option value="3">3 Players</option>
-					<option value="4">4 Players</option>
-					<option value="5">5 Players</option>
-					<option value="6">6 Players</option>
-					<option value="7">7 Players</option>
-					<option value="8">8 Players</option>
-				</select><br>
-				<button class="submit" type="button" id="createButton">Create</button><br>
-				<span id="lobbyDialogValidation"></span>
-			</form>
-		</div>
-		<!-- Create Lobby Dialog Ends-->
-		<!-- Join Lobby Dialog Starts -->
+		<!-- Create Lobby Dialog -->
+		<!-- Join Lobby Dialog -->
 		<div id="join-lobby-dialog" class="dialog-popup">
 			<a href="#" class="close">Close</a>
 			<h4>Join A lobby</h4>
 			<div><ul id="lobbyList" class="list"></ul></div>
 		</div>
 		<%- include('../partials/header.ejs') %>
-		<!-- Join Lobby Dialog Ends-->
 			<main>
-				<div id="lounge" class="d-flex flex-row border-thick border-g text-white p-2 justify-content-between">
+				<div id="lounge" class="d-flex flex-row border-thick border-g text-white p-3 justify-content-between">
 				<div id="lounge-sidebar" class="w-auto d-flex flex-column justify-content-around">
-					<a href="#" class="btn btn-info dialog-link">Profile</a>
-					<a href="#" data-selector="#create-lobby-dialog" class="btn btn-info dialog-link">Create</a>
-					<a href="#" data-selector="#join-lobby-dialog" class="btn btn-info dialog-link">Join</a>
-					<a href="#" class="btn btn-info dialog-link">Quit</a>
+					<a href="#" id="profileBtn" class="btn btn-info">Profile</a>
+					<a href="#" id="createBtn" data-selector="#create-lobby-dialog" class="btn btn-info dialog-link">Create</a>
+					<a href="#" id="joinBtn" class="btn btn-info">Join</a>
+					<a href="#" id="chatBtn" class="btn btn-info">Chat</a>
+					<a href="#" id="quitBtn" class="btn btn-info">Quit</a>
 				</div>
-				<div id="chatContainer" class="d-flex flex-column justify-content-between">
-					<h5 class="py-1 text-center bg-dark rounded">Lounge </h5>
-					<ul id="messageList" class="message-list flex-fill bg-dark rounded"></ul>
-					<span id="typingNotice"></span><br>
-					<div class="d-flex flex-row mt-2">
-						<input type="text" class="form-control bg-dark text-white m-0" id="messageInput" placeholder="Send a message...">
-						<button id="messageSend" type="submit" class="btn btn-info ml-2">Send</button>
+				<div id="loungePanel">
+					<!-- Chat Panel -->
+					<div id="chatPanel">
+						<div id="chatPanelContainer" class="d-flex flex-row justify-content-around">
+							<div id="chatContainer" class="d-flex flex-column justify-content-between">
+								<h4 class="py-1 text-center bg-dark rounded">Lounge </h4>
+								<ul id="messageList" class="message-list scroll flex-fill bg-dark rounded"></ul>
+								<span id="typingNotice" class="bg-dark rounded"></span><br>
+								<div class="d-flex flex-row">
+									<input type="text" class="form-control bg-dark text-white m-0" id="messageInput" placeholder="Send a message...">
+									<button id="messageSend" type="submit" class="btn btn-info ml-2">Send</button>
+								</div>
+							</div>
+							<div id="playerListContainer" class="d-flex flex-column bg-dark rounded">
+								<h5 id="playerListHeading" class="py-1 text-center">Users (0)</h5>
+								<ul id="playerList" class="text-center scroll m-0 p-1 flex-fill"></ul>
+							</div>
+						</div>
 					</div>
-				</div> 
-				<div id="playerListContainer" class="d-flex flex-column">
-					<h5 id="playerListHeading" class="py-1 text-center bg-dark rounded">Users (0)</h5>
-					<ul id="playerList" class="bg-dark text-center rounded flex-fill m-0 p-1"></ul>
+					<!-- Create Lobby Panel -->
+					<div id="createPanel" class="mx-3">
+						<h5 class="bg-dark rounded py-1">Create A lobby</h5>
+						<form method="get" action="/lobby" id="lobbyForm" class="bg-dark rounded py-5">
+							<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
+							<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
+							<strong>Capacity: </strong>
+							<select id="lobbyCapacity" name="capacity" class="rounded my-2">
+								<option value="2">2 Players</option>
+								<option value="3">3 Players</option>
+								<option value="4">4 Players</option>
+								<option value="5">5 Players</option>
+								<option value="6">6 Players</option>
+								<option value="7">7 Players</option>
+								<option value="8">8 Players</option>
+							</select><br>
+							<a href="#"><button type="button" class="close-button btn btn-info m-2">Back <i class="fas fa-times"></i></i></button></a>
+							<button type="button" id="createButton" class="submit btn btn-info m-2">Create</button><br>
+							<span id="lobbyDialogValidation"></span>
+						</form>
+					</div>
+					<!-- Join Lobby Panel -->
 				</div>
 			</div>
 		</main>
