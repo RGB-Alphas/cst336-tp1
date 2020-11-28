@@ -54,7 +54,7 @@ $(document).ready(function() {
 			var host = players[0];
 			// console.log("Adding Lobby: %s", name);
 			$("#lobbyList").append(
-				`<li class="list-item"><a class="lobby-link my-1 rounded" href="/lobby?lobbyName=${name}">${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`)
+				`<li class="list-item"><a class="lobby-link my-1 rounded" href="/lobby?lobbyName=${name}"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`)
 		}
 	});
 
