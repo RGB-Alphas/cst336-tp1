@@ -11,11 +11,8 @@
 		<link href="css/styles.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
-		<nav class="my-5">
-			<a id="brand" href="/"><img src="https://fontmeme.com/permalink/201119/174e93a13c86923a9400b72bdd4dbcb8.png" alt="Tag" border="0"></a><br><br>
-			<span id="message" class="my-4"><em>Show no Sphere!</em></span>
-		</nav>
-		<main class="d-flex justify-content-center">
+		<%- include('partials/header.ejs') %>
+		<main class="d-flex justify-content-center pt-4">
 			<!-- Login Dialog -->
 			<div id="login-dialog" class="dialog-popup bg-dark">
 				<h4><strong>Login</strong></h4>
