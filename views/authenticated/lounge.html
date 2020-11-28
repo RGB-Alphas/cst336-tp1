@@ -46,25 +46,30 @@
 			<div><ul id="lobbyList" class="list"></ul></div>
 		</div>
 		<!-- Join Lobby Dialog Ends-->
-		<div class="container">
-			<div class="lounge border-thick border-g">
-				<h1>You've entered the lounge!</h1>
-				<p>Welcome back, <%= name %></p>
-				<div id="#playerListContainer">
-					<h4 id="playerListHeading"></h4>
-					<ul id="playerList" class="list"></ul>
+			<main>
+				<a id="brand" href="/"><img src="https://fontmeme.com/permalink/201119/174e93a13c86923a9400b72bdd4dbcb8.png" alt="Tag" border="0"></a><br><br>
+				<div id="lounge" class="d-flex flex-row border-thick border-g text-white p-2 justify-content-between">
+				<div id="lounge-sidebar" class="w-auto d-flex flex-column justify-content-around">
+					<a href="#" class="btn btn-info dialog-link">Profile</a>
+					<a href="#" data-selector="#create-lobby-dialog" class="btn btn-info dialog-link">Create</a>
+					<a href="#" data-selector="#join-lobby-dialog" class="btn btn-info dialog-link">Join</a>
+					<a href="#" class="btn btn-info dialog-link">Quit</a>
 				</div>
-				<div id="chatContainer">
-					<div>
-						<ul id="messageList" class="message-list"></ul>
-					</div>
+				<div id="chatContainer" class="d-flex flex-column justify-content-between">
+					<h5 class="py-1 text-center bg-dark rounded">Lounge </h5>
+					<ul id="messageList" class="message-list flex-fill bg-dark rounded"></ul>
 					<span id="typingNotice"></span><br>
-					<input id="messageInput"><button id="messageSend">Send</button>
+					<div class="d-flex flex-row mt-2">
+						<input type="text" class="form-control bg-dark text-white m-0" id="messageInput" placeholder="Send a message...">
+						<button id="messageSend" type="submit" class="btn btn-info ml-2">Send</button>
+					</div>
+				</div> 
+				<div id="playerListContainer" class="d-flex flex-column">
+					<h5 id="playerListHeading" class="py-1 text-center bg-dark rounded">Users (0)</h5>
+					<ul id="playerList" class="bg-dark text-center rounded flex-fill m-0 p-1"></ul>
 				</div>
-				<a href="#" data-selector="#create-lobby-dialog" class="btn btn-info text-light m-2 dialog-link">Create</a>
-				<a href="#" data-selector="#join-lobby-dialog" class="btn btn-info text-light m-2 dialog-link">Join</a>
 			</div>
-		</div>
+		</main>
 		<div id="dialog-overlay" title="Click here to close the dialog"></div>
   </body>
   <footer>
