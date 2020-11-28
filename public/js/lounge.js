@@ -263,27 +263,37 @@ $(document).ready(function() {
 	$("#createBtn").on("click", function(){
 		console.log("join btn clicked");
 		$("#chatPanel").hide();
+		$("#profilePanel").hide();
 		$("#joinPanel").hide();
 		$("#createPanel").show();
+	})
+	
+	$(".close-button").on("click", function(){
+		$("#createPanel").hide();
+		$("#chatPanel").show();
 	})
 
 	$("#chatBtn").on("click", function(){
 		console.log("chat btn clicked");
 		$("#createPanel").hide();
+		$("#profilePanel").hide();
 		$("#joinPanel").hide();
-		$("#chatPanel").show();
-	})
-	
-	$(".close-button").on("click", function(){
-		console.log("chat btn clicked");
-		$("#createPanel").hide();
 		$("#chatPanel").show();
 	})
 	
 	$("#joinBtn").on("click", function(){
 		console.log("chat btn clicked");
+		$("#profilePanel").hide();
 		$("#createPanel").hide();
 		$("#chatPanel").hide();
 		$("#joinPanel").show();
+	})
+	
+	$("#profileBtn").on("click", function(){
+		console.log("chat btn clicked");
+		$("#createPanel").hide();
+		$("#chatPanel").hide();
+		$("#joinPanel").hide();
+		$("#profilePanel").show();
 	})
 });

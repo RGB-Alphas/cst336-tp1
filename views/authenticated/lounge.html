@@ -22,11 +22,11 @@
 			<main>
 				<div id="lounge" class="d-flex flex-row border-thick border-g text-white p-3 justify-content-between">
 				<div id="lounge-sidebar" class="w-auto d-flex flex-column justify-content-around">
-					<a href="#" id="profileBtn" class="btn btn-info">Profile <i class="fas fa-user pl-1"></i></a>
-					<a href="#" id="createBtn" data-selector="#create-lobby-dialog" class="btn btn-info dialog-link">Create <i class="fas fa-plus pl-1"></i></a>
-					<a href="#" id="joinBtn" class="btn btn-info">Join<i class="fas fa-user-friends pl-3"></i></a>
-					<a href="#" id="chatBtn" class="btn btn-info">Chat<i class="fas fa-comment-dots pl-3"></i></a>
-					<a href="/" id="quitBtn" class="btn btn-info">Quit<i class="fas fa-sign-out-alt pl-3"></i></a>
+					<a href="#" id="profileBtn" class="btn btn-info sidebarBtn">Profile <i class="fas fa-user pl-1"></i></a>
+					<a href="#" id="createBtn" class="btn btn-info sidebarBtn">Create <i class="fas fa-plus pl-1"></i></a>
+					<a href="#" id="joinBtn" class="btn btn-info sidebarBtn">Join<i class="fas fa-user-friends pl-3"></i></a>
+					<a href="#" id="chatBtn" class="btn btn-info sidebarBtn">Chat<i class="fas fa-comment-dots pl-3"></i></a>
+					<a href="/" id="quitBtn" class="btn btn-info sidebarBtn">Quit<i class="fas fa-sign-out-alt pl-3"></i></a>
 				</div>
 				<div id="loungePanel">
 					<!-- Chat Panel -->
@@ -34,7 +34,7 @@
 						<div id="chatPanelContainer" class="d-flex flex-row justify-content-around">
 							<div id="chatContainer" class="d-flex flex-column justify-content-between">
 								<div class="rounded bg-dark flex-fill">
-									<h4 class="py-1 text-center">Lounge </h4>
+									<h4 class="py-1 text-center"><strong>Lounge</strong></h4>
 									<ul id="messageList" class="message-list scroll h-75"></ul>
 									<span id="typingNotice" class="bg-dark rounded my-1"></span><br>
 								</div>
@@ -44,15 +44,19 @@
 								</div>
 							</div>
 							<div id="playerListContainer" class="d-flex flex-column bg-dark rounded">
-								<h5 id="playerListHeading" class="py-1 text-center">Users (0)</h5>
+								<h5 id="playerListHeading" class="py-1 text-center"><strong>Users (0)</strong></h5>
 								<ul id="playerList" class="text-center scroll m-0 p-1 flex-fill"></ul>
 							</div>
 						</div>
 					</div>
+					<!-- Profile Panel -->
+					<div id="profilePanel" class="mx-3 panel bg-dark rounded py-3">
+						<h4 class="py-3"><strong>Profile</strong></h4>
+					</div>
 					<!-- Create Lobby Panel -->
 					<div id="createPanel" class="mx-3 panel bg-dark rounded">
-						<form method="get" action="/lobby" id="lobbyForm" class="py-5">
-							<h5 class="bg-dark rounded py-1">Create A lobby</h5>
+						<form method="get" action="/lobby" id="lobbyForm" class="py-3">
+							<h5 class="bg-dark rounded py-3"><strong>Create A lobby</strong></h5>
 							<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
 							<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
 							<strong>Capacity: </strong>
@@ -71,9 +75,9 @@
 						</form>
 					</div>
 					<!-- Join Lobby Panel -->
-					<div id="joinPanel" class="mx-3 panel bg-dark rounded">
+					<div id="joinPanel" class="mx-3 panel bg-dark rounded py-3">
 						<form method="get" action="/lobby" id="lobbyForm">
-							<h5 class="py-3"><strong>Join a Lobby</strong></h5>
+							<h4 class="py-3"><strong>Join a Lobby</strong></h4>
 							<ul id="lobbyList" class="scroll"></ul>
 							<span id="lobbyDialogValidation"></span>
 						</form>
