@@ -5,7 +5,22 @@ const path = require('path');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 var bodyParser = require('body-parser');
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+ host: 'aqx5w9yc5brambgl.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+ user: 'm4uczqk07nizg82s',
+ password: 'jjcce4z1yndxc21y',
+ database: 'pxe2qkxvek3zot7z'
+});
 
+ connection.connect((err) => {
+    if(err){
+        console.log('Error connection to DB');
+        return;
+    }
+    console.log('Connected!');
+  });
+  
 // import { AddUser, VerifyUser } from './services/registrar.js';
 var registry = require('./services/userRegistrar');
 
@@ -42,7 +57,7 @@ app.get('/register', function (req, res) {
   const name = req.query.accountName;
   const password = req.query.password;
   const alias = req.query.displayName;
-  var userAdded = registry.AddUser(name, password, alias);
+  var userAdded = dbInsertData(name, password, alias);
   if(userAdded) {
     const message = "You may log into your new account.";
     res.render('index.html', {message: message});
@@ -60,12 +75,14 @@ app.get('/auth', function (req, res) {
   // console.log(req.query.loginName);
   // console.log(req.query.loginPassword);
   const name = req.query.loginName;
-  const password = req.query.password;
+  const password = req.query.loginPassword;
 
   // console prints a list of all user profiles
   // registry.GetUserCredentials();
 
-  var userVerified = registry.VerifyUser(name, password);
+  var userVerified = dbAuthenticate(name, password);
+  console.log(userVerified);
+  console.log("auther funcit0on");
   if(userVerified)
     res.redirect(`/authenticated/${name}`);
   else {
@@ -97,3 +114,42 @@ server.listen(port, () => {
   else
   console.log("Server is running on port %d.", port);
 });
+
+//functions for database
+
+//function accepts data from form, if user name is taken return false else return true
+function dbInsertData(accountName, password, displayName){
+  let user = { accountName: accountName, password: password, displayName: displayName };
+  //insert data into db
+  connection.query('INSERT INTO users SET ?', user, (err, res) => {
+    if(err) {
+      console.log("Error inserting into DB Code:")
+      console.log(err.code);
+      return false;
+    }
+    console.log('Last insert ID:', res.insertId);
+  });
+  return true;
+}
+
+//Function to authenticate user
+async function dbAuthenticate(accountName, password){
+let user = { accountName: accountName, password: password};
+let isValid = false;
+connection.query('SELECT accountName, password FROM users', (err,rows) => {
+ if(err) throw err;
+ 
+ rows.forEach( (row) => {
+   if(row.accountName == user.accountName){
+     if(row.password == user.password){
+       isValid = true;
+       console.log(isValid);
+       console.log("inside loop");
+     }
+   }
+});
+});
+console.log(isValid);
+console.log("end function");
+return isValid;
+}
