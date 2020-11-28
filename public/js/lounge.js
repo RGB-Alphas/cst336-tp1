@@ -1,3 +1,7 @@
+/* global $ */
+/* global io */
+
+
 $(document).ready(function() {
 
 	var socket = io();
@@ -256,6 +260,24 @@ $(document).ready(function() {
 		$('#dialog-overlay').fadeOut(200);
 		return false;
 	});
+	
+	$("#createBtn").on("click", function(){
+		console.log("join btn clicked");
+		$("#chatPanel").hide();
+		$("#createPanel").show();
+	})
+
+	$("#chatBtn").on("click", function(){
+		console.log("chat btn clicked");
+		$("#createPanel").hide();
+		$("#chatPanel").show();
+	})
+	
+	$(".close-button").on("click", function(){
+		console.log("chat btn clicked");
+		$("#createPanel").hide();
+		$("#chatPanel").show();
+	})
 
 	// dialogue end
 	// ////////////
