@@ -36,7 +36,7 @@ module.exports.VerifyUser = function(name, password) {
 		profile.name === name && 
 		profile.password === password);
 	
-	if(user === undefined)
+	if(user === null)
 	{
 		return false;
 	}

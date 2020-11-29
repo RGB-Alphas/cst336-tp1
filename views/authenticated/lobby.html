@@ -22,12 +22,19 @@
 				<h3>Lobby Title: <%= lobbyName %></h3>
 			<div class="lounge border-thick border-g" style="display: flex">
 				
-				<div style="display: inline; margin:auto">
-					<h4>Players</h4>
-					<ul id="playerList">
-						<li>Player One!</li>
-					</ul>
+				<div id="playerListContainer" class="d-flex flex-column">
+					<h5 id="playerListHeading" class="py-1 text-center bg-dark rounded">Users (0)</h5>
+					<ul id="playerList" class="bg-dark text-center rounded flex-fill m-0 p-1"></ul>
 				</div>
+				<div id="chatContainer" class="d-flex flex-column justify-content-between">
+					<h5 class="py-1 text-center bg-dark rounded">Lounge </h5>
+					<ul id="messageList" class="message-list flex-fill bg-dark rounded"></ul>
+					<span id="typingNotice"></span><br>
+					<div class="d-flex flex-row mt-2">
+						<input type="text" class="form-control bg-dark text-white m-0" id="messageInput" placeholder="Send a message...">
+						<button id="messageSend" type="submit" class="btn btn-info ml-2">Send</button>
+					</div>
+				</div> 
 				<div style="display: inline; margin:auto">
 					<h4>Options</h4>
 					<form>
