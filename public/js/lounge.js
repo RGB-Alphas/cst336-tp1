@@ -1,3 +1,7 @@
+/* global $ */
+/* global io */
+
+
 $(document).ready(function() {
 
 	var socket = io();
@@ -50,7 +54,7 @@ $(document).ready(function() {
 			var host = players[0];
 			// console.log("Adding Lobby: %s", name);
 			$("#lobbyList").append(
-				`<li class="list-item"><a href="/lobby?lobbyName=${name}">${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`)
+				`<li class="list-item"><a class="lobby-link my-1 rounded" href="/lobby?lobbyName=${name}"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`)
 		}
 	});
 
@@ -197,8 +201,8 @@ $(document).ready(function() {
 		var host = data.players[0];
 		console.log("Adding Lobby: %s", name);
 		$("#lobbyList").append(
-			`<li class="list-item"><a href="/lobby?lobbyName=${name}">${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`);
-		newLobby = { "id": id, "name": name, "capacity": capacity };
+			`<li class="list-item"><a class="lobby-link my-1 rounded" href="/lobby?lobbyName=${name}">${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`);
+		let newLobby = { "id": id, "name": name, "capacity": capacity };
 		lobbies.push(newLobby);
 		console.log(`${host} has created a lobby: ${name}`);
 	});
@@ -238,8 +242,7 @@ $(document).ready(function() {
 	// create lobby flow end
 	// /////////////////////
 
-	// ///////////////////
-	// dialogue flow begin
+	/***** Loung Panels *****/
 	$('a.dialog-link').click(function() {
 		var dialog_id = $(this).attr('data-selector');
 		$('#dialog-overlay').fadeIn(200);
@@ -256,7 +259,41 @@ $(document).ready(function() {
 		$('#dialog-overlay').fadeOut(200);
 		return false;
 	});
+	
+	$("#createBtn").on("click", function(){
+		console.log("join btn clicked");
+		$("#chatPanel").hide();
+		$("#profilePanel").hide();
+		$("#joinPanel").hide();
+		$("#createPanel").show();
+	})
+	
+	$(".close-button").on("click", function(){
+		$("#createPanel").hide();
+		$("#chatPanel").show();
+	})
 
-	// dialogue end
-	// ////////////
+	$("#chatBtn").on("click", function(){
+		console.log("chat btn clicked");
+		$("#createPanel").hide();
+		$("#profilePanel").hide();
+		$("#joinPanel").hide();
+		$("#chatPanel").show();
+	})
+	
+	$("#joinBtn").on("click", function(){
+		console.log("chat btn clicked");
+		$("#profilePanel").hide();
+		$("#createPanel").hide();
+		$("#chatPanel").hide();
+		$("#joinPanel").show();
+	})
+	
+	$("#profileBtn").on("click", function(){
+		console.log("chat btn clicked");
+		$("#createPanel").hide();
+		$("#chatPanel").hide();
+		$("#joinPanel").hide();
+		$("#profilePanel").show();
+	})
 });
