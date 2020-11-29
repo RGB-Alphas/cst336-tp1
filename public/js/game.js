@@ -1,73 +1,24 @@
-/*global Path*/
-/*global view*/
-/*global Point*/
-/*global $*/
+import Circle from "./GameObjects/Circle.js"
+import {drawCircle} from "./GameFunctions/drawCircle.js";
+import {controller} from "./GameFunctions/controller.js";
 
 console.log("game.js connected");
 
-var circles = []    // Store circles
-AddCircle();        // Player 1
-AddCircle();        // CPU 1
-AddCircle();        // CPU 2
-AddCircle();        // CPU 3
-var step = 25;
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext('2d');
 
-// Adds a circle to the screen w/ random color & position
-function AddCircle(){
-    var colors = ["lime", "turquoise", "maroon"];
-    var maxPoint = new Point(view.size.width, view.size.height);
-    var randomPoint = Point.random();
-    var point = maxPoint * randomPoint;
-    var newCircle = new Path.Circle(point, 20);
-	newCircle.fillColor = randomColor(colors);;
-	circles.push(newCircle);
+let screenWidth = 1000;
+let screenHeight = 500;
+
+var circle1 = new Circle(50,50,10,0, "white",0);
+var circle2 = new Circle(120,50,10,0, "yellow",0);
+
+var step = function() {
+	controller(circle1);
+	ctx.clearRect(0,0,screenWidth,screenHeight);
+	drawCircle(circle1, ctx);
+	drawCircle(circle2, ctx);
+	window.requestAnimationFrame(step);
 }
 
-// 'WASD' Movement Listeners
-function onKeyDown(event) {
-	if(event.key == 'a'){
-		circles[0].position.x -= step;
-	}
-
-	if(event.key == 'd') {
-		circles[0].position.x += step;
-	}
-
-	if(event.key == 'w') {
-		circles[0].position.y -= step;
-	}
-
-	if(event.key == 's') {
-		circles[0].position.y += step;
-	}
-}
-
-// Collision Detection
-//path.intersects(otherPath
-function onFrame(event) {
-	if (circles[0].intersects(circles[1])){
-		circles[1].fillColor = "white";
-	}
-	
-	if (circles[0].intersects(circles[2])){
-		circles[2].fillColor = "white";
-	}
-	
-	if (circles[0].intersects(circles[3])){
-		circles[3].fillColor = "white";
-	}
-}
-
-
-// Generate random color
-function randomColor(colors){
-    var color = colors[Math.floor(Math.random() * colors.length)];
-    return color;
-}
-
-// For removing circles
-function removeCircle(circle){
-    circles[circle].remove();
-    circles.splice(circle, 1);
-    console.log(circles);
-}
+step();
