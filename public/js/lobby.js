@@ -3,6 +3,7 @@
 
 $(document).ready(function() {
 	var socket = io();
+	var input = document.getElementById("messageInput")
 	
 	// Ready Button
 	$("#readyBtn").on("click", function(){
@@ -30,7 +31,18 @@ $(document).ready(function() {
 	    $("#chatPanel").show();
 	})
 	
-	// chat functions begin
+	input.addEventListener("keyup", function(event) {
+		// Number 13 is the "Enter" key on the keyboard
+		if (event.keyCode === 13) {
+		  // Cancel the default action, if needed
+		  event.preventDefault();
+		  // Trigger the button element with a click
+		  $("#messageSend").click();
+		}
+		
+	});
+	
+	// Chat functions
 	$("#messageSend").click( function() {
 		var message = $("#messageInput").val(); // get message
 		$("#messageInput").val("");
