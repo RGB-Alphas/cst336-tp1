@@ -24,7 +24,7 @@
 					<a href="#" id="optionsBtn" class="btn btn-info loungeBtn">Lobby<i class="fas fa-user-friends pl-2"></i></a>
 					<a href="#" id="chatBtn" class="btn btn-info loungeBtn">Chat<i class="fas fa-comment-dots pl-2"></i></a>
 					<a href="/authenticated/justin.test#" id="quitBtn" class="btn btn-info loungeBtn">Leave<i class="fas fa-door-open pl-2"></i></a>
-					<a href="#" id="readyBtn" class="btn btn-info loungeBtn">Ready <i class="fas fa-check pl-2"></i></a>
+					<a href="#" id="readyBtn" class="btn btn-info loungeBtn">Not Ready</a>
 				</div>
 			<div id="loungePanel">
 				<div id="lobbyPanel" class="mx-3 panel bg-dark rounded py-3">
@@ -62,9 +62,9 @@
 							</form>
 						</div>
 					</div>
-					<button type="button" id="startBtn" class="submit btn btn-info m-3 lobby-link">Start </button>
+					<a href="/game"><button type="button" id="startBtn" class="submit btn btn-info m-3 lobby-link">Start </button></a>
 					<a href="/"><button type="button" id="cancelBtn" class="submit btn btn-info m-3 lobby-link">Cancel </button></a>
-					</div>
+				</div>
 			</div>
 		</div>
 	<%- include('../partials/footer.ejs') %>
