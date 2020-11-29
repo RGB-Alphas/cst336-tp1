@@ -5,23 +5,47 @@ const path = require('path');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 var bodyParser = require('body-parser');
-
-// import { AddUser, VerifyUser } from './services/registrar.js';
+const mysql = require('mysql');
 var registry = require('./services/userRegistrar');
+const session = require('express-session');
+require('dotenv').config();
+//Setting up data base
+const connection = mysql.createConnection({
+ host: process.env.Host,
+ user: process.env.User,
+ password: process.env.Password,
+ database: process.env.Database
+});
+// Connection to database
+ connection.connect((err) => {
+    if(err){
+        console.log('Error connection to DB');
+        return;
+    }
+    console.log('Connected!');
+  });
+  
+// import { AddUser, VerifyUser } from './services/registrar.js';
+
 
 const port = process.env.PORT || 3000;
 
 var jsonParser = bodyParser.json();
-var urlencodedParser = bodyParser.urlencoded({ extended: false })
+app.use(express.urlencoded({extended: true}));
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 app.use(express.static(path.join(__dirname, 'public')));
-//app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }))
-//app.use(bodyParser.text({ type: 'text/html' }))
-//app.use(bodyParser.json({ type: 'application/*+json' }))
+app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.json());
+app.use(session({
+  secret: "top secret!",
+  resave : true,
+  saveUninitialized: true,
+}));
+
+
 
 let numUsers = 0;
 let clientList = [];
@@ -32,18 +56,42 @@ io.on('connection', (client) => {
   require('./services/gameService.js')(io, client);
   
 });
-
+//Home page 
 app.get('/', (req, res, next) => {
   const message = "Please register or sign in.";
   res.render('index.html', {message: message});
 });
 
-app.get('/register', function (req, res) {
-  const name = req.query.accountName;
-  const password = req.query.password;
-  const alias = req.query.displayName;
-  var userAdded = registry.AddUser(name, password, alias);
-  if(userAdded) {
+// for action
+app.post('/login', function(req, res) {
+    var username = req.body.loginName;
+    var password = req.body.loginPassword;
+    if (username && password) {
+      
+      
+// check if user exists
+        connection.query('SELECT * FROM users WHERE accountName = ? AND password = ?', [username, password], function(error, results, fields) {
+            if (results.length > 0) {
+                req.session.authenticated = true;
+                req.session.username = username;
+          
+                res.redirect('/authenticated');
+                console.log("You're IN!");
+            } else {
+                res.send('Incorrect Username and/or Password!');
+            }           
+            res.end();
+        });
+    } else {
+        res.send('Please enter Username and Password!');
+        res.end();
+    }
+});
+
+app.get('/register', async function (req, res) {
+  let valid = await dbInsertData(req.query.accountName, req.query.password,  req.query.displayName);
+  console.log(valid);
+  if(valid){
     const message = "You may log into your new account.";
     res.render('index.html', {message: message});
   }
@@ -54,31 +102,10 @@ app.get('/register', function (req, res) {
 
 });
 
-app.get('/auth', function (req, res) {
-  // validate user
-  // console.log("/auth");
-  // console.log(req.query.loginName);
-  // console.log(req.query.loginPassword);
-  const name = req.query.loginName;
-  const password = req.query.password;
-
-  // console prints a list of all user profiles
-  // registry.GetUserCredentials();
-
-  var userVerified = registry.VerifyUser(name, password);
-  if(userVerified)
-    res.redirect(`/authenticated/${name}`);
-  else {
-    const message = "Invalid login";
-    res.render('index.html', {message: message });
-  }
-    
-});
-
-app.get('/authenticated/:loginName', (req, res, next) => {
-  // console.log(req.params.loginName);
-  const name = req.params.loginName;
+app.get('/authenticated', isAuthenticated, function(req, res){
+  let name = req.session.username;
   res.render("authenticated/lounge.html", {name: name });
+   
 });
 
 app.get('/lobby', function (req, res) {
@@ -97,3 +124,31 @@ server.listen(port, () => {
   else
   console.log("Server is running on port %d.", port);
 });
+
+//functions for database
+
+//function accepts data from form, if user name is taken return false else return true
+function dbInsertData(accountName, password, displayName){
+  let user = { accountName: accountName, password: password, displayName: displayName };
+  //insert data into db
+  connection.query('INSERT INTO users SET ?', user, (err, res) => {
+    if(err) {
+      console.log("Error inserting into DB Code:")
+      console.log(err.code);
+      return false;
+    }else
+    console.log('Last insert ID:', res.insertId); 
+    return true;
+  });
+ 
+}
+
+//Function to authenticate user
+function isAuthenticated(req,res,next){
+  if(!req.session.authenticated){
+    res.redirect('/');
+  }
+  else{
+    next();
+  }
+}
