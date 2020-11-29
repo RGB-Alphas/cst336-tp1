@@ -60,7 +60,7 @@
 								<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
 								<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
 								<strong>Capacity: </strong>
-								<select id="lobbyCapacity" name="capacity" class="rounded my-2">
+								<select id="lobbyCapacity" name="capacity" class="m-2 rounded px-2">
 									<option value="2">2 Players</option>
 									<option value="3">3 Players</option>
 									<option value="4">4 Players</option>
@@ -68,9 +68,9 @@
 									<option value="6">6 Players</option>
 									<option value="7">7 Players</option>
 									<option value="8">8 Players</option>
-								</select><br>
-								<a href="#"><button type="button" class="close-button btn btn-info m-2">Back <i class="fas fa-times"></i></i></button></a>
-								<button type="button" id="createButton" class="submit btn btn-info m-2">Create</button><br>
+								</select><br><br>
+								<a href="#"><button type="button" class="close-button btn btn-info m-3 lobby-link">Back</i></i></button></a>
+								<button type="button" id="createButton" class="submit btn btn-info m-3 lobby-link">Create</button><br>
 								<span id="lobbyDialogValidation"></span>
 							</form>
 						</div>
@@ -86,6 +86,6 @@
 				</div>
 			</main>
 		<div id="dialog-overlay" title="Click here to close the dialog"></div>
-  <%- include('../partials/footer.ejs') %>
-  </body>
+		<%- include('../partials/footer.ejs') %>
+	</body>
 </html>
