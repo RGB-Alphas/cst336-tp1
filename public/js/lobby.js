@@ -17,4 +17,16 @@ $(document).ready(function() {
 	        $(this).html(`Not Ready`);
 	    }
 	})
+	
+	// Lobby Button
+	$("#lobbyBtn").on("click", function(){
+	    $("#chatPanel").hide();
+	    $("#lobbyPanel").show();
+	})
+	
+	// Chat Button
+	$("#chatBtn").on("click", function(){
+	    $("#lobbyPanel").hide();
+	    $("#chatPanel").show();
+	})
 });
