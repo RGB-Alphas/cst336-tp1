@@ -80,6 +80,7 @@ input{
 
 #chatPanel{
 	min-height: 70%;
+	display: none;
 }
 
 #chatPanelContainer{

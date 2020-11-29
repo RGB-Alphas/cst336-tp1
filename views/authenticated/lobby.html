@@ -21,7 +21,7 @@
 		<%- include('../partials/header.ejs') %>
 		<div id="lounge" class="d-flex flex-row border-thick border-g text-white p-3 justify-content-between">
 			<div id="lounge-sidebar" class="w-auto d-flex flex-column justify-content-around">
-					<a href="#" id="optionsBtn" class="btn btn-info loungeBtn">Lobby<i class="fas fa-user-friends pl-2"></i></a>
+					<a href="#" id="lobbyBtn" class="btn btn-info loungeBtn">Lobby<i class="fas fa-user-friends pl-2"></i></a>
 					<a href="#" id="chatBtn" class="btn btn-info loungeBtn">Chat<i class="fas fa-comment-dots pl-2"></i></a>
 					<a href="/authenticated/justin.test#" id="quitBtn" class="btn btn-info loungeBtn">Leave<i class="fas fa-door-open pl-2"></i></a>
 					<a href="#" id="readyBtn" class="btn btn-info loungeBtn">Not Ready</a>
@@ -65,8 +65,27 @@
 					<a href="/game"><button type="button" id="startBtn" class="submit btn btn-info m-3 lobby-link">Start </button></a>
 					<a href="/"><button type="button" id="cancelBtn" class="submit btn btn-info m-3 lobby-link">Cancel </button></a>
 				</div>
+				<div id="chatPanel" class="panel">
+					<div id="chatPanelContainer" class="d-flex flex-row justify-content-around">
+							<div id="chatContainer" class="d-flex flex-column justify-content-between">
+								<div class="rounded bg-dark flex-fill">
+									<h4><strong>Lobby: </strong><%= lobbyName %></h4>
+									<ul id="messageList" class="message-list scroll h-75"></ul>
+									<span id="typingNotice" class="bg-dark rounded my-1"></span><br>
+								</div>
+								<div class="d-flex flex-row my-2">
+									<input type="text" class="form-control bg-dark text-white m-0 rounded" id="messageInput" placeholder="Send a message...">
+									<button id="messageSend" type="submit" class="btn btn-info ml-2 loungeBtn"><i class="fas fa-paper-plane"></i></button>
+								</div>
+							</div>
+							<div id="playerListContainer" class="d-flex flex-column bg-dark rounded">
+								<h5 id="playerListHeading" class="py-1 text-center"><strong>Users (0)</strong></h5>
+								<ul id="playerList" class="text-center scroll m-0 p-1 flex-fill"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
 	<%- include('../partials/footer.ejs') %>
 	</body>
 </html>
