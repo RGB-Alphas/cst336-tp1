@@ -144,8 +144,7 @@ input{
 	color: lightyellow;
 	display: block;
 	max-height: 200px;
-	border-bottom: 2px solid #394046;
-	border-top: 2px solid #394046;
+	background-color: #394046;
 }
 
 #input-username{
