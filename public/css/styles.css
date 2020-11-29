@@ -143,6 +143,9 @@ input{
 	margin: 1% 0;
 	color: lightyellow;
 	display: block;
+	max-height: 200px;
+	border-bottom: 2px solid #394046;
+	border-top: 2px solid #394046;
 }
 
 #input-username{
