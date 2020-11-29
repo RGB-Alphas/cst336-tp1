@@ -8,58 +8,64 @@
 		 integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" 
 		 crossorigin="anonymous">
 	 	<link rel="stylesheet" href="../css/styles.css" type="text/css">
+	 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		 <script src="/socket.io/socket.io.js"></script> 
-		 <script>
+		<script src="/socket.io/socket.io.js"></script> 
+		<script>
 			var lobbyName = "<%= lobbyName %>";
 			// console.log("Username: %s", userName);
 		</script>
-		 <script src="../js/lobby.js" type="text/javascript"></script>
+		<script src="../js/lobby.js" type="text/javascript"></script>
 	</head>
 	<body>
-		<div class="container">
-			<h1>You've Entered the Lobby</h1>
-				<h3>Lobby Title: <%= lobbyName %></h3>
-			<div class="lounge border-thick border-g" style="display: flex">
-				
-				<div style="display: inline; margin:auto">
-					<h4>Players</h4>
-					<ul id="playerList">
-						<li>Player One!</li>
-					</ul>
+		<%- include('../partials/header.ejs') %>
+		<div id="lounge" class="d-flex flex-row border-thick border-g text-white p-3 justify-content-between">
+			<div id="lounge-sidebar" class="w-auto d-flex flex-column justify-content-around">
+					<a href="#" id="optionsBtn" class="btn btn-info loungeBtn">Lobby<i class="fas fa-user-friends pl-2"></i></a>
+					<a href="#" id="chatBtn" class="btn btn-info loungeBtn">Chat<i class="fas fa-comment-dots pl-2"></i></a>
+					<a href="/authenticated/justin.test#" id="quitBtn" class="btn btn-info loungeBtn">Leave<i class="fas fa-door-open pl-2"></i></a>
+					<a href="#" id="readyBtn" class="btn btn-info loungeBtn">Ready <i class="fas fa-check pl-2"></i></a>
 				</div>
-				<div style="display: inline; margin:auto">
-					<h4>Options</h4>
-					<form>
-						Map: 
-						<select name="map">
-							<option value="destiny">Destiny</option>
-							<option value="crucible">The Crucible</option>
-							<option value="icefortress">Ice Fortress</option>
-						</select> <br>
-						Time Limit: 
-						<select name="timeLimit">
-							<option value="30">30 Seconds</option>
-							<option value="60">60 Seconds</option>
-							<option value="120">120 Seconds</option>
-							<option value="240">240 Seconds</option>
-							<option value="480">480 Seconds</option>
-						</select><br>
-						Ruleset:
-						<select>
-							<option value="lastman">Last Man</option>
-							<option value="infection">Infection</option>
-							<option value="unfair">Unfair</option>
-						</select> <br>
-					</form>
-				</div>
+			<div id="loungePanel">
+				<div id="lobbyPanel" class="mx-3 panel bg-dark rounded py-3">
+					<h4><strong>Lobby: </strong><%= lobbyName %></h4>
+					<div class="d-flex my-3 justify-content-around">
+						<div>
+							<h5>Players</h5><br>
+							<ul id="playerList">
+								<li>Player One</li>
+							</ul>
+						</div>
+						<div>
+							<h5>Options</h5><br>
+							<form>
+								Map: 
+								<select name="map" class="m-2 rounded px-1">
+									<option value="destiny">Destiny</option>
+									<option value="crucible">The Crucible</option>
+									<option value="icefortress">Ice Fortress</option>
+								</select> <br>
+								Time Limit: 
+								<select name="timeLimit" class="m-2 rounded px-1">
+									<option value="30">30 Seconds</option>
+									<option value="60">60 Seconds</option>
+									<option value="120">120 Seconds</option>
+									<option value="240">240 Seconds</option>
+									<option value="480">480 Seconds</option>
+								</select><br>
+								Ruleset:
+								<select class="m-2 rounded px-1">
+									<option value="lastman">Last Man</option>
+									<option value="infection">Infection</option>
+									<option value="unfair">Unfair</option>
+								</select> <br>
+							</form>
+						</div>
+					</div>
+					<button type="button" id="startBtn" class="submit btn btn-info m-3">Start </button>
+					<a href="/"><button type="button" id="cancelBtn" class="submit btn btn-info m-3">Cancel </button></a>
+					</div>
 			</div>
-			<button>Start</button>
-			<button>Cancel</button>
 		</div>
-		<div id="dialog-overlay" title="Click here to close the dialog"></div>
   </body>
-  <footer>
-
-  </footer>
 </html>

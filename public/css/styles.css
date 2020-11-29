@@ -74,6 +74,10 @@ input{
 	display: none;
 }
 
+#lounge-sidebar{
+	min-width: 15%;
+}
+
 #chatPanel{
 	min-height: 70%;
 }
@@ -91,6 +95,7 @@ input{
 
 #playerList{
 	list-style-type: none;
+	padding: 0;
 }
 
 #playerListContainer{

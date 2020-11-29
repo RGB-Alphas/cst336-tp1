@@ -21,70 +21,70 @@
 		<%- include('../partials/header.ejs') %>
 			<main>
 				<div id="lounge" class="d-flex flex-row border-thick border-g text-white p-3 justify-content-between">
-				<div id="lounge-sidebar" class="w-auto d-flex flex-column justify-content-around">
-					<a href="#" id="profileBtn" class="btn btn-info loungeBtn">Profile <i class="fas fa-user pl-1"></i></a>
-					<a href="#" id="createBtn" class="btn btn-info loungeBtn">Create <i class="fas fa-plus pl-1"></i></a>
-					<a href="#" id="joinBtn" class="btn btn-info loungeBtn">Join<i class="fas fa-user-friends pl-3"></i></a>
-					<a href="#" id="chatBtn" class="btn btn-info loungeBtn">Chat<i class="fas fa-comment-dots pl-3"></i></a>
-					<a href="/" id="quitBtn" class="btn btn-info loungeBtn">Quit<i class="fas fa-sign-out-alt pl-3"></i></a>
-				</div>
-				<div id="loungePanel">
-					<!-- Chat Panel -->
-					<div id="chatPanel" class="panel">
-						<div id="chatPanelContainer" class="d-flex flex-row justify-content-around">
-							<div id="chatContainer" class="d-flex flex-column justify-content-between">
-								<div class="rounded bg-dark flex-fill">
-									<h4 class="py-1 text-center"><strong>Lounge</strong></h4>
-									<ul id="messageList" class="message-list scroll h-75"></ul>
-									<span id="typingNotice" class="bg-dark rounded my-1"></span><br>
+					<div id="lounge-sidebar" class="w-auto d-flex flex-column justify-content-around">
+						<a href="#" id="profileBtn" class="btn btn-info loungeBtn">Profile <i class="fas fa-user pl-1"></i></a>
+						<a href="#" id="createBtn" class="btn btn-info loungeBtn">Create <i class="fas fa-plus pl-1"></i></a>
+						<a href="#" id="joinBtn" class="btn btn-info loungeBtn">Join<i class="fas fa-user-friends pl-3"></i></a>
+						<a href="#" id="chatBtn" class="btn btn-info loungeBtn">Chat<i class="fas fa-comment-dots pl-3"></i></a>
+						<a href="/" id="quitBtn" class="btn btn-info loungeBtn">Quit<i class="fas fa-sign-out-alt pl-3"></i></a>
+					</div>
+					<div id="loungePanel">
+						<!-- Chat Panel -->
+						<div id="chatPanel" class="panel">
+							<div id="chatPanelContainer" class="d-flex flex-row justify-content-around">
+								<div id="chatContainer" class="d-flex flex-column justify-content-between">
+									<div class="rounded bg-dark flex-fill">
+										<h4 class="py-1 text-center"><strong>Lounge</strong></h4>
+										<ul id="messageList" class="message-list scroll h-75"></ul>
+										<span id="typingNotice" class="bg-dark rounded my-1"></span><br>
+									</div>
+									<div class="d-flex flex-row my-2">
+										<input type="text" class="form-control bg-dark text-white m-0 rounded" id="messageInput" placeholder="Send a message...">
+										<button id="messageSend" type="submit" class="btn btn-info ml-2 loungeBtn"><i class="fas fa-paper-plane"></i></button>
+									</div>
 								</div>
-								<div class="d-flex flex-row my-2">
-									<input type="text" class="form-control bg-dark text-white m-0 rounded" id="messageInput" placeholder="Send a message...">
-									<button id="messageSend" type="submit" class="btn btn-info ml-2 loungeBtn"><i class="fas fa-paper-plane"></i></button>
+								<div id="playerListContainer" class="d-flex flex-column bg-dark rounded">
+									<h5 id="playerListHeading" class="py-1 text-center"><strong>Users (0)</strong></h5>
+									<ul id="playerList" class="text-center scroll m-0 p-1 flex-fill"></ul>
 								</div>
-							</div>
-							<div id="playerListContainer" class="d-flex flex-column bg-dark rounded">
-								<h5 id="playerListHeading" class="py-1 text-center"><strong>Users (0)</strong></h5>
-								<ul id="playerList" class="text-center scroll m-0 p-1 flex-fill"></ul>
 							</div>
 						</div>
-					</div>
-					<!-- Profile Panel -->
-					<div id="profilePanel" class="mx-3 panel bg-dark rounded py-3">
-						<h4 class="py-3"><strong>Profile</strong></h4>
-					</div>
-					<!-- Create Lobby Panel -->
-					<div id="createPanel" class="mx-3 panel bg-dark rounded">
-						<form method="get" action="/lobby" id="lobbyForm" class="py-3">
-							<h4 class="bg-dark rounded py-3"><strong>Create A lobby</strong></h4>
-							<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
-							<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
-							<strong>Capacity: </strong>
-							<select id="lobbyCapacity" name="capacity" class="rounded my-2">
-								<option value="2">2 Players</option>
-								<option value="3">3 Players</option>
-								<option value="4">4 Players</option>
-								<option value="5">5 Players</option>
-								<option value="6">6 Players</option>
-								<option value="7">7 Players</option>
-								<option value="8">8 Players</option>
-							</select><br>
-							<a href="#"><button type="button" class="close-button btn btn-info m-2">Back <i class="fas fa-times"></i></i></button></a>
-							<button type="button" id="createButton" class="submit btn btn-info m-2">Create</button><br>
-							<span id="lobbyDialogValidation"></span>
-						</form>
-					</div>
-					<!-- Join Lobby Panel -->
-					<div id="joinPanel" class="mx-3 panel bg-dark rounded py-3">
-						<form method="get" action="/lobby" id="lobbyForm">
-							<h4 class="py-3"><strong>Join a Lobby</strong></h4>
-							<ul id="lobbyList" class="scroll"></ul>
-							<span id="lobbyDialogValidation"></span>
-						</form>
+						<!-- Profile Panel -->
+						<div id="profilePanel" class="mx-3 panel bg-dark rounded py-3">
+							<h4 class="py-3"><strong>Profile</strong></h4>
+						</div>
+						<!-- Create Lobby Panel -->
+						<div id="createPanel" class="mx-3 panel bg-dark rounded">
+							<form method="get" action="/lobby" id="lobbyForm" class="py-3">
+								<h4 class="bg-dark rounded py-3"><strong>Create A lobby</strong></h4>
+								<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
+								<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
+								<strong>Capacity: </strong>
+								<select id="lobbyCapacity" name="capacity" class="rounded my-2">
+									<option value="2">2 Players</option>
+									<option value="3">3 Players</option>
+									<option value="4">4 Players</option>
+									<option value="5">5 Players</option>
+									<option value="6">6 Players</option>
+									<option value="7">7 Players</option>
+									<option value="8">8 Players</option>
+								</select><br>
+								<a href="#"><button type="button" class="close-button btn btn-info m-2">Back <i class="fas fa-times"></i></i></button></a>
+								<button type="button" id="createButton" class="submit btn btn-info m-2">Create</button><br>
+								<span id="lobbyDialogValidation"></span>
+							</form>
+						</div>
+						<!-- Join Lobby Panel -->
+						<div id="joinPanel" class="mx-3 panel bg-dark rounded py-3">
+							<form method="get" action="/lobby" id="lobbyForm">
+								<h4 class="py-3"><strong>Join a Lobby</strong></h4>
+								<ul id="lobbyList" class="scroll"></ul>
+								<span id="lobbyDialogValidation"></span>
+							</form>
+						</div>
 					</div>
 				</div>
-			</div>
-		</main>
+			</main>
 		<div id="dialog-overlay" title="Click here to close the dialog"></div>
   </body>
   <footer>
