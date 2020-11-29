@@ -4,52 +4,47 @@
 		<meta charset="utf-8">
 		<title>Tag</title>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script src="/socket.io/socket.io.js"></script>
+      	<script src="/socket.io/socket.io.js"></script>
 		<script src="../js/index.js" type="text/javascript"></script>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" type="text/css" />
 		<link href="css/styles.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
-		<!-- Login Dialog Starts -->
-		<div id="login-dialog" class="dialog-popup">
-			<a href="#" class="close">Close</a>
-			<h4>Login</h4>
-			<form method="POST" action="/login" id="loginForm">
-				<input type="text" name="loginName" id="loginName" placeholder="account name">
-				<input type="password" name="loginPassword" id="loginPassword" placeholder="password">
-				<button class="submit" type="button" id="loginButton">Login</button>
-			</form>
-		</div>
-		<!-- Login Dialog Ends-->
-		<!-- Register Dialog Starts -->
-		<div id="register-dialog" class="dialog-popup">
-			<a href="#" class="close">Close</a>
-			<h4>Register</h4>
-			<form method="get" action="/register" id="registerForm">
-				<input type="text" name ="accountName" id="accountName" placeholder="account name"> <br>
-				<input type="password" name="password" id="password" placeholder="password"> <br>
-				<input type="password" id="repeatPassword" placeholder="reenter password"> <br>
-				<input type="text" name="displayName" id="displayName" placeholder="Display name"> <br>
-				<button class="submit" type="button" id="registerButton">Register</button>
-			</form>
-		</div>
-		<!-- Register Dialog Ends-->
-		<!-- register / login links (located near the top right -->
-		<div id="topLinks">
-			<a class="btn btn-light m-2" href="/"><strong>About</strong></a>
-		</div>
-		<!-- Main Header-->
-		<main>
-			<a id="brand" href="/"><img src="https://fontmeme.com/permalink/201119/174e93a13c86923a9400b72bdd4dbcb8.png" alt="Tag" border="0"></a><br><br>
-			<span id="message" class="my-4"><em>Show no Sphere!</em></span>
-			<br>
-			<span><%= message %></span><br>
-			<a href="#" data-selector="#register-dialog" class="btn btn-info text-light m-2 dialog-link">Register</a>
-			<a href="#" data-selector="#login-dialog" class="btn btn-info text-light m-2 dialog-link">Login</a>
+		<br><br>
+		<%- include('partials/header.ejs') %>
+		<span id="message" class="my-2"><em>Show no Sphere!</em></span>
+		<main class="d-flex justify-content-center pt-5">
+			<!-- Login Dialog -->
+			<div id="login-dialog" class="dialog-popup">
+				<h4><strong>Login</strong></h4>
+				<form method="post" action="/login" id="loginForm">
+					<input type="text" class="rounded my-2 text-center" name="loginName" id="loginName" placeholder="Account Name"><br>
+					<input type="password" class="rounded my-2 text-center" name="loginPassword" id="loginPassword" placeholder="Password"><br>
+					<a href="#"><button type="button" class="close-button btn btn-info">Back</i></button></a>
+					<a href="#" id="loginButton" type="button" data-selector="#login-dialog" class="submit btn btn-info text-light m-2">Login</a>
+				</form>
+			</div>
+			<!-- Register Dialog -->
+			<div id="register-dialog" class="dialog-popup">
+				<h4><strong>Register</strong></h4>
+				<form method="get" action="/register" id="registerForm">
+					<input type="text" name ="accountName" id="accountName" class="rounded my-2 text-center" placeholder="Account Name"> <br>
+					<input type="password" name="password" id="password" class="rounded my-2 text-center" placeholder="Password"> <br>
+					<input type="password" id="repeatPassword" class="rounded my-2 text-center" placeholder="Re-enter Password"> <br>
+					<input type="text" name="displayName" id="displayName" class="rounded my-2 text-center" placeholder="Display Name"> <br>
+					<a href="#"><button type="button" class="close-button btn btn-info">Back</button></a>
+					<a href="#" data-selector="#register-dialog" type="button" id="registerButton" class="submit btn btn-info text-light m-2">Register</a>
+				</form>
+			</div>
+			<!-- Main Dialog -->
+			<div id="main-dialog" class="dialog-popup">
+				<span><%= message %></span><br>
+				<a href="#" data-selector="#register-dialog" class="btn btn-info text-light mt-3 mx-1 dialog-link">Register</a>
+				<a href="#" data-selector="#login-dialog" class="btn btn-info text-light mt-3 mx-1 dialog-link">Login</a>
+			</div>
+			<div id="dialog-overlay" title="Click here to close the dialog"></div>
 		</main>
-		<div id="dialog-overlay" title="Click here to close the dialog"></div>
-		<footer>
-			&copy; RGB Alphas
-		</footer>
+		<%- include('partials/footer.ejs') %>
 	</body>
 </html>
