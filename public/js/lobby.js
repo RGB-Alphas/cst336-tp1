@@ -21,14 +21,14 @@ $(document).ready(function() {
 	
 	// Lobby Button
 	$("#lobbyBtn").on("click", function(){
-	    $("#chatPanel").hide();
+	    $("#optionsPanel").hide();
 	    $("#lobbyPanel").show();
 	})
 	
-	// Chat Button
-	$("#chatBtn").on("click", function(){
+	// Options Button
+	$("#optionsBtn").on("click", function(){
 	    $("#lobbyPanel").hide();
-	    $("#chatPanel").show();
+	    $("#optionsPanel").show();
 	})
 	
 	input.addEventListener("keyup", function(event) {

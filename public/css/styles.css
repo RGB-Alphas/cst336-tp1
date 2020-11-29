@@ -78,9 +78,12 @@ input{
 	min-width: 15%;
 }
 
+#optionsPanel{
+	display: none;
+}
+
 #chatPanel{
 	min-height: 70%;
-	display: none;
 }
 
 #chatPanelContainer{
