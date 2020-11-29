@@ -1,6 +1,11 @@
-$(document).ready(function() {
+/* global $ */
+/* global io */
 
+$(document).ready(function() {
 	var socket = io();
+	
+	// Prompt user to login or register
+	$('#main-dialog').show();
 
 	// the input elements on the login form
 	var loginName = document.getElementById("loginName");
@@ -30,12 +35,9 @@ $(document).ready(function() {
 
 	$('a.dialog-link').click(function() {
 		var dialog_id = $(this).attr('data-selector');
+		$('#main-dialog').hide();
 		$('#dialog-overlay').fadeIn(200);
 		$(dialog_id).fadeIn(200);
-		$(dialog_id).css({ 
-			 'margin-top' : -($(dialog_id).height() + 4) / 2,
-			 'margin-left' : -($(dialog_id).width() + 4) / 2
-		});
 		return false;
 	});
 
@@ -67,9 +69,10 @@ $(document).ready(function() {
 	});
 	/* Register Form End */
 
-	$('.dialog-popup a.close, #dialog-overlay').click(function() { 
-		$('.dialog-popup').fadeOut(200);
-		$('#dialog-overlay').fadeOut(200);
+	$('.close-button, #dialog-overlay').click(function() { 
+		$('.dialog-popup').hide();
+		$('#dialog-overlay').hide();
+		$('#main-dialog').show();
 		return false;
 	});
 });

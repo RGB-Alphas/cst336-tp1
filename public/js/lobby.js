@@ -1,7 +1,9 @@
+/* global $ */
+/* global io */
+
 $(document).ready(function() {
 	
 	var socket = io();
-
 	var input = document.getElementById("messageInput")
 
 	socket.emit("enter_lobby", lobbyName);
@@ -58,10 +60,39 @@ $(document).ready(function() {
 				`<li class="list-item">${users[i].alias}</li>`);
 		}
 	});
+  
+  // button events
+  var input = document.getElementById("messageInput")
+	
+	// Ready Button
+	$("#readyBtn").on("click", function(){
+	    if ($(this).hasClass("btn-info")){
+	        $(this).removeClass("btn-info");
+	        $(this).addClass("btn-dark");
+	        $(this).html(`<strong>Ready <i class="fas fa-check ml-2"></i></strong>`);
+	    }
+	    else{
+	        $(this).removeClass("btn-dark");
+	        $(this).addClass("btn-info");
+	        $(this).html(`Ready <i class="fas fa-times ml-2"></i>`);
+	    }
+	})
+	
+	// Lobby Button
+	$("#lobbyBtn").on("click", function(){
+	    $("#optionsPanel").hide();
+	    $("#lobbyPanel").show();
+	})
+	
+	// Options Button
+	$("#optionsBtn").on("click", function(){
+	    $("#lobbyPanel").hide();
+	    $("#optionsPanel").show();
+	})
 
 	// /////////////////
 	// chat events begin
-
+  
 	input.addEventListener("keyup", function(event) {
 		// Number 13 is the "Enter" key on the keyboard
 		if (event.keyCode === 13) {
@@ -127,6 +158,7 @@ $(document).ready(function() {
 
 	// ////////////////////
 	// chat functions begin
+
 	$("#messageSend").click( function() {
 		var message = $("#messageInput").val(); // get message
 		$("#messageInput").val("");
