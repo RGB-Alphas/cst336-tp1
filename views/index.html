@@ -11,7 +11,9 @@
 		<link href="css/styles.css" rel="stylesheet" type="text/css" />
 	</head>
 	<body>
+		<br><br>
 		<%- include('partials/header.ejs') %>
+		<span id="message" class="my-2"><em>Show no Sphere!</em></span>
 		<main class="d-flex justify-content-center pt-5">
 			<!-- Login Dialog -->
 			<div id="login-dialog" class="dialog-popup">
@@ -19,7 +21,7 @@
 				<form method="get" action="/auth" id="loginForm">
 					<input type="text" class="rounded my-2 text-center" name="loginName" id="loginName" placeholder="Account Name"><br>
 					<input type="password" class="rounded my-2 text-center" name="loginPassword" id="loginPassword" placeholder="Password"><br>
-					<a href="#"><button type="button" class="close-button btn btn-info">Back <i class="fas fa-times"></i></button></a>
+					<a href="#"><button type="button" class="close-button btn btn-info">Back</i></button></a>
 					<a href="#" id="loginButton" type="button" data-selector="#login-dialog" class="submit btn btn-info text-light m-2">Login</a>
 				</form>
 			</div>
@@ -31,15 +33,15 @@
 					<input type="password" name="password" id="password" class="rounded my-2 text-center" placeholder="Password"> <br>
 					<input type="password" id="repeatPassword" class="rounded my-2 text-center" placeholder="Re-enter Password"> <br>
 					<input type="text" name="displayName" id="displayName" class="rounded my-2 text-center" placeholder="Display Name"> <br>
-					<a href="#"><button type="button" class="close-button btn btn-info">Back <i class="fas fa-times"></i></i></button></a>
+					<a href="#"><button type="button" class="close-button btn btn-info">Back</button></a>
 					<a href="#" data-selector="#register-dialog" type="button" id="registerButton" class="submit btn btn-info text-light m-2">Register</a>
 				</form>
 			</div>
 			<!-- Main Dialog -->
 			<div id="main-dialog" class="dialog-popup">
-				<span><strong><%= message %></strong></span><br>
-				<a href="#" data-selector="#register-dialog" class="btn btn-info text-light mt-3 mx-2 dialog-link">Register</a>
-				<a href="#" data-selector="#login-dialog" class="btn btn-info text-light mt-3 mx-2 dialog-link">Login</a>
+				<span><%= message %></span><br>
+				<a href="#" data-selector="#register-dialog" class="btn btn-info text-light mt-3 mx-1 dialog-link">Register</a>
+				<a href="#" data-selector="#login-dialog" class="btn btn-info text-light mt-3 mx-1 dialog-link">Login</a>
 			</div>
 			<div id="dialog-overlay" title="Click here to close the dialog"></div>
 		</main>
