@@ -10,12 +10,12 @@ $(document).ready(function() {
 	    if ($(this).hasClass("btn-info")){
 	        $(this).removeClass("btn-info");
 	        $(this).addClass("btn-dark");
-	        $(this).html(`Ready <i class="fas fa-check pl-2"></i>`);
+	        $(this).html(`<strong>Ready <i class="fas fa-check ml-2"></i></strong>`);
 	    }
 	    else{
 	        $(this).removeClass("btn-dark");
 	        $(this).addClass("btn-info");
-	        $(this).html(`Not Ready`);
+	        $(this).html(`Ready <i class="fas fa-times ml-2"></i>`);
 	    }
 	})
 	
