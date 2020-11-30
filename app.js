@@ -68,8 +68,7 @@ app.post('/login', function(req, res) {
     var password = req.body.loginPassword;
     if (username && password) {
       
-      
-// check if user exists
+// check if user exists in db
         connection.query('SELECT * FROM users WHERE accountName = ? AND password = ?', [username, password], function(error, results, fields) {
             if (results.length > 0) {
                 req.session.authenticated = true;
@@ -91,11 +90,23 @@ app.post('/login', function(req, res) {
         // res.end();
     }
 });
-
-app.get('/register', async function (req, res) {
-  let valid = await dbInsertData(req.query.accountName, req.query.password,  req.query.displayName);
-  console.log(valid);
-  if(valid){
+//Gets data from form anc pushes to DataBase
+app.post('/register', function (req, res) {
+  let valid = false
+  let user = { accountName: req.body.accountName, password: req.body.password, displayName: req.body.displayName };
+  //insert data into db
+  connection.query('INSERT INTO users SET ?', user, (err, res) => {
+    if(err) {
+      console.log("Error inserting into DB Code:")
+      console.log(err.code);
+    }else{
+    console.log('Last insert ID:', res.insertId); 
+    valid = true;
+    }
+  });
+  //Because of stupid js
+setTimeout(() => {  console.log(valid); 
+   if(valid){
     const message = "You may log into your new account.";
     res.render('index.html', {message: message});
   }
@@ -103,7 +114,8 @@ app.get('/register', async function (req, res) {
     const message = "Registration Failed: User already exists.";
     res.render('index.html', {message: message});
   }
-
+}, 250);
+ 
 });
 
 app.get('/authenticated', isAuthenticated, function(req, res){
@@ -112,9 +124,11 @@ app.get('/authenticated', isAuthenticated, function(req, res){
    
 });
 
+
 app.get('/lobby', isAuthenticated, function(req, res){
   const lobbyName = req.query.lobbyName || req.query.inputLobbyName;
   const userName = req.session.username;
+
   // console.log(`Lobby Created: name: ${name}, ${password}.`);
   res.render("authenticated/lobby.html", { lobbyName: lobbyName, userName: userName });
 });
@@ -135,16 +149,17 @@ server.listen(port, () => {
 
 //function accepts data from form, if user name is taken return false else return true
 function dbInsertData(accountName, password, displayName){
+  
   let user = { accountName: accountName, password: password, displayName: displayName };
   //insert data into db
   connection.query('INSERT INTO users SET ?', user, (err, res) => {
     if(err) {
       console.log("Error inserting into DB Code:")
       console.log(err.code);
-      return false;
+      return 0;
     }else
     console.log('Last insert ID:', res.insertId); 
-    return true;
+    return 1;
   });
  
 }
