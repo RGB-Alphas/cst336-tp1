@@ -6,16 +6,19 @@ $(document).ready(function() {
 	var socket = io();
 	var input = document.getElementById("messageInput")
 
-	socket.emit("enter_lobby", lobbyName);
+	socket.emit("enter_lobby", {
+		lobbyName: lobbyName,
+		userName: userName
+	});
 
 	socket.on('lobby_entered', (data) => {
-		const playerCount = data.playerCount;
-		const myAlias = data.alias;
-		const players = data.players;
-		console.log(data.alias);
-		console.log(data.playerCount);
-		console.log(JSON.stringify(data.players))
-		console.log(JSON.stringify(data.lobby));
+		var playerCount = data.playerCount;
+		var players = data.players;
+		var options = data.options;
+
+		console.log(playerCount);
+		console.log(JSON.stringify(players))
+		console.log(JSON.stringify(options));
 		// console.log("Lobby Name: lo")
 
 		$("#playerListHeading").html(`Users: (${playerCount})`);
@@ -31,7 +34,8 @@ $(document).ready(function() {
 
 	socket.on('user joined', (data) => {
 		const alias = data.userAlias;
-		userCount = data.onlineCount;
+		const aliasID = data.sessionID;
+		userCount = data.playerCount;
 		//console.log(data.userAlias + ' joined');
 		//console.log("%d users online.", data.onlineCount);
 
@@ -44,8 +48,8 @@ $(document).ready(function() {
 
 	socket.on('user left', (data) => {
 		const alias = data.alias;
-		userCount = data.onlineCount;
-		users = data.onlineUsers;
+		userCount = data.userCount;
+		users = data.users;
 		//console.log('User %s has left.', data.alias);
 		//console.log('%d users online.', data.userCount);
 		//console.log("Online users:");
@@ -57,7 +61,7 @@ $(document).ready(function() {
 		for(i = 0; i < userCount; i++)
 		{
 			$("#playerList").append(
-				`<li class="list-item">${users[i].alias}</li>`);
+				`<li class="list-item">${users[i]}</li>`);
 		}
 	});
   
@@ -90,6 +94,11 @@ $(document).ready(function() {
 	    $("#optionsPanel").show();
 	})
 
+	// Quit Button
+	$("#quitBtn").on("click", function() {
+		socket.emit('leave lobby');
+	});
+
 	// /////////////////
 	// chat events begin
   
@@ -117,12 +126,16 @@ $(document).ready(function() {
 		}
 	});
 
-	socket.on('typing', (alias) => {
+	// add and remove aliases from an array and use array.join
+	// to create the typing text.
+	socket.on('typing', (data) => {
+		const alias = data.alias;
 		$("#typingNotice").html(`${alias} is typing...`)
 		//console.log("%s is typing", alias);
 	});
 
-	socket.on('stop typing', (alias) => {
+	socket.on('stop typing', (data) => {
+		const alias = data.alias;
 		$("#typingNotice").html("")
 		//console.log("%s stopped typing", alias);
 	});

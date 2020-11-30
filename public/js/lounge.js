@@ -1,7 +1,6 @@
 /* global $ */
 /* global io */
 
-
 $(document).ready(function() {
 
 	var socket = io();
@@ -13,6 +12,9 @@ $(document).ready(function() {
 	var userCount = 0;
 	var lobbies = [];
 	var lobbyCount = 0;
+
+	var selectedLobby = "";
+	var selectedPlayer = "";
 
 	console.log("Emitting: %s", userName);
 	socket.emit('enter_lounge', userName);
@@ -35,7 +37,7 @@ $(document).ready(function() {
 			const id = users[i].sessionID; // for private messages.
 			const alias = users[i].alias;
 			$("#playerList").append(
-				`<li class="list-item">${alias}</li>`);
+				`<li id="${alias}" class="player list-item">${alias}</li>`);
 			
 		}
 
@@ -54,8 +56,56 @@ $(document).ready(function() {
 			var host = players[0];
 			// console.log("Adding Lobby: %s", name);
 			$("#lobbyList").append(
-				`<li class="list-item"><a class="lobby-link my-1 rounded" href="/lobby?lobbyName=${name}"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`)
+				`<li id="${name}" class="lobby list-item lobby-link my-1 rounded"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</li>`)
 		}
+		
+		// a 2nd onclick listener is added for each new lobby as well. 
+		$('#lobbyList').on("click", '.lobby', function (e) {
+			
+			selectedLobby = this.id;
+			$("#inputLobbyName").val(selectedLobby);
+			// we are using dynamic html. the click event needs to go here (defined after the page loaded)
+			socket.emit('join_lobby_request', {
+				lobbyName: this.id
+			});
+			console.log(this.id);
+		 });
+
+		 $('#playerList').on("click", '.player', function (e) {
+		 
+			selectedPlayer = this.id;
+			socket.emit('private message', {
+				alias: this.id
+			});
+			console.log(this.id);
+		 });
+	});
+
+	socket.on('password_required', () => {
+		$("#joinLobbyDialogValidation").html("Password Required");
+		$("#joinLobbyDialogValidation").css("color", "red");
+	});
+
+	socket.on('join_lobby_request_rejected', () => {
+		$("#joinLobbyDialogValidation").html("Unable to join.");
+		$("#joinLobbyDialogValidation").css("color", "red");
+		console.log("Join unsuccessful.");
+	});
+
+	socket.on('join_lobby_request_accepted', () => {
+		console.log("Join Success. Moving to the lobby.");
+		window.location = `/lobby?lobbyName=${selectedLobby}`;
+		// $("#joinLobbyForm").submit();
+	});
+
+	$("#joinLobby").on("click", function() {
+
+		var password = $("#inputLobbyPassword").val();
+
+		socket.emit('join_lobby_with_password', {
+			lobbyName: selectedLobby,
+			lobbyPassword: password
+		});
 	});
 
 	socket.on('user joined', (data) => {
@@ -66,9 +116,19 @@ $(document).ready(function() {
 
 		$("#playerListHeading").html(`Users: ${userCount}`);
 		$("#playerList").append(
-			`<li class="list-item">${alias}</li>`);
+			`<li id="${alias}" class="player list-item">${alias}</li>`);
 		$("#messageList").append(
-			`<li class="list-item">${alias} has joined.</li>`);
+			`<li id="${alias}" class="player list-item">${alias} has joined.</li>`);
+
+		/*
+		$('#playerList').on("click", '.player', function (e) {
+		
+			socket.emit('private message', {
+				alias: this.id
+			});
+			console.log(this.id);
+			});
+		*/
 	});
 
 	socket.on('user left', (data) => {
@@ -86,7 +146,7 @@ $(document).ready(function() {
 		for(i = 0; i < userCount; i++)
 		{
 			$("#playerList").append(
-				`<li class="list-item">${users[i].alias}</li>`);
+				`<li class="player list-item">${users[i].alias}</li>`);
 		}
 	});
 
@@ -201,10 +261,23 @@ $(document).ready(function() {
 		var host = data.players[0];
 		console.log("Adding Lobby: %s", name);
 		$("#lobbyList").append(
-			`<li class="list-item"><a class="lobby-link my-1 rounded" href="/lobby?lobbyName=${name}">${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`);
-		let newLobby = { "id": id, "name": name, "capacity": capacity };
+			`<li id="${name}" class="lobby list-item lobby-link my-1 rounded"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</li>`)
+		$("#messageList").append(
+			`<li id="${name}" class="lobby list-item">${host} has created a new lobby.</li>`);
+			let newLobby = { "id": id, "name": name, "capacity": capacity };
 		lobbies.push(newLobby);
 		console.log(`${host} has created a lobby: ${name}`);
+
+		/* Redundant, can delete
+		$('#lobbyList').on("click", '.lobby', function (e) {
+			
+			// we are using dynamic html. the click event needs to go here (defined after the page loaded)
+			socket.emit('join_lobby_request', {
+				lobbyName: this.id
+			});
+			console.log(this.id);
+		 });
+		 */
 	});
 
 	socket.on('lobby destroyed', (data) => {
@@ -230,17 +303,17 @@ $(document).ready(function() {
 	socket.on('lobby-add-request-accepted', () => {
 		console.log("Lobby: %s created successfully.", $("#lobbyName").val());
 		// submit the form and we will go to the next page to wait for players.
-		$("#lobbyForm").submit();
+		$("#createlobbyForm").submit();
 	});
 
 	// lobby creation didn't happen. show span text on the create-lobby dialogue.
 	socket.on('lobby-add-request-denied', () => {
-		$("#lobbyDialogValidation").html("Lobby name unavailable.");
-		$("#lobbyDialogValidation").css("color", "red");
+		$("#createLobbyDialogValidation").html("Lobby name unavailable.");
+		$("#createLobbyDialogValidation").css("color", "red");
 	});
 
-	// create lobby flow end
-	// /////////////////////
+	// item clicking events end
+	// ////////////////////////
 
 	/***** Loung Panels *****/
 	$('a.dialog-link').click(function() {

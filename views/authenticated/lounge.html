@@ -55,7 +55,7 @@
 						</div>
 						<!-- Create Lobby Panel -->
 						<div id="createPanel" class="mx-3 panel bg-dark rounded">
-							<form method="get" action="/lobby" id="lobbyForm" class="py-3">
+							<form method="get" action="/lobby" id="createlobbyForm" class="py-3">
 								<h4 class="bg-dark rounded py-3"><strong>Create A lobby</strong></h4>
 								<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
 								<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
@@ -69,17 +69,20 @@
 									<option value="7">7 Players</option>
 									<option value="8">8 Players</option>
 								</select><br><br>
-								<a href="#"><button type="button" class="close-button btn btn-info m-3 lobby-link">Back</i></i></button></a>
+								<button type="button" class="close-button btn btn-info m-3 lobby-link">Back</i></i></button>
 								<button type="button" id="createButton" class="submit btn btn-info m-3 lobby-link">Create</button><br>
-								<span id="lobbyDialogValidation"></span>
+								<span id="createLobbyDialogValidation"></span>
 							</form>
 						</div>
 						<!-- Join Lobby Panel -->
 						<div id="joinPanel" class="mx-3 panel bg-dark rounded py-3">
-							<form method="get" action="/lobby" id="lobbyForm">
+							<form method="get" action="/lobby" id="joinlobbyForm">
 								<h4 class="py-3"><strong>Join a Lobby</strong></h4>
 								<ul id="lobbyList" class="scroll"></ul>
-								<span id="lobbyDialogValidation"></span>
+								<input type="text" name ="inputLobbyName" id="inputLobbyName" class="rounded my-2 text-center" placeholder="Lobby Name"> <br>
+								<input type="password" name="inputLobbyPassword" id="inputLobbyPassword" class="rounded my-2 text-center" placeholder="password"> <br>
+								<button id="joinLobby" type="button">Join</button><br>
+								<span id="joinLobbyDialogValidation"></span><br>
 							</form>
 						</div>
 					</div>
