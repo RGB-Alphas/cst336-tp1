@@ -31,48 +31,48 @@ $(document).ready(function() {
 	    $("#optionsPanel").show();
 	})
 	
-	input.addEventListener("keyup", function(event) {
-		// Number 13 is the "Enter" key on the keyboard
-		if (event.keyCode === 13) {
-		  // Cancel the default action, if needed
-		  event.preventDefault();
-		  // Trigger the button element with a click
-		  $("#messageSend").click();
-		}
+	// input.addEventListener("keyup", function(event) {
+	// 	// Number 13 is the "Enter" key on the keyboard
+	// 	if (event.keyCode === 13) {
+	// 	  // Cancel the default action, if needed
+	// 	  event.preventDefault();
+	// 	  // Trigger the button element with a click
+	// 	  $("#messageSend").click();
+	// 	}
 		
-	});
+	// });
 	
-	// Chat functions
-	$("#messageSend").click( function() {
-		var message = $("#messageInput").val(); // get message
-		$("#messageInput").val("");
-		socket.emit('stop typing');
+	// // Chat functions
+	// $("#messageSend").click( function() {
+	// 	var message = $("#messageInput").val(); // get message
+	// 	$("#messageInput").val("");
+	// 	socket.emit('stop typing');
 
-		if(message == "")
-			return;
+	// 	if(message == "")
+	// 		return;
 
-		socket.emit('new message', message);
+	// 	socket.emit('new message', message);
 
-		var avatar = document.createElement("img");
-		avatar.setAttribute("src", "../img/avatar-male.jpg");
-		avatar.setAttribute("class", "avatar-margin");
-		avatar.setAttribute("alt", "avatar");
-		avatar.setAttribute("width", "25px");
-		avatar.setAttribute("height", "25px");
+	// 	var avatar = document.createElement("img");
+	// 	avatar.setAttribute("src", "../img/avatar-male.jpg");
+	// 	avatar.setAttribute("class", "avatar-margin");
+	// 	avatar.setAttribute("alt", "avatar");
+	// 	avatar.setAttribute("width", "25px");
+	// 	avatar.setAttribute("height", "25px");
 
-		var span = document.createElement("span");
-		// span.setAttribute("class", "app-message-sent");
-		span.append(message);
+	// 	var span = document.createElement("span");
+	// 	// span.setAttribute("class", "app-message-sent");
+	// 	span.append(message);
 
-		var div = document.createElement("div");
-		// div.setAttribute("class", "sent-message-wrapper");
-		div.append(avatar);
-		div.append(span);
+	// 	var div = document.createElement("div");
+	// 	// div.setAttribute("class", "sent-message-wrapper");
+	// 	div.append(avatar);
+	// 	div.append(span);
 
-		var item = document.createElement("li");
-		item.setAttribute("class", "list-item");
-		item.append(div);
+	// 	var item = document.createElement("li");
+	// 	item.setAttribute("class", "list-item");
+	// 	item.append(div);
 
-		$("#messageList").append(item);
-	});
+	// 	$("#messageList").append(item);
+	// });
 });
