@@ -17,14 +17,10 @@ var circle2 = new Circle(80,50,10,0, "yellow",0);
 var step = function() {
 	controller(circle1);
 	ctx.clearRect(0,0,screenWidth,screenHeight);
-	var tempx = circle1.x;
-	var tempy = circle1.y;
 	if (checkCollision(circle1, circle2)) {
-		console.log("collided");
-		circle1.move = 0;
-		circle1.x = tempx - 2;
-		circle1.y = tempy - 2;
-		circle1.move = 2;
+		circle1.speed = -circle1.speed;
+		circle1.x += circle1.speed;
+		circle1.y += circle1.speed;
 	}
 	drawCircle(circle1, ctx);
 	drawCircle(circle2, ctx);
