@@ -6,16 +6,19 @@ $(document).ready(function() {
 	var socket = io();
 	var input = document.getElementById("messageInput")
 
-	socket.emit("enter_lobby", lobbyName);
+	socket.emit("enter_lobby", {
+		lobbyName: lobbyName,
+		userName: userName
+	});
 
 	socket.on('lobby_entered', (data) => {
-		const playerCount = data.playerCount;
-		const myAlias = data.alias;
-		const players = data.players;
-		console.log(data.alias);
-		console.log(data.playerCount);
-		console.log(JSON.stringify(data.players))
-		console.log(JSON.stringify(data.lobby));
+		var playerCount = data.playerCount;
+		var players = data.players;
+		var options = data.options;
+
+		console.log(playerCount);
+		console.log(JSON.stringify(players))
+		console.log(JSON.stringify(options));
 		// console.log("Lobby Name: lo")
 
 		$("#playerListHeading").html(`Users: (${playerCount})`);
