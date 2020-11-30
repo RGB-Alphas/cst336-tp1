@@ -55,17 +55,19 @@ module.exports = function(socket, client) {
 		if(lobbyRegistry.PasswordRequiredFor(lobbyName)) 
 		{
 			console.log(`${userName} wants to join [${lobbyName}].`);
-			console.log(`I will let ${userName} know a password is required`)
+			console.log(`I will let ${userName} know a password is required`);
 			client.emit('password_required');
 		}
 		else 
 		{
 			if(lobbyRegistry.JoinLobby(lobbyName, alias))
 			{
+				console.log(`${userName} added to ${lobbyName} (no password required).`);
 				client.emit('join_lobby_request_accepted');
 			}
 			else
 			{
+				console.log(`${userName} rejected by ${lobbyName} (no password required).`);
 				client.emit('join_lobby_request_rejected');
 			}
 			
@@ -111,6 +113,9 @@ module.exports = function(socket, client) {
 		var successful = lobbyRegistry.AddLobby(lobbyName, lobbyPassword, lobbyCapacity);
 
 		if(successful) {
+
+			lobbyRegistry.JoinLobby(lobbyName, userAlias);
+
 			// tell the client it was successful.
 			client.emit('lobby-add-request-accepted');
 
@@ -178,13 +183,6 @@ module.exports = function(socket, client) {
 			 onlineCount: usersOnline,
 			 onlineUsers: userList
 		  });
-
-		  for(var i = 0; i < client.rooms.size; i++)
-		  {
-				client.to(client.rooms[i]).broadcast.emit('user left', {
-					alias: userRegistry.GetAliasByUserName(client.username)
-				});
-		  }
 		}
 	 });
 };

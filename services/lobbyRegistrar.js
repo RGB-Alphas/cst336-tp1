@@ -7,7 +7,7 @@ const { Socket } = require("socket.io");
 
 
 var lobbyList = [
-	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 1, "capacity": 1, "players": [ "Dumm1" ],
+	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 1, "capacity": 1, "players": [ "Dummy1" ],
       "options": {
          "map": "n/a", "time": "n/a", "ruleset": "n/a" }
    	},
@@ -32,14 +32,26 @@ module.exports = { lobbyCount: lobbyCount };
 
 (function() {
 
+	module.exports.WhereisPlayer = function(name)
+	{
+		var result = lobbyList.find(lobby => {
+			return lobby.players.find(player => {
+				return player === name;
+			});
+		});
+
+		return result.name;
+	};
+
 	// Adds a lobby to the lobby registry.
 	// name = lobby name
 	// password = lobby password
 	module.exports.AddLobby = function(name, password, playerCapacity) {
 
 		// lobby exists, exit
-		lobbyList.find(lobby => { 
-			return lobby.name === name }) || {}.execs || [];
+		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === name);
+		if(lobbyIndex != -1)
+			return false;
 
 		// it's unique, let's add it.
 		var id = LobbyID;
@@ -52,7 +64,7 @@ module.exports = { lobbyCount: lobbyCount };
 		lobbyList.push(lobby);
 		lobbyCount++;
 		LobbyID++;
-		return true; // make this return false if the user name is unavailable
+		return true; // make this return false if the lobby name is unavailable
 	};
 
 	module.exports.UpdateLobbyOptions = function(lobbyName, map, time, ruleset) {
@@ -63,6 +75,16 @@ module.exports = { lobbyCount: lobbyCount };
 		lobbyList[lobbyIndex].options.time = time;
 		lobbyList[lobbyIndex].options.ruleset = ruleset;
 	}
+
+	module.exports.ExitPlayerFromLobby = function(lobbyName, alias) {
+		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+		const playerIndex = lobbyList[lobbyIndex].players.indexOf(alias);
+		lobbyList[lobbyIndex].players.splice(playerIndex, 1);
+		lobbyList[lobbyIndex].occupants--;
+
+		// example splice() from socket disconnect event
+		// userList.splice(userList.indexOf(client.username), 1);
+	};
 
 	// returns true if the player name was registered to the lobby.
 	// returns false if the player name could not be added.
@@ -90,8 +112,16 @@ module.exports = { lobbyCount: lobbyCount };
 		else
 		{
 			console.log(`Could not add ${playerName} to lobby: ${lobbyName}.`);
+			return false;
 		}
 			
+	};
+
+	module.exports.RemoveLobbyIfEmpty = function(lobbyName) {
+		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+
+		if(lobbyList[lobbyIndex].players.length === 0)
+			lobbyList.splice(lobbyIndex, 1);
 	};
 
 	module.exports.SetLobbyOptions = function(lobbyName, options) {
@@ -121,17 +151,23 @@ module.exports = { lobbyCount: lobbyCount };
 
 	module.exports.Authenticate = function(name, password) {
 		
-		var lobby = lobbyList.find(lobby => { 
-			return lobby.name === name && 
-			lobby.password === password });
+		var lobby = lobbyList.find(L => { return L.name === name });
 		
 		if(lobby)
 		{
-			return false;
+			console.log(`Lobby password: [${lobby.password}] vs user password: [${password}]`);
+			if(lobby.password === password)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
-			return true;
+			return false;
 		}
 	};
 

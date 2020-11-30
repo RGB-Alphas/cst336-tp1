@@ -78,13 +78,17 @@ app.post('/login', function(req, res) {
                 res.redirect('/authenticated');
                 console.log("You're IN!");
             } else {
-                res.send('Incorrect Username and/or Password!');
-            }           
-            res.end();
+                // res.send('');
+                const message = "Incorrect Username and/or Password.";
+                res.render('index.html', {message: message});
+            }        
+            // res.end();   
         });
     } else {
-        res.send('Please enter Username and Password!');
-        res.end();
+        // res.send('');
+        const message = "Please enter Username and Password.";
+        res.render('index.html', {message: message});
+        // res.end();
     }
 });
 

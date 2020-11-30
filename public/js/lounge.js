@@ -98,13 +98,13 @@ $(document).ready(function() {
 		// $("#joinLobbyForm").submit();
 	});
 
-	$("#joinLobbyWithPassword").on("click", function() {
+	$("#joinLobby").on("click", function() {
 
-		var password = $("#lobbyPassword").val();
+		var password = $("#inputLobbyPassword").val();
 
 		socket.emit('join_lobby_with_password', {
 			lobbyName: selectedLobby,
-			password: password
+			lobbyPassword: password
 		});
 	});
 
@@ -261,7 +261,7 @@ $(document).ready(function() {
 		var host = data.players[0];
 		console.log("Adding Lobby: %s", name);
 		$("#lobbyList").append(
-			`<li class="list-item"><a id="${name}" class="lobby lobby-link my-1 rounded" href="/lobby?lobbyName=${name}">${name} (${occupants}/${capacity}) - Host: ${host}</a></li>`);
+			`<li id="${name}" class="lobby list-item lobby-link my-1 rounded"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</li>`)
 		$("#messageList").append(
 			`<li id="${name}" class="lobby list-item">${host} has created a new lobby.</li>`);
 			let newLobby = { "id": id, "name": name, "capacity": capacity };
