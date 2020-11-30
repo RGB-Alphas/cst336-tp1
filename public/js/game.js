@@ -12,7 +12,7 @@ let screenWidth = 1000;
 let screenHeight = 500;
 
 var circle1 = new Circle(50,50,10,0, "white",0);
-var circle2 = new Circle(120,50,10,0, "yellow",0);
+var circle2 = new Circle(80,50,10,0, "yellow",0);
 
 var step = function() {
 	controller(circle1);
