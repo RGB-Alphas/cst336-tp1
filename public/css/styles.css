@@ -66,6 +66,21 @@ input{
 	display: none;
 }
 
+.arrow{
+	color: gainsboro;
+}
+
+.arrow:hover{
+	color: white;
+}
+
+#skinSelect{
+	-webkit-transition:color .5s ease;
+   	-moz-transition:color .5s ease;
+   	-o-transition:color .5s ease;
+   	transition:color .5s ease;
+}
+
 #joinPanel{
 	display: none;
 }

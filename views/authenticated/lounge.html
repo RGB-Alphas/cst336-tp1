@@ -51,8 +51,17 @@
 						</div>
 						<!-- Profile Panel -->
 						<div id="profilePanel" class="mx-3 panel bg-dark rounded py-3">
-							<h4 class="py-3"><strong>Profile</strong></h4>
-						</div>
+							<form method="get" action="/lobby" id="lobbyForm" class="py-3">
+								<h4 class="pb-1"><strong>Profile</strong></h4>
+								<h5>Skin</h5>
+								<div id="skins" class="container d-flex align-items-center justify-content-around w-50">
+									<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
+									<i id="skinSelect" class="fas fa-circle fa-3x"></i>
+									<i id="rightArrow" class="fas fa-chevron-right fa-2x arrow"></i>
+								</div>
+								<button type="button" id="saveButton" class="submit btn btn-info m-3 lobby-link">Save</button><br>
+								<span id="lobbyDialogValidation"></span>
+							</form>
 						<!-- Create Lobby Panel -->
 						<div id="createPanel" class="mx-3 panel bg-dark rounded">
 							<form method="get" action="/lobby" id="lobbyForm" class="py-3">
