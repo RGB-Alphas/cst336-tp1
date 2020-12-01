@@ -2,6 +2,7 @@ import Circle from "./GameObjects/Circle.js"
 import {drawCircle} from "./GameFunctions/drawCircle.js"
 import {controller} from "./GameFunctions/controller.js"
 import {checkCollision} from "./GameFunctions/checkCollision.js"
+// import {map1} from "./GameFunctions/mapping.js"
 
 console.log("game.js connected");
 
@@ -11,8 +12,8 @@ var ctx = canvas.getContext('2d');
 let screenWidth = 1000;
 let screenHeight = 500;
 
-var circle1 = new Circle(50,50,10,0, "white",0);
-var circle2 = new Circle(80,50,10,0, "yellow",0);
+var circle1 = new Circle(100,100,15,0, "turquoise",0);	// Player
+var circle2 = new Circle(200,100,15,0, "yellow",0);		// CPU
 
 var step = function() {
 	controller(circle1);
@@ -21,7 +22,7 @@ var step = function() {
 		circle1.speed = -circle1.speed;
 		circle1.x += circle1.speed;
 		circle1.y += circle1.speed;
-		circle2.color = circle1.color;
+		circle2.color = "white";
 	}
 	drawCircle(circle1, ctx);
 	drawCircle(circle2, ctx);

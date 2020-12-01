@@ -6,23 +6,43 @@ export default class Circle {
         this.full = full;
         this.color = color;
         this.speed = speed;
-        this.move = 2;
+        this.move = 10;
+        this.maxY = 500;
+        this.maxX = 1000;
     }
-    moveHorizontally() {
-        if (this.x > 293) {
-            this.speed = -this.speed;
+    
+    // Move circle left
+    moveLeft() {
+        // Do nothing if next position is outside of map
+        if (this.x - this.move < this.rad) {
+            return;
         }
-        if (this.x < 7) {
-            this.speed = -this.speed;
+        this.x -= this.speed;
+    }
+    
+    // Move circle right
+    moveRight() {
+        // Do nothing if next position is outside of map
+        if (this.x + this.move > this.maxX - this.rad) {
+            return;
         }
         this.x += this.speed;
     }
-    moveVertically() {
-        if (this.y > 143) {
-            this.speed = -this.speed;
+    
+    // Move circle up
+    moveUp() {
+        // Do nothing if next position is outside of map
+        if (this.y - this.move < this.rad) {
+            return;
         }
-        if (this.y < 7) {
-            this.speed = -this.speed;
+        this.y -= this.speed;
+    }
+    
+    // Move circle down
+    moveDown() {
+        // Do nothing if next position is outside of map
+        if (this.y + this.move > this.maxY - this.rad) {
+            return;
         }
         this.y += this.speed;
     }

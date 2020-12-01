@@ -1,24 +1,23 @@
 export function controller(obj) {
     document.onkeydown = function(event) {
+        obj.speed = obj.move;
         switch(event.key) {
             case 'ArrowRight':
-                obj.speed = obj.move;
-                obj.moveHorizontally();
+                obj.moveRight();
                 break;
             case 'ArrowLeft':
-                obj.speed = -obj.move;
-                obj.moveHorizontally();
+                obj.moveLeft();
                 break;
             case 'ArrowUp':
-                    obj.speed = -obj.move;
-                    obj.moveVertically();
-                    break;
+                obj.moveUp();
+                break;
             case 'ArrowDown':
-                    obj.speed = obj.move;
-                    obj.moveVertically();
-                    break;
+                obj.moveDown();
+                break;
         }
     }
+    
+    //
     document.onkeyup = function(event) {
         obj.speed = 0;
     }
