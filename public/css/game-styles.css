@@ -6,4 +6,6 @@ html, body{
 
 canvas{
     background-color: black;
+    border: solid #7FFFD4 5px;
+    overflow: hidden;
 }
