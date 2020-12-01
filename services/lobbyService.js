@@ -52,23 +52,26 @@ module.exports = function(socket, client) {
 	// /////////////////
 	// chat events begin
 	client.on('typing', () => {
+		const alias = userRegistry.GetAliasByUserName(client.username)
 		const lobbyName = lobbyRegistry.WhereisPlayer(alias);
 		client.to(`${lobbyName}`).broadcast.emit('typing', {
-			alias: userRegistry.GetAliasByUserName(client.username)
+			alias: alias
 		})
 	});
 
 	client.on('stop typing', () => {
+		const alias = userRegistry.GetAliasByUserName(client.username)
 		const lobbyName = lobbyRegistry.WhereisPlayer(alias);
 		client.to(`${lobbyName}`).broadcast.emit('stop typing', {
-			alias: userRegistry.GetAliasByUserName(client.username)
+			alias: alias
 		})
 	});
 
 	client.on('new message', (clientMessage) => {
+		const alias = userRegistry.GetAliasByUserName(client.username)
 		const lobbyName = lobbyRegistry.WhereisPlayer(alias);
 		client.to(`${lobbyName}`).broadcast.emit('new message', {
-			alias: userRegistry.GetAliasByUserName(client.username),
+			alias: alias,
 			message: clientMessage
 		});
 	});
