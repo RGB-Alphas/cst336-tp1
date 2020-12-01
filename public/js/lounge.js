@@ -16,8 +16,8 @@ $(document).ready(function() {
 	var selectedLobby = "";
 	var selectedPlayer = "";
 
-	console.log("Emitting: %s", userName);
-	socket.emit('enter_lounge', userName);
+	console.log("Emitting: %s, %s", userName, displayName);
+	socket.emit('enter_lounge', { userName: userName, alias: displayName } );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
@@ -177,12 +177,12 @@ $(document).ready(function() {
 		}
 	});
 
-	socket.on('typing', (alias) => {
-		$("#typingNotice").html(`${alias} is typing...`)
+	socket.on('typing', (data) => {
+		$("#typingNotice").html(`${data.alias} is typing...`)
 		//console.log("%s is typing", alias);
 	});
 
-	socket.on('stop typing', (alias) => {
+	socket.on('stop typing', (data) => {
 		$("#typingNotice").html("")
 		//console.log("%s stopped typing", alias);
 	});

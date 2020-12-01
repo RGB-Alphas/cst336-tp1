@@ -34,13 +34,24 @@ module.exports = { lobbyCount: lobbyCount };
 
 	module.exports.WhereisPlayer = function(name)
 	{
-		var result = lobbyList.find(lobby => {
-			return lobby.players.find(player => {
-				return player === name;
-			});
-		});
+		
+		for(var i = 0; i < lobbyList.length; i++)
+		{
+			var lobby = lobbyList[i];
+			var players = lobby.players;
+			for(var j = 0; j < lobby.players.length; j++)
+			{
+				//console.log(`Comparing (${name} === ${players[j]})`);
+				if(name == players[j])
+				{
+					//console.log("match found!");
+					return lobby.name;
+				}
+			}
+		}
 
-		return result.name;
+		var lobbyErrorText = `${name} is not in a lobby`;
+		return lobbyErrorText;
 	};
 
 	// Adds a lobby to the lobby registry.
@@ -78,6 +89,8 @@ module.exports = { lobbyCount: lobbyCount };
 
 	module.exports.ExitPlayerFromLobby = function(lobbyName, alias) {
 		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+		if(lobbyIndex === -1)
+			return;
 		const playerIndex = lobbyList[lobbyIndex].players.indexOf(alias);
 		lobbyList[lobbyIndex].players.splice(playerIndex, 1);
 		lobbyList[lobbyIndex].occupants--;
@@ -91,7 +104,7 @@ module.exports = { lobbyCount: lobbyCount };
 	module.exports.JoinLobby = function(lobbyName, playerName) {
 
 		// if the lobby doesn't exist, exit.
-		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+		const lobbyIndex = lobbyList.findIndex(lobby => { return lobby.name === lobbyName } );
 
 		if(lobbyIndex === -1)
 		{
@@ -118,7 +131,10 @@ module.exports = { lobbyCount: lobbyCount };
 	};
 
 	module.exports.RemoveLobbyIfEmpty = function(lobbyName) {
-		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+		const lobbyIndex = lobbyList.findIndex(lobby => { return lobby.name === lobbyName } );
+
+		if(lobbyIndex === -1)
+			return;
 
 		if(lobbyList[lobbyIndex].players.length === 0)
 			lobbyList.splice(lobbyIndex, 1);
