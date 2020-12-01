@@ -4,7 +4,7 @@ html, body{
     margin: 0;
     display: flex;
     align-items: center;
-    background-color: gray;
+    background-color: #292b2c;
 }
 
 canvas{
@@ -12,4 +12,5 @@ canvas{
     display: block;
     background-color: #090909;
     overflow: hidden;
+    border: 5px solid whitesmoke;
 }
