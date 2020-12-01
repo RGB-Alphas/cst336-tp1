@@ -2,8 +2,71 @@
 /* global io */
 
 $(document).ready(function() {
+	
 	var socket = io();
 	var input = document.getElementById("messageInput")
+
+	socket.emit("enter_lobby", {
+		lobbyName: lobbyName,
+		userName: userName
+	});
+
+	socket.on('lobby_entered', (data) => {
+		var playerCount = data.playerCount;
+		var players = data.players;
+		var options = data.options;
+
+		console.log(playerCount);
+		console.log(JSON.stringify(players))
+		console.log(JSON.stringify(options));
+		// console.log("Lobby Name: lo")
+
+		$("#playerListHeading").html(`Users: (${playerCount})`);
+		$("#playerList").empty();
+		for(i = 0; i < playerCount; i++)
+		{
+			$("#playerList").append(
+				`<li>${players[i]}</li>`
+			)
+		}
+		
+	});
+
+	socket.on('user joined', (data) => {
+		const alias = data.userAlias;
+		const aliasID = data.sessionID;
+		userCount = data.playerCount;
+		//console.log(data.userAlias + ' joined');
+		//console.log("%d users online.", data.onlineCount);
+
+		$("#playerListHeading").html(`Users: ${userCount}`);
+		$("#playerList").append(
+			`<li class="list-item">${alias}</li>`);
+		$("#messageList").append(
+			`<li class="list-item">${alias} has joined.</li>`);
+	});
+
+	socket.on('user left', (data) => {
+		const alias = data.alias;
+		userCount = data.userCount;
+		users = data.users;
+		//console.log('User %s has left.', data.alias);
+		//console.log('%d users online.', data.userCount);
+		//console.log("Online users:");
+		
+		$("#playerListHeading").html(`Users: ${userCount}`);
+		$("#messageList").append(
+			`<li class="list-item">${alias} has left.</li>`);
+		$("#playerList").empty();
+		for(i = 0; i < userCount; i++)
+		{
+			$("#playerList").append(
+				`<li class="list-item">${users[i]}</li>`);
+		}
+	});
+  
+  // button events
+  var input = document.getElementById("messageInput")
 	
 	// Ready Button
 	$("#readyBtn").on("click", function(){
@@ -30,49 +93,115 @@ $(document).ready(function() {
 	    $("#lobbyPanel").hide();
 	    $("#optionsPanel").show();
 	})
-	
-	// input.addEventListener("keyup", function(event) {
-	// 	// Number 13 is the "Enter" key on the keyboard
-	// 	if (event.keyCode === 13) {
-	// 	  // Cancel the default action, if needed
-	// 	  event.preventDefault();
-	// 	  // Trigger the button element with a click
-	// 	  $("#messageSend").click();
-	// 	}
+
+	// Quit Button
+	$("#quitBtn").on("click", function() {
+		socket.emit('leave lobby');
+	});
+
+	// /////////////////
+	// chat events begin
+  
+	input.addEventListener("keyup", function(event) {
+		// Number 13 is the "Enter" key on the keyboard
+		if (event.keyCode === 13) {
+		  // Cancel the default action, if needed
+		  event.preventDefault();
+		  // Trigger the button element with a click
+		  $("#messageSend").click();
+		}
 		
-	// });
-	
-	// // Chat functions
-	// $("#messageSend").click( function() {
-	// 	var message = $("#messageInput").val(); // get message
-	// 	$("#messageInput").val("");
-	// 	socket.emit('stop typing');
+	});
 
-	// 	if(message == "")
-	// 		return;
+	$("#messageInput").on('input', function() {
+		var message = $("#messageInput").val();
+		var isTyping = false;
 
-	// 	socket.emit('new message', message);
+		if(message !== "" && !isTyping) {
+			socket.emit('typing');
+			isTyping = true;
+		} else {
+			socket.emit('stop typing');
+			isTyping = false;
+		}
+	});
 
-	// 	var avatar = document.createElement("img");
-	// 	avatar.setAttribute("src", "../img/avatar-male.jpg");
-	// 	avatar.setAttribute("class", "avatar-margin");
-	// 	avatar.setAttribute("alt", "avatar");
-	// 	avatar.setAttribute("width", "25px");
-	// 	avatar.setAttribute("height", "25px");
+	// add and remove aliases from an array and use array.join
+	// to create the typing text.
+	socket.on('typing', (data) => {
+		const alias = data.alias;
+		$("#typingNotice").html(`${alias} is typing...`)
+		//console.log("%s is typing", alias);
+	});
 
-	// 	var span = document.createElement("span");
-	// 	// span.setAttribute("class", "app-message-sent");
-	// 	span.append(message);
+	socket.on('stop typing', (data) => {
+		const alias = data.alias;
+		$("#typingNotice").html("")
+		//console.log("%s stopped typing", alias);
+	});
 
-	// 	var div = document.createElement("div");
-	// 	// div.setAttribute("class", "sent-message-wrapper");
-	// 	div.append(avatar);
-	// 	div.append(span);
+	socket.on('new message', (data) => {
+		const alias = data.alias;
+		const message = data.message;
+		
+		var avatar = document.createElement("img");
+		avatar.setAttribute("src", "../img/avatar-male.jpg");
+		avatar.setAttribute("class", "avatar-margin");
+		avatar.setAttribute("alt", "avatar");
+		avatar.setAttribute("width", "25px");
+		avatar.setAttribute("height", "25px");
 
-	// 	var item = document.createElement("li");
-	// 	item.setAttribute("class", "list-item");
-	// 	item.append(div);
+		var span = document.createElement("span");
+		// span.setAttribute("class", "app-message-received");
+		span.append(`${alias}: ${message}`);
 
-	// 	$("#messageList").append(item);
-	// });
+		var div = document.createElement("div");
+		div.append(avatar);
+		div.append(span);
+
+		var item = document.createElement("li");
+		item.setAttribute("class", "list-item");
+		item.append(div);
+
+		$("#messageList").append(item);
+	});
+
+	// chat events end
+	// ///////////////
+
+	// ////////////////////
+	// chat functions begin
+
+	$("#messageSend").click( function() {
+		var message = $("#messageInput").val(); // get message
+		$("#messageInput").val("");
+		socket.emit('stop typing');
+
+		if(message == "")
+			return;
+
+		socket.emit('new message', message);
+
+		var avatar = document.createElement("img");
+		avatar.setAttribute("src", "../img/avatar-male.jpg");
+		avatar.setAttribute("class", "avatar-margin");
+		avatar.setAttribute("alt", "avatar");
+		avatar.setAttribute("width", "25px");
+		avatar.setAttribute("height", "25px");
+
+		var span = document.createElement("span");
+		// span.setAttribute("class", "app-message-sent");
+		span.append(message);
+
+		var div = document.createElement("div");
+		// div.setAttribute("class", "sent-message-wrapper");
+		div.append(avatar);
+		div.append(span);
+
+		var item = document.createElement("li");
+		item.setAttribute("class", "list-item");
+		item.append(div);
+
+		$("#messageList").append(item);
+	});
 });
