@@ -8,6 +8,8 @@ $(document).ready(function() {
 
 	var myAlias = "";
 
+	var isHost = false;
+
 	socket.emit("enter_lobby", {
 		lobbyName: lobbyName,
 		userName: userName,
@@ -24,11 +26,11 @@ $(document).ready(function() {
 
 		if(currentHost === myAlias)
 		{
-			enableOptions();
+			isHost = true;
 		}
 		else
 		{
-			disableOptions();
+			isHost = false;
 		}
 
 
@@ -52,16 +54,16 @@ $(document).ready(function() {
 
 	function disableOptions() 
 	{ 
-		$("#map").disabled = true; 
-		$("#timelimit").disabled = true; 
-		$("#ruleset").disabled = true; 
+		$("#map").prop('disabled', true);
+		$("#timelimit").prop('disabled', true);
+		$("#ruleset").prop('disabled', true);
 	} 
 	
 	function enableOptions() 
 	{ 
-		$("#map").disabled = false; 
-		$("#timelimit").disabled = true; 
-		$("#ruleset").disabled = true; 
+		$("#map").prop('disabled', false);
+		$("#timelimit").prop('disabled', false);
+		$("#ruleset").prop('disabled', false);
 	}
 
 
@@ -124,8 +126,13 @@ $(document).ready(function() {
 	
 	// Options Button
 	$("#optionsBtn").on("click", function(){
-	    $("#lobbyPanel").hide();
-	    $("#optionsPanel").show();
+	   $("#lobbyPanel").hide();
+		$("#optionsPanel").show();
+		 
+		if(isHost)
+			enableOptions();
+		else
+			disableOptions();
 	})
 
 	// Quit Button

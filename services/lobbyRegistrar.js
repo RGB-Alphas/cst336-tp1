@@ -42,7 +42,7 @@ module.exports = { lobbyCount: lobbyCount };
 			for(var j = 0; j < lobby.players.length; j++)
 			{
 				//console.log(`Comparing (${name} === ${players[j]})`);
-				if(name == players[j])
+				if(name === players[j])
 				{
 					//console.log("match found!");
 					return lobby.name;

@@ -106,8 +106,8 @@ module.exports = function(socket, client) {
 
 		if(userRegistry.IsOnline(client.username))
 		{
-			const alias = userRegistry.GetAliasByUserName(client.username);
-			const lobbyName = lobbyRegistry.WhereisPlayer(alias);
+			var alias = userRegistry.GetAliasByUserName(client.username);
+			var lobbyName = lobbyRegistry.WhereisPlayer(alias);
 			console.log(`Trying to exit ${alias} from ${lobbyName}.`);
 			lobbyRegistry.ExitPlayerFromLobby(lobbyName, alias);
 
