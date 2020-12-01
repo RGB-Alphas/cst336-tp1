@@ -5,6 +5,6 @@ export function drawCircle(object, ctx) {
 	ctx.fillStyle = object.color;
 	ctx.fill();
 	ctx.lineWidth = 1;
-	ctx.strokeStyle = 'red';
+	ctx.strokeStyle = 'white';
 	ctx.stroke();
 }
