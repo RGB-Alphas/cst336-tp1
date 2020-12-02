@@ -6,7 +6,7 @@ export default class Circle {
         this.full = full;
         this.color = color;
         this.speed = speed;
-        this.move = 10;
+        this.move = 20;
         this.maxY = 500;
         this.maxX = 1000;
     }
