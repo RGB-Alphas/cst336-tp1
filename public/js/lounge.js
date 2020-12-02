@@ -12,6 +12,22 @@ $(document).ready(function() {
 	var userCount = 0;
 	var lobbies = [];
 	var lobbyCount = 0;
+	var skinId = 0;
+	var maxSkinId = 13;
+	var skins = {0: "blue",
+				 1: "lightblue",
+				 2: "steelblue",
+				 3: "turquoise", 
+				 4: "green", 
+				 5: "lime", 
+				 6: "yellow", 
+				 7: "orange", 
+				 8: "rosybrown", 
+				 9: "red", 
+				 10: "maroon",
+				 11: "purple",
+				 12: "lavender", 
+				 13: "pink"};
 
 	var selectedLobby = "";
 	var selectedPlayer = "";
@@ -333,6 +349,7 @@ $(document).ready(function() {
 		return false;
 	});
 	
+	// Toggle Create Tab
 	$("#createBtn").on("click", function(){
 		console.log("join btn clicked");
 		$("#chatPanel").hide();
@@ -341,11 +358,13 @@ $(document).ready(function() {
 		$("#createPanel").show();
 	})
 	
+	// Close Create tab, return to chat
 	$(".close-button").on("click", function(){
 		$("#createPanel").hide();
 		$("#chatPanel").show();
 	})
-
+	
+	// Toggle Chat Tab
 	$("#chatBtn").on("click", function(){
 		console.log("chat btn clicked");
 		$("#createPanel").hide();
@@ -354,6 +373,7 @@ $(document).ready(function() {
 		$("#chatPanel").show();
 	})
 	
+	// Toggle Join Lobby Tab
 	$("#joinBtn").on("click", function(){
 		console.log("chat btn clicked");
 		$("#profilePanel").hide();
@@ -362,11 +382,41 @@ $(document).ready(function() {
 		$("#joinPanel").show();
 	})
 	
+	// Toggle Profile Tab
 	$("#profileBtn").on("click", function(){
 		console.log("chat btn clicked");
 		$("#createPanel").hide();
 		$("#chatPanel").hide();
 		$("#joinPanel").hide();
 		$("#profilePanel").show();
+		updateSelector();
 	})
+	
+	// Skin Selection - Right Arrow
+	$("#rightArrow").on("click", function(){
+		console.log(skins.count);
+		if(skinId == maxSkinId){
+			skinId = 0;
+		}
+		else{
+			skinId += 1;
+		}
+		updateSelector();
+	})
+	
+	// Skin Selection - Left Arrow
+	$("#leftArrow").on("click", function(){
+		if(skinId == 0){
+			skinId = maxSkinId;
+		}
+		else{
+			skinId -= 1;
+		}
+		updateSelector();
+	})
+	
+	// Update skin selector icon
+	function updateSelector(){
+		$("#skinSelect").css("color", skins[skinId]);
+	}
 });

@@ -3,47 +3,70 @@
 /*global Point*/
 /*global $*/
 
-console.log("game.js connected");
+var maxWidth = view.size.width;
+var maxHeight = view.size.height;
+var step = 15;				// Number of pixels to move each keypress
+var circles = []    		// Store circles
 
-var circles = []    // Store circles
-AddCircle();        // Player 1
-AddCircle();        // CPU 1
-AddCircle();        // CPU 2
-AddCircle();        // CPU 3
-var step = 25;
+AddCircle("turquoise");		// Player == Blue
+AddCircle("red");			// CPU 1
+AddCircle("lime");      	// CPU 2
+AddCircle("yellow");        // CPU 3
 
 // Adds a circle to the screen w/ random color & position
-function AddCircle(){
-    var colors = ["lime", "turquoise", "maroon"];
+function AddCircle(color){
     var maxPoint = new Point(view.size.width, view.size.height);
     var randomPoint = Point.random();
     var point = maxPoint * randomPoint;
-    var newCircle = new Path.Circle(point, 20);
-	newCircle.fillColor = randomColor(colors);;
+    var newCircle = new Path.Circle(point, 15);
+	newCircle.fillColor = color;
 	circles.push(newCircle);
 }
 
 // 'WASD' Movement Listeners
 function onKeyDown(event) {
 	if(event.key == 'a'){
-		circles[0].position.x -= step;
+		// Only move if next position is within boundaries
+		if (circles[0].position.x - step <= 10){
+			return;
+		}
+		else{
+			circles[0].position.x -= step;
+		}
 	}
 
 	if(event.key == 'd') {
-		circles[0].position.x += step;
+		// Only move if next position is within boundaries
+		if (circles[0].position.x + step >= maxWidth - 10){
+			return;
+		}
+		else{
+			circles[0].position.x += step;
+		}
 	}
 
 	if(event.key == 'w') {
-		circles[0].position.y -= step;
+		// Only move if next position is within boundaries
+		if (circles[0].position.y - step <  10){
+			return;
+		}
+		else{
+			circles[0].position.y -= step;
+		}
 	}
 
 	if(event.key == 's') {
-		circles[0].position.y += step;
+		// Only move if next position is within boundaries
+		if (circles[0].position.y + step > maxHeight - 10){
+			return;
+		}
+		else{
+			circles[0].position.y += step;
+		}
 	}
 }
 
 // Collision Detection
-//path.intersects(otherPath
 function onFrame(event) {
 	if (circles[0].intersects(circles[1])){
 		circles[1].fillColor = "white";
@@ -56,13 +79,6 @@ function onFrame(event) {
 	if (circles[0].intersects(circles[3])){
 		circles[3].fillColor = "white";
 	}
-}
-
-
-// Generate random color
-function randomColor(colors){
-    var color = colors[Math.floor(Math.random() * colors.length)];
-    return color;
 }
 
 // For removing circles
