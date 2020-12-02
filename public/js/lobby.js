@@ -24,13 +24,19 @@ $(document).ready(function() {
 
 		var currentHost = players[0];
 
+		$("#map").val(options.map);
+		$("#timeLimit").val(options.time);
+		$("#ruleSet").val(options.ruleset);
+
 		if(currentHost === myAlias)
 		{
-			isHost = true;
+			console.log("options should be enabled.");
+			enableOptions();
 		}
 		else
 		{
-			isHost = false;
+			console.log("options should be disabled.");
+			disableOptions();
 		}
 
 
@@ -55,16 +61,46 @@ $(document).ready(function() {
 	function disableOptions() 
 	{ 
 		$("#map").prop('disabled', true);
-		$("#timelimit").prop('disabled', true);
-		$("#ruleset").prop('disabled', true);
+		$("#timeLimit").prop('disabled', true);
+		$("#ruleSet").prop('disabled', true);
 	} 
 	
 	function enableOptions() 
 	{ 
 		$("#map").prop('disabled', false);
-		$("#timelimit").prop('disabled', false);
-		$("#ruleset").prop('disabled', false);
+		$("#timeLimit").prop('disabled', false);
+		$("#ruleSet").prop('disabled', false);
 	}
+
+	$("#map").on("change", function() {
+		var map = $("#map").val();
+		socket.emit("map changed", map);
+	});
+
+	$("#timeLimit").on("change", function() {
+		var timeLimit = $("#timeLimit").val();
+		socket.emit("timeLimit changed", timeLimit);
+	});
+
+	$("#ruleSet").on("change", function() {
+		var ruleSet = $("#ruleSet").val();
+		socket.emit("ruleSet changed", ruleSet);
+	});
+
+	socket.on('map changed', map => {
+		$("#map").val(map);
+		//$("#map").change();
+	});
+
+	socket.on('timeLimit changed', timeLimit => {
+		$("#timeLimit").val(timeLimit);
+		//$("#timeLimit").change();
+	});
+
+	socket.on('ruleSet changed', ruleSet => {
+		$("#ruleSet").val(ruleSet);
+		//$("#ruleSet").change();
+	});
 
 
 
@@ -129,10 +165,6 @@ $(document).ready(function() {
 	   $("#lobbyPanel").hide();
 		$("#optionsPanel").show();
 		 
-		if(isHost)
-			enableOptions();
-		else
-			disableOptions();
 	})
 
 	// Quit Button

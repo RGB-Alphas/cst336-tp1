@@ -9,19 +9,19 @@ const { Socket } = require("socket.io");
 var lobbyList = [
 	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 1, "capacity": 1, "players": [ "Dummy1" ],
       "options": {
-         "map": "n/a", "time": "n/a", "ruleset": "n/a" }
+         "map": "destiny", "time": "30", "ruleset": "lastman" }
    	},
 	{ "id": 997, "name": "lobby2", "password": "123", "occupants": 1, "capacity": 2, "players": [ "Dummy2" ],
 		"options": {
-			"map": "n/a", "time": "n/a", "ruleset": "n/a" }
+			"map": "destiny", "time": "30", "ruleset": "lastman" }
 		},
 	{ "id": 998, "name": "lobby3", "password": "", "occupants": 1, "capacity": 4, "players": [ "Dummy3" ],
 		"options": {
-			"map": "n/a", "time": "n/a", "ruleset": "n/a" }
+			"map": "destiny", "time": "30", "ruleset": "lastman" }
 		},
 	{ "id": 999, "name": "lobby4", "password": "", "occupants": 1, "capacity": 8, "players": [ "Dummy4" ],
 		"options": {
-			"map": "n/a", "time": "n/a", "ruleset": "n/a" }
+			"map": "destiny", "time": "30", "ruleset": "lastman" }
 		},
 ];
 var lobbyCount = lobbyList.length;
@@ -50,7 +50,7 @@ module.exports = { lobbyCount: lobbyCount };
 			}
 		}
 
-		var lobbyErrorText = `${name} is not in a lobby`;
+		var lobbyErrorText = `unknown`;
 		return lobbyErrorText;
 	};
 
@@ -70,7 +70,7 @@ module.exports = { lobbyCount: lobbyCount };
 		const lobby = {"id": id, "name": name, "password": password, "occupants": 0, "capacity": playerCapacity,
 		 "players": [ ],
 		"options": {
-			"map": "n/a", "time": "n/a", "ruleset": "n/a" }};
+			"map": "destiny", "time": "30", "ruleset": "lastman" }};
 		console.log(`Adding lobby: ${lobby.id}, ${lobby.name}, ${lobby.password}`);
 		lobbyList.push(lobby);
 		lobbyCount++;
@@ -78,6 +78,7 @@ module.exports = { lobbyCount: lobbyCount };
 		return true; // make this return false if the lobby name is unavailable
 	};
 
+	/*
 	module.exports.UpdateLobbyOptions = function(lobbyName, map, time, ruleset) {
 
 		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
@@ -86,6 +87,34 @@ module.exports = { lobbyCount: lobbyCount };
 		lobbyList[lobbyIndex].options.time = time;
 		lobbyList[lobbyIndex].options.ruleset = ruleset;
 	}
+	*/
+
+	module.exports.UpdateLobbyMap = function(lobbyName, map) {
+		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+
+		if(lobbyIndex === -1)
+			return;
+
+		lobbyList[lobbyIndex].options.map = map;
+	};
+
+	module.exports.UpdateLobbyTime = function(lobbyName, time) {
+		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+
+		if(lobbyIndex === -1)
+			return;
+
+		lobbyList[lobbyIndex].options.time = time;
+	};
+
+	module.exports.UpdateLobbyRuleSet = function(lobbyName, ruleset) {
+		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+
+		if(lobbyIndex === -1)
+			return;
+
+		lobbyList[lobbyIndex].options.ruleset = ruleset;
+	};
 
 	module.exports.ExitPlayerFromLobby = function(lobbyName, alias) {
 		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
@@ -211,12 +240,14 @@ module.exports = { lobbyCount: lobbyCount };
 		lobbyList[index].occupants = lobby.players.length;
 	};
 
+	/*
 	module.exports.UpdateLobbyOptions = function(lobbyName, lobby) {
 		const name = lobby.name;
 		const id = lobby.id;
 		var index = lobbyList.findIndex((element => element.name === lobbyName));
 		lobbyList[index].options = lobby.options;
 	};
+	*/
 
 	module.exports.GetAllLobbies = function() {
 		return lobbyList.map(lobby => { return { id: lobby.id, name: lobby.name, occupants: lobby.occupants, capacity: lobby.capacity, players: lobby.players, options: lobby.options  }} );

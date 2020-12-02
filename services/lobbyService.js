@@ -15,14 +15,9 @@ module.exports = function(socket, client) {
 		if(addedUser)
 			return;
 
-		
 		const userName = data.userName;
 		const alias = data.alias;
 		var sessionID = client.id;
-		
-
-		
-		
 
 		if(!userRegistry.IsOnline(userName))
 		{
@@ -62,6 +57,36 @@ module.exports = function(socket, client) {
 			console.log("This player's lobby was not found.");
 		}
 		
+	});
+
+	client.on('ruleSet changed', ruleSet => {
+
+		var alias = userRegistry.GetAliasByUserName(client.username);
+		var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+
+		lobbyRegistry.UpdateLobbyRuleSet(lobbyName, ruleSet);
+
+		client.to(`${lobbyName}`).broadcast.emit('ruleSet changed', ruleSet);
+	});
+
+	client.on('timeLimit changed', timeLimit => {
+
+		var alias = userRegistry.GetAliasByUserName(client.username);
+		var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+
+		lobbyRegistry.UpdateLobbyTime(lobbyName, timeLimit);
+
+		client.to(`${lobbyName}`).broadcast.emit('timeLimit changed', timeLimit);
+	});
+
+	client.on('map changed', map => {
+
+		var alias = userRegistry.GetAliasByUserName(client.username);
+		var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+
+		lobbyRegistry.UpdateLobbyMap(lobbyName, map);
+
+		client.to(`${lobbyName}`).broadcast.emit('map changed', map);
 	});
 
 	// /////////////////
@@ -108,6 +133,7 @@ module.exports = function(socket, client) {
 		{
 			var alias = userRegistry.GetAliasByUserName(client.username);
 			var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+			
 			console.log(`Trying to exit ${alias} from ${lobbyName}.`);
 			lobbyRegistry.ExitPlayerFromLobby(lobbyName, alias);
 

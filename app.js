@@ -133,7 +133,8 @@ app.get('/lobby', isAuthenticated, function(req, res){
 
 app.get('/game', isAuthenticated, function(req, res){
   let name = req.session.username;
-  res.render("authenticated/game.html", {userName: name});
+  let alias = req.session.alias;
+  res.render("authenticated/game.html", { userName: name, alias: alias });
 });
 
 server.listen(port, () => {
