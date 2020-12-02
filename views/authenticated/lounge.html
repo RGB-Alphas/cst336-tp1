@@ -34,27 +34,28 @@
 						<div id="chatPanel" class="panel">
 							<div id="chatPanelContainer" class="d-flex flex-row justify-content-around">
 								<div id="chatContainer" class="d-flex flex-column justify-content-between">
-									<div class="rounded bg-dark flex-fill">
+									<div id="message-box" class="rounded flex-fill">
 										<h4 class="py-1 text-center"><strong>Lounge</strong></h4>
 										<ul id="messageList" class="message-list scroll h-75"></ul>
-										<span id="typingNotice" class="bg-dark rounded my-1"></span><br>
+										<span id="typingNotice" class="rounded my-1"></span><br>
 									</div>
 									<div class="d-flex flex-row my-2">
-										<input type="text" class="form-control bg-dark text-white m-0 rounded" id="messageInput" placeholder="Send a message...">
+										<input type="text" class="form-control text-white m-0 rounded" id="messageInput" placeholder="Send a message...">
 										<button id="messageSend" type="submit" class="btn btn-info ml-2 loungeBtn"><i class="fas fa-paper-plane"></i></button>
 									</div>
 								</div>
-								<div id="playerListContainer" class="d-flex flex-column bg-dark rounded">
+								<div id="playerListContainer" class="d-flex flex-column rounded">
 									<h5 id="playerListHeading" class="py-1 text-center"><strong>Users (0)</strong></h5>
 									<ul id="playerList" class="text-center scroll m-0 p-1 flex-fill"></ul>
 								</div>
 							</div>
 						</div>
 						<!-- Profile Panel -->
-						<div id="profilePanel" class="mx-3 panel bg-dark rounded py-3">
+						<div id="profilePanel" class="mx-3 panel rounded py-3">
 							<form method="get" action="/lobby" id="lobbyForm" class="py-3">
 								<h4 class="pb-1"><strong>Profile</strong></h4>
-								<h5>Skin</h5>
+								<input type="text" name="username" class="rounded"/>
+								<h5>My Skin</h5>
 								<div id="skins" class="container d-flex align-items-center justify-content-around w-50">
 									<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
 									<i id="skinSelect" class="fas fa-circle fa-3x"></i>
@@ -65,9 +66,9 @@
 							</form>
 						</div>
 						<!-- Create Lobby Panel -->
-						<div id="createPanel" class="mx-3 panel bg-dark rounded">
+						<div id="createPanel" class="mx-3 panel rounded">
 							<form method="get" action="/lobby" id="createlobbyForm" class="py-3">
-								<h4 class="bg-dark rounded py-3"><strong>Create A lobby</strong></h4>
+								<h4 class="rounded py-3"><strong>Create A lobby</strong></h4>
 								<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
 								<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
 								<strong>Capacity: </strong>
@@ -86,7 +87,7 @@
 							</form>
 						</div>
 						<!-- Join Lobby Panel -->
-						<div id="joinPanel" class="mx-3 panel bg-dark rounded py-3">
+						<div id="joinPanel" class="mx-3 panel rounded py-3">
 							<form method="get" action="/lobby" id="joinlobbyForm">
 								<h4 class="py-3"><strong>Join a Lobby</strong></h4>
 								<ul id="lobbyList" class="scroll"></ul>

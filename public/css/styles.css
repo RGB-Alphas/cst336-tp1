@@ -64,6 +64,7 @@ input{
 
 #profilePanel{
 	display: none;
+	background-color: #5c6770!important;
 }
 
 .arrow{
@@ -83,10 +84,12 @@ input{
 
 #joinPanel{
 	display: none;
+	background-color: #5c6770!important;
 }
 
 #createPanel{
 	display: none;
+	background-color: #5c6770!important;
 }
 
 #lounge-sidebar{
@@ -120,6 +123,7 @@ input{
 #playerListContainer{
 	min-height: 100%;
 	min-width: 22%;
+	background-color: #5c6770!important;
 }
 
 #lobbyForm{
@@ -159,7 +163,18 @@ input{
 	color: lightyellow;
 	display: block;
 	max-height: 200px;
-	background-color: #394046;
+}
+
+#message-box{
+	background-color: #5c6770!important;
+}
+
+#messageInput{
+	background-color: #5c6770!important;
+}
+
+#messageInput::placeholder{
+	color: whitesmoke;
 }
 
 #input-username{
