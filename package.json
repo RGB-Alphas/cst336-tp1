@@ -25,6 +25,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "express-sessions": "^1.0.6",
+    "faker": "^5.1.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.6",
     "socket.io": "^3.0.1"
