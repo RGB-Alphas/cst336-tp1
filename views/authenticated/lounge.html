@@ -51,18 +51,34 @@
 							</div>
 						</div>
 						<!-- Profile Panel -->
-						<div id="profilePanel" class="mx-3 panel rounded py-3">
+						<div id="profilePanel" class="mx-3 panel rounded">
 							<form method="get" action="/lobby" id="lobbyForm" class="py-3">
-								<h4 class="pb-1"><strong>Profile</strong></h4>
-								<input type="text" name="username" class="rounded"/>
-								<h5>My Skin</h5>
-								<div id="skins" class="container d-flex align-items-center justify-content-around w-50">
-									<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
-									<i id="skinSelect" class="fas fa-circle fa-3x"></i>
-									<i id="rightArrow" class="fas fa-chevron-right fa-2x arrow"></i>
-								</div>
+								<h4 class="pb-1"><strong>Profile</strong></h4><br>
+								<div class="d-flex align-items-center justify-content-center">
+										<label for="username">Username: </label>
+										<input type="text" ID="username" name="username" class="rounded mx-2"/>
+										<button type="button" class="btn btn-info btn-sm">Random</button>
+										</input>
+								</div><br>
+								<div class="d-flex justify-content-center">
+									<div class="container">
+										<h5>My Avatar</h5><br>
+										<div id="skins" class="container d-flex align-items-center justify-content-around">
+											<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
+											<i id="skinSelect" class="fas fa-circle fa-3x"></i>
+											<i id="rightArrow" class="fas fa-chevron-right fa-2x arrow"></i>
+										</div>
+									</div>
+									<div class="container">
+										<h5>My Skin</h5><br>
+										<div id="skins" class="container d-flex align-items-center justify-content-around">
+											<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
+											<i id="skinSelect" class="fas fa-circle fa-3x"></i>
+											<i id="rightArrow" class="fas fa-chevron-right fa-2x arrow"></i>
+										</div>
+									</div>
+								</div><br>
 								<button type="button" id="saveButton" class="submit btn btn-info m-3 lobby-link">Save</button><br>
-								<span id="lobbyDialogValidation"></span>
 							</form>
 						</div>
 						<!-- Create Lobby Panel -->
