@@ -6,9 +6,11 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 const mysql = require('mysql');
-var registry = require('./services/userRegistrar');
+// var registry = require('./services/userRegistrar');
 const session = require('express-session');
 require('dotenv').config();
+
+var sql = require('./services/mysqlService');
 //Setting up data base
 const connection = mysql.createConnection({
  host: process.env.Host,
@@ -45,10 +47,6 @@ app.use(session({
   saveUninitialized: true,
 }));
 
-
-
-let numUsers = 0;
-let clientList = [];
 
 io.on('connection', (client) => { 
   require('./services/loungeService.js')(io, client);

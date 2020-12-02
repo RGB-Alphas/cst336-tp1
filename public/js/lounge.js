@@ -8,8 +8,8 @@ $(document).ready(function() {
 	var input = document.getElementById("messageInput")
 
 	// keep this stuff updated via socket events and append it to our UI.
-	var users = [];
-	var userCount = 0;
+	// var users = [];
+	// var userCount = 0;
 	var lobbies = [];
 	var lobbyCount = 0;
 	var skinId = 0;
@@ -39,8 +39,8 @@ $(document).ready(function() {
 	socket.on('lounge_entered', (data) => {
 		// console.log("Users Online: %d", data.onlineCount);
 
-		users = data.onlineUsers;
-		userCount = data.onlineCount;
+		var users = data.onlineUsers;
+		var userCount = data.onlineCount;
 		lobbies = data.lobbies;
 		lobbyCount = data.lobbyCount;
 		
@@ -126,7 +126,7 @@ $(document).ready(function() {
 
 	socket.on('user joined', (data) => {
 		const alias = data.userAlias;
-		userCount = data.onlineCount;
+		var userCount = data.onlineCount;
 		//console.log(data.userAlias + ' joined');
 		//console.log("%d users online.", data.onlineCount);
 
@@ -149,8 +149,8 @@ $(document).ready(function() {
 
 	socket.on('user left', (data) => {
 		const alias = data.alias;
-		userCount = data.onlineCount;
-		users = data.onlineUsers;
+		var userCount = data.onlineCount;
+		var users = data.onlineUsers;
 		//console.log('User %s has left.', data.alias);
 		//console.log('%d users online.', data.userCount);
 		//console.log("Online users:");
