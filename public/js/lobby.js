@@ -6,20 +6,46 @@ $(document).ready(function() {
 	var socket = io();
 	var input = document.getElementById("messageInput")
 
+	var myAlias = "";
+
+	var isHost = false;
+
 	socket.emit("enter_lobby", {
 		lobbyName: lobbyName,
-		userName: userName
+		userName: userName,
+		alias: displayName
 	});
 
 	socket.on('lobby_entered', (data) => {
 		var playerCount = data.playerCount;
 		var players = data.players;
 		var options = data.options;
+		myAlias = data.myAlias;
+
+		var currentHost = players[0];
+
+		$("#map").val(options.map);
+		$("#timeLimit").val(options.time);
+		$("#ruleSet").val(options.ruleset);
+
+		if(currentHost === myAlias)
+		{
+			console.log("options should be enabled.");
+			enableOptions();
+		}
+		else
+		{
+			console.log("options should be disabled.");
+			disableOptions();
+		}
+
 
 		console.log(playerCount);
 		console.log(JSON.stringify(players))
 		console.log(JSON.stringify(options));
 		// console.log("Lobby Name: lo")
+
+		$("#messageList").append(`<li>${currentHost} is the host.</li>`);
 
 		$("#playerListHeading").html(`Users: (${playerCount})`);
 		$("#playerList").empty();
@@ -32,22 +58,68 @@ $(document).ready(function() {
 		
 	});
 
-	socket.on('user joined', (data) => {
-		const alias = data.userAlias;
-		const aliasID = data.sessionID;
+	function disableOptions() 
+	{ 
+		$("#map").prop('disabled', true);
+		$("#timeLimit").prop('disabled', true);
+		$("#ruleSet").prop('disabled', true);
+	} 
+	
+	function enableOptions() 
+	{ 
+		$("#map").prop('disabled', false);
+		$("#timeLimit").prop('disabled', false);
+		$("#ruleSet").prop('disabled', false);
+	}
+
+	$("#map").on("change", function() {
+		var map = $("#map").val();
+		socket.emit("map changed", map);
+	});
+
+	$("#timeLimit").on("change", function() {
+		var timeLimit = $("#timeLimit").val();
+		socket.emit("timeLimit changed", timeLimit);
+	});
+
+	$("#ruleSet").on("change", function() {
+		var ruleSet = $("#ruleSet").val();
+		socket.emit("ruleSet changed", ruleSet);
+	});
+
+	socket.on('map changed', map => {
+		$("#map").val(map);
+		//$("#map").change();
+	});
+
+	socket.on('timeLimit changed', timeLimit => {
+		$("#timeLimit").val(timeLimit);
+		//$("#timeLimit").change();
+	});
+
+	socket.on('ruleSet changed', ruleSet => {
+		$("#ruleSet").val(ruleSet);
+		//$("#ruleSet").change();
+	});
+
+
+
+	socket.on('lobby user joined', (data) => {
+		const newAlias = data.userAlias;
+		const newAliasID = data.sessionID;
 		userCount = data.playerCount;
 		//console.log(data.userAlias + ' joined');
 		//console.log("%d users online.", data.onlineCount);
 
 		$("#playerListHeading").html(`Users: ${userCount}`);
 		$("#playerList").append(
-			`<li class="list-item">${alias}</li>`);
+			`<li class="list-item">${newAlias}</li>`);
 		$("#messageList").append(
-			`<li class="list-item">${alias} has joined.</li>`);
+			`<li class="list-item">${newAlias} has joined.</li>`);
 	});
 
-	socket.on('user left', (data) => {
-		const alias = data.alias;
+	socket.on('lobby user left', (data) => {
+		const newAlias = data.alias;
 		userCount = data.userCount;
 		users = data.users;
 		//console.log('User %s has left.', data.alias);
@@ -56,7 +128,7 @@ $(document).ready(function() {
 		
 		$("#playerListHeading").html(`Users: ${userCount}`);
 		$("#messageList").append(
-			`<li class="list-item">${alias} has left.</li>`);
+			`<li class="list-item">${newAlias} has left.</li>`);
 		$("#playerList").empty();
 		for(i = 0; i < userCount; i++)
 		{
@@ -90,8 +162,9 @@ $(document).ready(function() {
 	
 	// Options Button
 	$("#optionsBtn").on("click", function(){
-	    $("#lobbyPanel").hide();
-	    $("#optionsPanel").show();
+	   $("#lobbyPanel").hide();
+		$("#optionsPanel").show();
+		 
 	})
 
 	// Quit Button
@@ -118,29 +191,29 @@ $(document).ready(function() {
 		var isTyping = false;
 
 		if(message !== "" && !isTyping) {
-			socket.emit('typing');
+			socket.emit('lobby typing');
 			isTyping = true;
 		} else {
-			socket.emit('stop typing');
+			socket.emit('lobby stop typing');
 			isTyping = false;
 		}
 	});
 
 	// add and remove aliases from an array and use array.join
 	// to create the typing text.
-	socket.on('typing', (data) => {
+	socket.on('lobby typing', (data) => {
 		const alias = data.alias;
 		$("#typingNotice").html(`${alias} is typing...`)
 		//console.log("%s is typing", alias);
 	});
 
-	socket.on('stop typing', (data) => {
+	socket.on('lobby stop typing', (data) => {
 		const alias = data.alias;
 		$("#typingNotice").html("")
 		//console.log("%s stopped typing", alias);
 	});
 
-	socket.on('new message', (data) => {
+	socket.on('lobby new message', (data) => {
 		const alias = data.alias;
 		const message = data.message;
 		
@@ -175,12 +248,12 @@ $(document).ready(function() {
 	$("#messageSend").click( function() {
 		var message = $("#messageInput").val(); // get message
 		$("#messageInput").val("");
-		socket.emit('stop typing');
+		socket.emit('lobby stop typing');
 
 		if(message == "")
 			return;
 
-		socket.emit('new message', message);
+		socket.emit('lobby new message', message);
 
 		var avatar = document.createElement("img");
 		avatar.setAttribute("src", "../img/avatar-male.jpg");

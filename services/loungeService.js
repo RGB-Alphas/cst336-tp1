@@ -5,33 +5,39 @@ var lobbyRegistry = require('./lobbyRegistrar');
 let userList = [];
 let usersOnline = 0;
 
-let lobbyList = [];
-
 
 module.exports = function(socket, client) {
 
 	let addedUser = false;
 
-	client.on("enter_lounge", (userName) => {
+	client.on("enter_lounge", (data) => {
 
 		client.join('lounge');
 
-		if(addedUser) return;
-		
-		console.log("Received: %s", userName);
-		const alias = userRegistry.GetAliasByUserName(userName);
-		const sessionID = client.id;
-		const entry = { "sessionID": sessionID, "alias": alias };
+		if(addedUser)
+			return;
+
+		const userName = data.userName;
+		const alias = data.alias;
 		client.username = userName; // the socket will hold the real username.
+		var sessionID = client.id;
+
+		console.log("Received: %s", userName);
+
 		
-		userList.push(entry);
-		usersOnline++;
-		addedUser = true;
+
+		
+
+		if(!userRegistry.IsOnline(userName))
+		{
+			userRegistry.AddUser(userName, alias);
+			addedUser = true;
+		}
 
 		// send the player a list of players.
 		client.emit('lounge_entered', {
-			onlineCount: usersOnline,
-			onlineUsers: userList,
+			onlineCount: userRegistry.GetUserCount(),
+			onlineUsers: userRegistry.GetUsers(),
 			lobbies: lobbyRegistry.GetAllLobbies(),
 			lobbyCount: lobbyRegistry.GetLobbyCount()
 		});
@@ -39,7 +45,7 @@ module.exports = function(socket, client) {
 		client.to('lounge').broadcast.emit('user joined', {
 			userAlias: alias,
 			sessionID: sessionID,
-			onlineCount: usersOnline
+			onlineCount: userRegistry.GetUserCount()
 		});
 
 	});
@@ -173,24 +179,20 @@ module.exports = function(socket, client) {
 	// when the user disconnects.. perform this
 	client.on('disconnect', () => {
 
-		if(addedUser) {
-			--usersOnline;
-			userList.splice(userList.indexOf(client.username), 1);
-  
+		if(!addedUser)
+			return;
+
+		if(userRegistry.IsOnline(client.username))
+		{
 			// echo globally that this client has left
 			client.to('lounge').broadcast.emit('user left', {
 			 alias: userRegistry.GetAliasByUserName(client.username),
-			 onlineCount: usersOnline,
-			 onlineUsers: userList
+			 onlineCount: userRegistry.GetUserCount(),
+			 onlineUsers: userRegistry.GetUsers()
 		  });
+
+		  userRegistry.RemoveUser(client.username);
+		  addedUser = false;
 		}
 	 });
 };
-
-(function() {
-
-	module.exports.AddOnlineUser = function(alias) {
-		userList.push(alias);
-	};
-
-}());

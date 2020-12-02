@@ -1,75 +1,79 @@
 
-var userProfiles = [
-	{ "id": 9996, "name": "david.test", "password": "123", "alias": "FrostyBuns" },
-	{ "id": 9997, "name": "andrew.test", "password": "123", "alias": "CraftyPants" },
-	{ "id": 9998, "name": "justin.test", "password": "123", "alias": "TastyTreat" },
-	{ "id": 9999, "name": "brandon.test", "password": "123", "alias": "GoodyBag" }
-];
-let UserID = 10000; // user id's start at 10,000 (for now)
+var userProfiles = [];
+var usersOnline = 0;
 
 module.exports = { profiles: userProfiles };
+module.exports = { usersOnline: usersOnline };
 
 (function() {
 
-	module.exports.AddUser = function(accountName, password, alias) {
-		const id = UserID;
+	module.exports.AddUser = function(name, alias) {
+		
+		var indexOfExistingUser = userProfiles.findIndex(user => user.name === name);
 
-		console.log("User Details:");
-		console.log(`${accountName}, ${password}, ${alias}`);
+		if(indexOfExistingUser === -1) // user doesn't exist. we add them.
+		{
+			console.log(`Adding new user: ${name} with alias: ${alias}.`)
+			const entry = { "name": name, "alias": alias };
+			userProfiles.push(entry);
+			usersOnline++;
 
-		// account exists, exit
-		if(userProfiles.find(profile => profile.name === accountName))
-			return false;
+			return true;
+		}
 
-		// it's unique, let's add it.
-		const user = {"id": id, "name": accountName, "password": password, "alias": alias};
-		console.log("Adding: ");
-		console.log(user);
-		userProfiles.push(user);
-		UserID++;
-		return true; // make this return false if the user name is unavailable
+		return false;
 	};
 
-module.exports.VerifyUser = function(name, password) {
-	
-	var user = userProfiles.find(profile => 
-		profile.name === name && 
-		profile.password === password);
-	
-	if(user === null)
-	{
+	module.exports.RemoveUser = function(name) {
+
+		var indexOfExistingUser = userProfiles.findIndex(profile => { return profile.name === name });
+
+		if(indexOfExistingUser >= 0)
+		{
+			userProfiles.splice(indexOfExistingUser, 1);
+			usersOnline--;
+			console.log(`${name} is now logged out.`);
+			return true;
+		}
+
+		console.log(`${name} can not be logged out because this person does not exist.`);
 		return false;
 	}
-	else
-	{
-		return true;
-	}
-};
 
-module.exports.GetAliasByUserName = function(userName) {
-
-	var user = userProfiles.find(profile => 
-		profile.name === userName);
-	
-	if(user === undefined)
-	{
-		return "Unknown Player";
-	}
-	else
-	{
-		console.log(user);
-		return user.alias;
-	}
-};
-
-module.exports.GetUserCredentials = function() {
-
-	console.log("User Profile: ");
-
-	userProfiles.forEach(profile => {
+	module.exports.IsOnline = function(name) {
 		
-		console.log(profile);
-	})
-};
+		for(var i = 0; i < userProfiles.length; i++)
+		{
+			// console.log(`Checking ${name} against ${userProfiles[i].name}'s profile`)
+			if(userProfiles[i].name === name)
+			{
+				console.log("User is already online.");
+				return true;
+			}
+				
+		}
+
+		console.log("No one else is online.");
+		return false;
+	};
+
+	module.exports.GetAliasByUserName = function(userName) {
+
+		for(var i = 0; i < usersOnline; i++)
+		{
+			var profileName = userProfiles[i].name;
+			if(profileName === userName)
+				return userProfiles[i].alias;
+		}
+		return "Unknown Alias";
+	};
+
+	module.exports.GetUsers = function() {
+		return userProfiles;
+	};
+
+	module.exports.GetUserCount = function() {
+		return usersOnline;
+	}
 
 }());

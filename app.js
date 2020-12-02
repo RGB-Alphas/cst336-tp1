@@ -63,31 +63,43 @@ app.get('/', (req, res, next) => {
 });
 
 // for action
-app.post('/login', function(req, res) {
+app.post('/login', function(req, res) 
+{
     var username = req.body.loginName;
     var password = req.body.loginPassword;
-    if (username && password) {
-      
-// check if user exists in db
-        connection.query('SELECT * FROM users WHERE accountName = ? AND password = ?', [username, password], function(error, results, fields) {
-            if (results.length > 0) {
-                req.session.authenticated = true;
-                req.session.username = username;
+  
+    if (username && password) 
+    {
+      // check if user exists
+      var queryResults;
+      connection.query('SELECT * FROM users WHERE accountName = ? AND password = ?', 
+        [username, password], 
+        function(error, results, fields) 
+        {
+          if(error)
+            console.error(error);
           
-                res.redirect('/authenticated');
-                console.log("You're IN!");
-            } else {
-                // res.send('');
-                const message = "Incorrect Username and/or Password.";
-                res.render('index.html', {message: message});
-            }        
-            // res.end();   
+          if(results.length === 0)
+          {
+            const message = "Incorrect Username and/or Password.";
+            res.render('index.html', {message: message});
+          }
+
+          req.session.authenticated = true;
+          req.session.username = results[0].accountName;
+          req.session.alias = results[0].displayName;
+
+          console.log(`${results[0].accountName} ${results[0].displayName}`);
+          res.redirect('/authenticated');
+
         });
-    } else {
-        // res.send('');
-        const message = "Please enter Username and Password.";
-        res.render('index.html', {message: message});
-        // res.end();
+    } 
+    else 
+    {
+      // res.send('');
+      const message = "Please enter Username and Password.";
+      res.render('index.html', {message: message});
+      // res.end();
     }
 });
 //Gets data from form anc pushes to DataBase
@@ -120,7 +132,8 @@ setTimeout(() => {  console.log(valid);
 
 app.get('/authenticated', isAuthenticated, function(req, res){
   let name = req.session.username;
-  res.render("authenticated/lounge.html", {name: name });
+  let alias = req.session.alias;
+  res.render("authenticated/lounge.html", {name: name, alias: alias });
    
 });
 
@@ -128,14 +141,16 @@ app.get('/authenticated', isAuthenticated, function(req, res){
 app.get('/lobby', isAuthenticated, function(req, res){
   const lobbyName = req.query.lobbyName || req.query.inputLobbyName;
   const userName = req.session.username;
+  const alias = req.session.alias;
 
   // console.log(`Lobby Created: name: ${name}, ${password}.`);
-  res.render("authenticated/lobby.html", { lobbyName: lobbyName, userName: userName });
+  res.render("authenticated/lobby.html", { lobbyName: lobbyName, userName: userName, alias: alias });
 });
 
 app.get('/game', isAuthenticated, function(req, res){
   let name = req.session.username;
-  res.render("authenticated/game.html", {userName: name});
+  let alias = req.session.alias;
+  res.render("authenticated/game.html", { userName: name, alias: alias });
 });
 
 server.listen(port, () => {

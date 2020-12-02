@@ -2,7 +2,6 @@
 /* global io */
 
 $(document).ready(function() {
-	var socket = io();
 	
 	// Prompt user to login or register
 	$('#main-dialog').show();
