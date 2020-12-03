@@ -1,5 +1,6 @@
 var userRegistry = require('./userRegistrar');
 var lobbyRegistry = require('./lobbyRegistrar');
+var gameSessionManager = require('./gameSession');
 
 
 
@@ -92,6 +93,16 @@ module.exports = function(socket, client) {
 			})
 		}
 		else {
+			const lobby = lobbyRegistry.GetLobbyByName(lobbyName);
+
+			// add a game session and get an id.
+			var sessionID = gameSessionManager.AddGameSession(
+				lobbyName, 
+				lobby.players.map(player => { 
+					return { 
+						"name": player.name 
+					} }),
+				lobby.options);
 			socket.to(`${lobbyName}`).emit('ready check success');
 		}
 	});
@@ -188,7 +199,7 @@ module.exports = function(socket, client) {
 			console.log(JSON.stringify(lobby));
 
 			lobbyRegistry.RemoveLobbyIfEmpty(lobbyName);
-			userRegistry.RemoveUser(client.username);
+			// userRegistry.RemoveUser(client.username);
 			addedUser = false;
 		}
 	});

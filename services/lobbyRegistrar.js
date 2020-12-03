@@ -147,9 +147,10 @@ module.exports = { LobbyID: LobbyID };
 
 	module.exports.ExitPlayerFromLobby = function(lobbyName, alias) {
 		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+
 		if(lobbyIndex === -1)
 			return;
-		const playerIndex = lobbyList[lobbyIndex].players.indexOf(alias);
+		const playerIndex = lobbyList[lobbyIndex].players.findIndex(player => player.name === alias);
 		lobbyList[lobbyIndex].players.splice(playerIndex, 1);
 		lobbyList[lobbyIndex].occupants--;
 
