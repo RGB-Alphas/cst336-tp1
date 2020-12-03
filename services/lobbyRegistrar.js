@@ -27,7 +27,7 @@ let LobbyID = 1000; // user id's start at 1,000 (for now)
 
 module.exports = { lobbies: lobbyList };
 module.exports = { lobbyCount: lobbyCount };
-module.exports = { lobbyID: lobbyID };
+module.exports = { LobbyID: LobbyID };
 
 (function() {
 
