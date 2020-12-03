@@ -6,6 +6,11 @@ import {checkCollision} from "./GameFunctions/checkCollision.js"
 
 console.log("game.js connected");
 
+const socket = io('http://localhost:3000/game');
+socket.on('step', handleInit);
+
+console.log(socket);
+
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext('2d');
 
@@ -16,6 +21,7 @@ var circle1 = new Circle(100,100,15,0, "turquoise",0);	// Player
 var circle2 = new Circle(200,100,15,0, "yellow",0);		// CPU
 
 var step = function() {
+	document.addEventListener('keydown', keydown);
 	controller(circle1);
 	ctx.clearRect(0,0,screenWidth,screenHeight);
 	if (checkCollision(circle1, circle2)) {
@@ -30,3 +36,11 @@ var step = function() {
 }
 
 step();
+
+function keydown(e) {
+	console.log(e.keyCode);
+}
+
+function handleInit(msg) {
+	console.log(msg);
+}
