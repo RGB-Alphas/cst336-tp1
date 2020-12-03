@@ -13,10 +13,10 @@ require('dotenv').config();
 var sql = require('./services/mysqlService');
 //Setting up data base
 const connection = mysql.createConnection({
- host: process.env.Host,
- user: process.env.User,
- password: process.env.Password,
- database: process.env.Database
+ host: 'aqx5w9yc5brambgl.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+ user: 'm4uczqk07nizg82s',
+ password: 'jjcce4z1yndxc21y',
+ database: 'pxe2qkxvek3zot7z'
 });
 // Connection to database
  connection.connect((err) => {
