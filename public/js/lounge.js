@@ -274,7 +274,7 @@ $(document).ready(function() {
 		var name = data.name;
 		var occupants = data.occupants;
 		var capacity = data.capacity;
-		var host = data.players[0];
+		var host = data.players[0].name;
 		console.log("Adding Lobby: %s", name);
 		$("#lobbyList").append(
 			`<li id="${name}" class="lobby list-item lobby-link my-1 rounded"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</li>`)

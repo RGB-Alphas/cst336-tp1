@@ -3,8 +3,6 @@
 // This data does not need to exist in a database.
 // only users (for now at least).
 
-const { Socket } = require("socket.io");
-
 
 var lobbyList = [
 	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 1, "capacity": 1, "players": [ { "name:": "Dummy1", "isReady": false } ],
@@ -29,6 +27,7 @@ let LobbyID = 1000; // user id's start at 1,000 (for now)
 
 module.exports = { lobbies: lobbyList };
 module.exports = { lobbyCount: lobbyCount };
+module.exports = { lobbyID: lobbyID };
 
 (function() {
 
@@ -39,10 +38,10 @@ module.exports = { lobbyCount: lobbyCount };
 		{
 			var lobby = lobbyList[i];
 			var players = lobby.players;
-			for(var j = 0; j < lobby.players.length; j++)
+			for(var j = 0; j < lobby.occupants; j++)
 			{
 				//console.log(`Comparing (${name} === ${players[j]})`);
-				if(name === players[j])
+				if(name === players[j].name)
 				{
 					//console.log("match found!");
 					return lobby.name;
@@ -68,9 +67,10 @@ module.exports = { lobbyCount: lobbyCount };
 		var id = LobbyID;
 
 		const lobby = {"id": id, "name": name, "password": password, "occupants": 0, "capacity": playerCapacity,
-		"players": [ ],
-		"options": {
+			"players": [],
+			"options": {
 			"map": "destiny", "time": "30", "ruleset": "lastman" }};
+	
 		console.log(`Adding lobby: ${lobby.id}, ${lobby.name}, ${lobby.password}`);
 		lobbyList.push(lobby);
 		lobbyCount++;
@@ -91,26 +91,31 @@ module.exports = { lobbyCount: lobbyCount };
 
 	module.exports.WhoIsNotReady = function(lobbyName)
 	{
-		var lobbyIndex = lobbyList.indexOf(lobbyName);
-		var playerCount = lobbyList[lobbyIndex].players.length;
+		var lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
+		// var players = lobbyList[lobbyIndex].players;
+		var playerCount = lobbyList[lobbyIndex].occupants;
 
 		unreadyPlayers = [];
 
 		for(var i = 0; i < playerCount; i++)
 		{
-			if(!lobbyList[lobbyIndex].players.isReady)
-				unreadyPlayers.push(lobbyList[lobbyIndex].players.name);
+			if(!lobbyList[lobbyIndex].players[i].isReady)
+				unreadyPlayers.push(lobbyList[lobbyIndex].players[i].name);
 		}
+
+		console.log(JSON.stringify(unreadyPlayers));
 
 		return unreadyPlayers;
 	};
 
 	module.exports.SetPlayerReadyState = function(lobbyName, alias, state) {
-		var lobbyIndex = lobbyList.indexOf(lobbyName);
+		var lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
 
-		var playerIndex = lobbyList[lobbyIndex].players.indexOf(alias);
+		var playerIndex = lobbyList[lobbyIndex].players.findIndex(player => player.name === alias);
 
 		lobbyList[lobbyIndex].players[playerIndex].isReady = state;
+
+		console.log(`${lobbyList[lobbyIndex].name}'s ${lobbyList[lobbyIndex].players[playerIndex].name} is set to ${lobbyList[lobbyIndex].players[playerIndex].isReady}`);
 	};
 
 	module.exports.UpdateLobbyMap = function(lobbyName, map) {
