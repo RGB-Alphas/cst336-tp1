@@ -1,6 +1,8 @@
 /* global $ */
 /* global io */
 
+const e = require("express");
+
 $(document).ready(function() {
 	
 	var socket = io();
@@ -57,6 +59,26 @@ $(document).ready(function() {
 		}
 		
 	});
+
+	// starting the game
+
+	$("#startBtn").on('click', function(e) {
+		e.preventDefault;
+
+		socket.emit('ready check');
+	});
+
+	socket.on('ready check success', () => {
+		window.location.href = $("#startButton").attr('href');
+	});
+
+	socket.on('ready check failed', (data) => {
+		var players = data.players.join(", ");
+		$("#messageList").appent(
+			`<li>Ready check failed for: ${players}</li>`);
+	});
+
+	// end start game routine
 
 	function disableOptions() 
 	{ 
@@ -145,12 +167,14 @@ $(document).ready(function() {
 	    if ($(this).hasClass("btn-info")){
 	        $(this).removeClass("btn-info");
 	        $(this).addClass("btn-dark");
-	        $(this).html(`<strong>Ready <i class="fas fa-check ml-2"></i></strong>`);
+			  $(this).html(`<strong>Ready <i class="fas fa-check ml-2"></i></strong>`);
+			  socket.emit('player ready');
 	    }
 	    else{
 	        $(this).removeClass("btn-dark");
 	        $(this).addClass("btn-info");
-	        $(this).html(`Ready <i class="fas fa-times ml-2"></i>`);
+			  $(this).html(`Ready <i class="fas fa-times ml-2"></i>`);
+			  socket.emit('player not ready');
 	    }
 	})
 	

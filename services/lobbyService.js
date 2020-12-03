@@ -59,6 +59,25 @@ module.exports = function(socket, client) {
 		
 	});
 
+	client.on('ready check', () => {
+		// to get a list of players use these 3 lines of code.
+		var alias = userRegistry.GetAliasByUserName(client.username);
+		var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+
+		var unreadyList = lobbyRegistry.WhoIsNotReady(lobbyName);
+
+		if(unreadyList.length > 0) {
+			client.to(`${lobbyName}`).emit(`ready check failed`, {
+				waitingFor: unreadyList
+			})
+		}
+		else {
+			client.to(`${lobbyName}`).emit('ready check success');
+		}
+		
+		lobbyRegistry.SetPlayerReadyState(lobbyName, alias, true);
+	});
+
 	client.on('ruleSet changed', ruleSet => {
 
 		var alias = userRegistry.GetAliasByUserName(client.username);

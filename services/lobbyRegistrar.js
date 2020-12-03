@@ -7,19 +7,19 @@ const { Socket } = require("socket.io");
 
 
 var lobbyList = [
-	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 1, "capacity": 1, "players": [ "Dummy1" ],
+	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 1, "capacity": 1, "players": [ { "name:": "Dummy1", "isReady": false } ],
       "options": {
          "map": "destiny", "time": "30", "ruleset": "lastman" }
    	},
-	{ "id": 997, "name": "lobby2", "password": "123", "occupants": 1, "capacity": 2, "players": [ "Dummy2" ],
+	{ "id": 997, "name": "lobby2", "password": "123", "occupants": 1, "capacity": 2, "players": [ { "name:": "Dummy1", "isReady": false } ],
 		"options": {
 			"map": "destiny", "time": "30", "ruleset": "lastman" }
 		},
-	{ "id": 998, "name": "lobby3", "password": "", "occupants": 1, "capacity": 4, "players": [ "Dummy3" ],
+	{ "id": 998, "name": "lobby3", "password": "", "occupants": 1, "capacity": 4, "players": [ { "name:": "Dummy1", "isReady": false } ],
 		"options": {
 			"map": "destiny", "time": "30", "ruleset": "lastman" }
 		},
-	{ "id": 999, "name": "lobby4", "password": "", "occupants": 1, "capacity": 8, "players": [ "Dummy4" ],
+	{ "id": 999, "name": "lobby4", "password": "", "occupants": 1, "capacity": 8, "players": [ { "name:": "Dummy1", "isReady": false } ],
 		"options": {
 			"map": "destiny", "time": "30", "ruleset": "lastman" }
 		},
@@ -68,7 +68,7 @@ module.exports = { lobbyCount: lobbyCount };
 		var id = LobbyID;
 
 		const lobby = {"id": id, "name": name, "password": password, "occupants": 0, "capacity": playerCapacity,
-		 "players": [ ],
+		"players": [ ],
 		"options": {
 			"map": "destiny", "time": "30", "ruleset": "lastman" }};
 		console.log(`Adding lobby: ${lobby.id}, ${lobby.name}, ${lobby.password}`);
@@ -88,6 +88,30 @@ module.exports = { lobbyCount: lobbyCount };
 		lobbyList[lobbyIndex].options.ruleset = ruleset;
 	}
 	*/
+
+	module.exports.WhoIsNotReady = function(lobbyName)
+	{
+		var lobbyIndex = lobbyList.indexOf(lobbyName);
+		var playerCount = lobbyList[lobbyIndex].players.length;
+
+		unreadyPlayers = [];
+
+		for(var i = 0; i < playerCount; i++)
+		{
+			if(!lobbyList[lobbyIndex].players.isReady)
+				unreadyPlayers.push(lobbyList[lobbyIndex].players.name);
+		}
+
+		return unreadyPlayers;
+	};
+
+	module.exports.SetPlayerReadyState = function(lobbyName, alias, state) {
+		var lobbyIndex = lobbyList.indexOf(lobbyName);
+
+		var playerIndex = lobbyList[lobbyIndex].players.indexOf(alias);
+
+		lobbyList[lobbyIndex].players[playerIndex].isReady = state;
+	};
 
 	module.exports.UpdateLobbyMap = function(lobbyName, map) {
 		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
@@ -147,7 +171,7 @@ module.exports = { lobbyCount: lobbyCount };
 		if(current < capacity)
 		{
 			console.log(`Adding ${playerName} to lobby: ${lobbyName}.`);
-			lobbyList[lobbyIndex].players.push(playerName);
+			lobbyList[lobbyIndex].players.push( { "name": playerName, "isReady": false } );
 			lobbyList[lobbyIndex].occupants++;
 			return true;
 		}
