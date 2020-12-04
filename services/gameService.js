@@ -1,5 +1,5 @@
 var userRegistry = require('./userRegistrar');
-var lobbyRegistry = require('./lobbyRegistrar');
+var gameSessionManager = require('./gameSession');
 
 module.exports = function(socket, client) {
 	client.on("enter_game", function (data) {
@@ -8,9 +8,13 @@ module.exports = function(socket, client) {
 
 		client.on('enter_game', (data) => {
 			var userName = data.userName;
-			// alias too
+			var alias = data.alias;
 
-			userRegistry.AddUser(userName, "");
+			userRegistry.AddUser(userName, alias);
+
+			
+
+			
 
 			client.join(`${lobbyName}`);
 

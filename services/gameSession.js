@@ -40,6 +40,34 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 		return newSession.id;
 	};
 
+	module.exports.WhereIsPlayer = function(playerAlias) {
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
+
+		if(sessionIndex === -1)
+			return "";
+
+		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
+
+		if(playerIndex === -1)
+			return "";
+
+		return gameSessions[sessionIndex].GameSessionID;
+	};
+
+	// might not need...
+	module.exports.JoinGameSession = function(sessionID, playerAlias) {
+
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
+
+		if(sessionIndex === -1)
+			return;
+
+		var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, 
+				"isHot": false, "isPoweredUp": false, "isFast": false, "isBig": false };
+
+		gameSessions[sessionIndex].players.push(newPlayer);
+	};
+
 	module.exports.RemoveGameSession = function(gameSessionID) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
