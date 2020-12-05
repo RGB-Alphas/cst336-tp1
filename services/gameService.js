@@ -1,11 +1,7 @@
 module.exports = function(socket, client) {
-	// client.on("enter_game", function (data) {
-	// 	client.emit("login_success", {data: 'hello world'});
-	// });
-	
-	//socket.broadcast.emit("login_success", {data: 'hello world'})
-	//client.broadcast.emit("login_success", {data: 'hello world'})
-	client.on("login_success", (data)=>{
+	client.on("game_start", (data)=>{
+		console.log("this is the ")
 		console.log(data);
+		client.emit("received", {data:"received hello"});
 	})
 };
