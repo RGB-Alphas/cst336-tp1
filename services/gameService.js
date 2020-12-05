@@ -2,21 +2,30 @@ var userRegistry = require('./userRegistrar');
 var gameSessionManager = require('./gameSession');
 
 module.exports = function(socket, client) {
+
+	var userAdded = false;
+
 	client.on("enter_game", function (data) {
-		
-		// socket.sockets.emit("login_success", data);
 
 		client.on('enter_game', (data) => {
-			var userName = data.userName;
+			client.username = data.userName;
 			var alias = data.alias;
 
 			userRegistry.AddUser(userName, alias);
+			var gameSessionID = gameSessionManager.WhereIsPlayer(alias);
 
-			
+			client.join(`${gameSessionID}`);
 
-			
+			if(userAdded)
+				return;
 
-			client.join(`${lobbyName}`);
+			var players = gameSessionManager.GetAllPlayers(gameSessionID);
+			var options = gameSessionManager.GetOptions(gameSessionID);
+
+			client.emit('game_entered', {
+				players: players,
+				options: options
+			});
 
 		});
 
