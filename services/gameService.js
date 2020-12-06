@@ -1,33 +1,13 @@
-var userRegistry = require('./userRegistrar');
-var gameSessionManager = require('./gameSession');
+var playerArray = [];
 
 module.exports = function(socket, client) {
 
-	var userAdded = false;
+	client.on("playerJoined", (data)=>{
+		var player = JSON.parse(data);
+		playerArray.push(player);
+		console.log("# of Players: ", playerArray.length);
+		client.emit("received", JSON.stringify(playerArray));
+	})
 
-	client.on("enter_game", function (data) {
-
-		client.on('enter_game', (data) => {
-			client.username = data.userName;
-			var alias = data.alias;
-
-			userRegistry.AddUser(userName, alias);
-			var gameSessionID = gameSessionManager.WhereIsPlayer(alias);
-
-			client.join(`${gameSessionID}`);
-
-			if(userAdded)
-				return;
-
-			var players = gameSessionManager.GetAllPlayers(gameSessionID);
-			var options = gameSessionManager.GetOptions(gameSessionID);
-
-			client.emit('game_entered', {
-				players: players,
-				options: options
-			});
-
-		});
-
-	});
+	client.emit("received", JSON.stringify(playerArray));
 };
