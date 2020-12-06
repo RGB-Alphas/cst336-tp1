@@ -51,7 +51,7 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 		if(playerIndex === -1)
 			return "";
 
-		return gameSessions[sessionIndex].GameSessionID;
+		return gameSessions[sessionIndex].id;
 	};
 
 	// might not need...
@@ -117,6 +117,15 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 		gameSessions[sessionIndex].players[playerIndex].isPoweredUp = isPoweredUp;
 		gameSessions[sessionIndex].players[playerIndex].isFast = isFast;
 		gameSessions[sessionIndex].players[playerIndex].isBig = isBig;
+	};
+
+	module.exports.GetAllPlayers = function(gameSessionID) {
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
+
+		if(sessionIndex === -1)
+			return;
+
+		return gameSessions[sessionIndex].players;
 	};
 
 	module.exports.GetAllPlayerNamesAndPositions = function(gameSessionID) {
