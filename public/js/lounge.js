@@ -37,7 +37,7 @@ $(document).ready(function() {
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
-		// console.log("Users Online: %d", data.onlineCount);
+		// co nsole.log("Users Online: %d", data.onlineCount);
 
 		var users = data.onlineUsers;
 		var userCount = data.onlineCount;
