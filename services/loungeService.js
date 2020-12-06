@@ -30,7 +30,7 @@ module.exports = function(socket, client) {
 
 		if(!userRegistry.IsOnline(userName))
 		{
-			userRegistry.AddUser(userName, alias, userId);
+			userRegistry.AddUser(userName, alias);
 			addedUser = true;
 		}
 
