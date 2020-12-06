@@ -13,9 +13,7 @@ require('dotenv').config();
 var sql = require('./services/mysqlService');
 //Setting up data base
 const connection = sql.Connect();
-var test = sql.addUserStats(7,4,8,4, function(returned)
-{ 
-}); 
+
 // import { AddUser, VerifyUser } from './services/registrar.js';
 
 
@@ -71,7 +69,7 @@ app.post('/login', function(req, res)
           req.session.authenticated = true;
           req.session.username = results[0].accountName;
           req.session.alias = results[0].displayName;
-          req.session.userID = results[0].id;
+          req.session.userId = results[0].id;
 
           console.log(`${results[0].accountName} ${results[0].displayName}`);
           res.redirect('/authenticated');
@@ -105,7 +103,8 @@ app.post('/register', function (req, res) {
 app.get('/authenticated', isAuthenticated, function(req, res){
   let name = req.session.username;
   let alias = req.session.alias;
-  res.render("authenticated/lounge.html", {name: name, alias: alias });
+  let userId = req.session.userId;
+  res.render("authenticated/lounge.html", {name: name, alias: alias , userId: userId });
    
 });
 
