@@ -8,9 +8,8 @@ html, body{
 }
 
 canvas{
-    margin: 0 auto;
-    display: block;
-    background-color: #090909;
-    overflow: hidden;
-    border: 5px solid whitesmoke;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    background-color: #292b2c;
 }
