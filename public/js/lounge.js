@@ -442,15 +442,15 @@ $(document).ready(function() {
 	
 	// Generate random avatar from faker API
 	async function randomAvatar(){
-		let url = 'https://avatars.dicebear.com/api/male/john.svg?options[mood]=happy';
+		let url = `https://avatars.dicebear.com/api/human/123.svg?background=%23ffffff`;
 		const response = await fetch(url);
 		console.log(response);
 		console.log(response.url);
-		return response.url;
+		$("#avatar").attr("src", response.url);
 	}
 	
 	// Random avatar button
-		$("#avatarBtn").on("click", function(){
-			// $("#avatar").attr("src", randomAvatar());
-	})
+	$("#avatarBtn").on("click", function(){
+		randomAvatar();
+	})	
 });

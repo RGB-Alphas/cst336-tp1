@@ -54,17 +54,38 @@
 						</div>
 						<!-- Profile Panel -->
 						<div id="profilePanel" class="mx-3 panel rounded">
-							<form method="get" action="/lobby" id="lobbyForm" class="py-3">
-								<h4 class="pb-1"><strong>Profile</strong></h4><br>
+							<form method="get" action="/" id="profileForm" class="py-3 scroll">
+								<h3><strong>Profile</strong></h4><br>
+								<h5>Alias</h5>
 								<div class="d-flex align-items-center justify-content-center">
-										<label for="username">Username: </label>
+										
 										<input type="text" id="usernameInput" name="username" class="rounded mx-2 text-center"/>
-										<button id="usernameBtn" type="button" class="btn btn-info btn-sm">Random</button>
+										<button id="usernameBtn" type="button" class="btn btn-info btn-sm"><i class="fas fa-random"></i></button>
 										</input>
-								</div><br>
-								<div class="d-flex justify-content-center">
+								</div><br><br>
+								<div class="d-flex justify-content-around align-items-center">
+									<div>
+										<h5>Gender</h5>
+										<input type="radio" id="male" name="gender" value="male">
+										<label for="male" class="mr-3">Male</label><br>
+										<input type="radio" id="female" name="gender" value="female">
+										<label for="female"  class="mr-3">Female</label><br>
+										<input type="radio" id="other" name="gender" value="other">
+										<label for="other">Other</label>
+									</div>
+									<div>
+										<h5>Location</h5>
+										<select name="state" id="state" class="my-1 rounded">
+							                <option>Select One</option>
+							                <option value="ca">California</option>
+							                <option value="ny">New York  </option>
+							                <option value="tx">Texas     </option>
+							            </select>
+									</div>
+								</div><br><br>
+								<div class="d-flex justify-content-around align-items-center">
 									<div class="container">
-										<h5>My Skin</h5><br>
+										<h5>Skin</h5><br>
 										<div id="skins" class="container d-flex align-items-center justify-content-around">
 											<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
 											<i id="skinSelect" class="fas fa-circle fa-3x"></i>
@@ -72,14 +93,15 @@
 										</div>
 									</div>
 									<div class="container">
-										<h5>My Avatar</h5><br>
-										<img id=avatar src="https://avatars.dicebear.com/api/male/john.svg?options[mood]=happy" width="100" height="100" alt="avatar"></img><br>
-										<button id="avatarBtn" type="button" class="btn btn-info btn-sm">Random</button>
-									</div>
-								</div><br>
+										<h5>Avatar</h5>
+										<img id=avatar src="" width="75" height="75" alt="avatar"></img><br>
+										<button id="avatarBtn" type="button" class="btn btn-info btn-sm mt-3">Random</button>
+									</div>	
+								</div><br><br>
 								<button type="button" id="saveButton" class="submit btn btn-info m-3 lobby-link">Save</button><br>
-							</form>
+							</form>						
 						</div>
+					</div>
 						<!-- Create Lobby Panel -->
 						<div id="createPanel" class="mx-3 panel rounded">
 							<form method="get" action="/lobby" id="createlobbyForm" class="py-3">

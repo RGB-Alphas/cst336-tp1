@@ -67,6 +67,10 @@ input{
 	background-color: #5c6770!important;
 }
 
+#profileForm{
+	max-height: 350px;
+}
+
 .arrow{
 	color: gainsboro;
 }
