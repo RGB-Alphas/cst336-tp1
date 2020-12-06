@@ -1,13 +1,24 @@
-var playerArray = [];
+var userRegistry = require('./userRegistrar');
+var gameSessionManager = require('./gameSession');
 
 module.exports = function(socket, client) {
+	client.on("enter_game", function (data) {
+		
+		// socket.sockets.emit("login_success", data);
 
-	client.on("playerJoined", (data)=>{
-		var player = JSON.parse(data);
-		playerArray.push(player);
-		console.log("# of Players: ", playerArray.length);
-		client.emit("received", JSON.stringify(playerArray));
-	})
+		client.on('enter_game', (data) => {
+			var userName = data.userName;
+			var alias = data.alias;
 
-	client.emit("received", JSON.stringify(playerArray));
+			userRegistry.AddUser(userName, alias);
+
+			
+
+			
+
+			client.join(`${lobbyName}`);
+
+		});
+
+	});
 };

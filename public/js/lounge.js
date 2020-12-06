@@ -38,7 +38,7 @@ $(document).ready(function() {
 				 
 	// User joined messages
 	console.log("Emitting: %s, %s", userName, displayName);
-	socket.emit('enter_lounge', { userName: userName, alias: displayName} );
+	socket.emit('enter_lounge', { userName: userName, alias: displayName } );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
@@ -48,7 +48,6 @@ $(document).ready(function() {
 		var userCount = data.onlineCount;
 		lobbies = data.lobbies;
 		lobbyCount = data.lobbyCount;
-		var userId = data.userId;
 		
 		$("#playerListHeading").html(`Users: ${userCount}`);
 		$("#playerList").empty();
@@ -321,14 +320,6 @@ $(document).ready(function() {
 			lobbyName: $("#lobbyName").val(),
 			lobbyPassword: $("#lobbyPassword").val(),
 			lobbyCapacity: $("#lobbyCapacity").val()
-		});
-		
-	});
-	
-		// emit to save profile settings into db.
-	$("#saveButton").click(function(){
-		socket.emit('save-Profile', {
-		profilePicture	: skinId, userId: userId
 		});
 		
 	});
