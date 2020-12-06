@@ -7,6 +7,7 @@ import {checkCollision} from "./GameFunctions/checkCollision.js"
 $(document).ready(function(){
 	var socket = io();
 	var currentPlayer;
+	var playerFromServer
 	var canvas = document.getElementById("myCanvas");
 	var ctx = canvas.getContext('2d');
 
@@ -20,20 +21,33 @@ $(document).ready(function(){
 	socket.emit("playerJoined", JSON.stringify(player));
 
 	var step = function() {
-		socket.on("received",(data)=>{
+		ctx.clearRect(0,0,screenWidth,screenHeight);
+		socket.on("received",async (data)=>{
 			//console.log("This is the ", data);
-			let playerFromServer = JSON.parse(data);
-			//console.log("this is the player ", playerFromServer);
+			playerFromServer = JSON.parse(data);
+			console.log("this is the player ", playerFromServer);
 			for(let i = 0; i < playerFromServer.length; i++) {
 				if( player.randomColor === playerFromServer[i].randomColor) {
 					currentPlayer = playerFromServer[i];
 				}
 			}
-			//console.log("The current player is ", currentPlayer);
+			console.log("The current player is ", currentPlayer);
+			// playerFromServer.forEach(player => {
+			// 	drawCircle(player, ctx);
+			// });
+		});
+		await playerFromServer.forEach(player => {
+			drawCircle(player, ctx);
 		});
 		controller(currentPlayer);
-		ctx.clearRect(0,0,screenWidth,screenHeight);
-		//window.requestAnimationFrame(step);
+		// 	if (checkCollision(circle1, circle2)) {
+		// 		circle1.speed = -circle1.speed;
+		// 		circle1.x += circle1.speed;
+		// 		circle1.y += circle1.speed;
+		// 		circle2.color = "white";
+		// 	}
+		//console.log(playerFromServer);
+		window.requestAnimationFrame(step);
 	}
 
 	step();
