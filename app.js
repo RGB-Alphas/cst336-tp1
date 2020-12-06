@@ -13,9 +13,7 @@ require('dotenv').config();
 var sql = require('./services/mysqlService');
 //Setting up data base
 const connection = sql.Connect();
-var test = sql.addUserStats(7,4,8,4, function(returned)
-{ 
-}); 
+
 // import { AddUser, VerifyUser } from './services/registrar.js';
 
 
