@@ -6,13 +6,37 @@ import {checkCollision} from "./GameFunctions/checkCollision.js"
 
 $(document).ready(function(){
 	var socket = io();
+	var currentPlayer;
+	var canvas = document.getElementById("myCanvas");
+	var ctx = canvas.getContext('2d');
+
+	let screenWidth = 1000;
+	let screenHeight = 500;
+
+	let x = Math.floor(Math.random() * Math.floor(800) + 100);
+	let y = Math.floor(Math.random() * Math.floor(300) + 100);
+	let randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+	var player = new Circle(x,y,15,0,randomColor,0);
+	socket.emit("playerJoined", JSON.stringify(player));
+
+	var step = function() {
+		socket.on("received",(data)=>{
+			//console.log("This is the ", data);
+			let playerFromServer = JSON.parse(data);
+			//console.log("this is the player ", playerFromServer);
+			for(let i = 0; i < playerFromServer.length; i++) {
+				if( player.randomColor === playerFromServer[i].randomColor) {
+					currentPlayer = playerFromServer[i];
+				}
+			}
+			//console.log("The current player is ", currentPlayer);
+		});
+		controller(currentPlayer);
+		ctx.clearRect(0,0,screenWidth,screenHeight);
+		//window.requestAnimationFrame(step);
+	}
 
 	step();
-	
-	var step = function() {
-		socket.emit("game_start",{data: "hello world"});
-		window.requestAnimationFrame(step);
-	}
 })
 
 
