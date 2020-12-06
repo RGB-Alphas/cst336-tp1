@@ -1,10 +1,13 @@
 /* global $ */
 /* global io */
+/* global userName */
+/* global displayName */
+/* global faker*/
+/* global fetch*/
 
 $(document).ready(function() {
 
 	var socket = io();
-
 	var input = document.getElementById("messageInput")
 
 	// keep this stuff updated via socket events and append it to our UI.
@@ -14,6 +17,10 @@ $(document).ready(function() {
 	var lobbyCount = 0;
 	var skinId = 0;
 	var maxSkinId = 13;
+	var selectedLobby = "";
+	var selectedPlayer = "";
+	
+	// Skin ID & Corresponding Color
 	var skins = {0: "blue",
 				 1: "lightblue",
 				 2: "steelblue",
@@ -28,10 +35,8 @@ $(document).ready(function() {
 				 11: "purple",
 				 12: "lavender", 
 				 13: "pink"};
-
-	var selectedLobby = "";
-	var selectedPlayer = "";
-
+				 
+	// User joined messages
 	console.log("Emitting: %s, %s", userName, displayName);
 	socket.emit('enter_lounge', { userName: userName, alias: displayName } );
 
@@ -97,23 +102,27 @@ $(document).ready(function() {
 		 });
 	});
 
+	// Password required message
 	socket.on('password_required', () => {
 		$("#joinLobbyDialogValidation").html("Password Required");
 		$("#joinLobbyDialogValidation").css("color", "red");
 	});
-
+	
+	// Join lobby failed message
 	socket.on('join_lobby_request_rejected', () => {
 		$("#joinLobbyDialogValidation").html("Unable to join.");
 		$("#joinLobbyDialogValidation").css("color", "red");
 		console.log("Join unsuccessful.");
 	});
 
+	// Join lobby success message
 	socket.on('join_lobby_request_accepted', () => {
 		console.log("Join Success. Moving to the lobby.");
 		window.location = `/lobby?lobbyName=${selectedLobby}`;
 		// $("#joinLobbyForm").submit();
 	});
-
+	
+	// Join Lobby button click listener
 	$("#joinLobby").on("click", function() {
 
 		var password = $("#inputLobbyPassword").val();
@@ -159,7 +168,7 @@ $(document).ready(function() {
 		$("#messageList").append(
 			`<li class="list-item">${alias} has left.</li>`);
 		$("#playerList").empty();
-		for(i = 0; i < userCount; i++)
+		for(let i = 0; i < userCount; i++)
 		{
 			$("#playerList").append(
 				`<li class="player list-item">${users[i].alias}</li>`);
@@ -419,4 +428,29 @@ $(document).ready(function() {
 	function updateSelector(){
 		$("#skinSelect").css("color", skins[skinId]);
 	}
+	
+	// Generate random username from faker API
+	function randomUsername(){
+		let random = faker.vehicle.color() + faker.random.word();
+		return random;
+	}
+	
+	// Random username button
+	$("#usernameBtn").on("click", function(){
+		$("#usernameInput").val(randomUsername());
+	})
+	
+	// Generate random avatar from faker API
+	async function randomAvatar(){
+		let url = 'https://avatars.dicebear.com/api/male/john.svg?options[mood]=happy';
+		const response = await fetch(url);
+		console.log(response);
+		console.log(response.url);
+		return response.url;
+	}
+	
+	// Random avatar button
+		$("#avatarBtn").on("click", function(){
+			// $("#avatar").attr("src", randomAvatar());
+	})
 });

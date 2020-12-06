@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/dsullivan89/cst336-tp1#readme",
   "dependencies": {
+    "@dicebear/avatars": "^4.4.1",
+    "@dicebear/avatars-male-sprites": "^4.4.1",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",

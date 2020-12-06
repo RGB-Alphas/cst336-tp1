@@ -9,8 +9,8 @@ const mysql = require('mysql');
 // var registry = require('./services/userRegistrar');
 const session = require('express-session');
 require('dotenv').config();
-
 var sql = require('./services/mysqlService');
+
 //Setting up data base
 const connection = mysql.createConnection({
  host: process.env.Host,
@@ -38,6 +38,7 @@ app.use(express.urlencoded({extended: true}));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
+app.use('/scripts', express.static(path.join(__dirname + '/node_modules/')));   // Used for accessing faker.js
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
