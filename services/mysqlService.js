@@ -131,7 +131,7 @@ module.exports = { MySQLConnection: connection };
 		});//Insert Query
 	};//register()
 	
-	//function updates user table with displayName and 
+	//function updates user table with displayName and  
 	//avatar color returns false if failed and true if success
 	module.exports.updateUser = function(id, displayName, avatarColor, callback) {
 		this.selectUser(id, function(results){

@@ -1,4 +1,4 @@
-/* global $ */
+/* global $ */ 
 /* global io */
 
 $(document).ready(function() {
