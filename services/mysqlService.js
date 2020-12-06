@@ -134,7 +134,7 @@ module.exports = { MySQLConnection: connection };
 	//function updates user table with displayName and 
 	//avatar color returns false if failed and true if success
 	module.exports.updateUser = function(id, displayName, avatarColor, callback) {
-		this.selectUser(id,function(results){
+		this.selectUser(id, function(results){
 			//if results is false there was an error
 			if(!results)
 			{
@@ -149,8 +149,8 @@ module.exports = { MySQLConnection: connection };
 			}
 			else{
 				
-				var sql = 'UPDATE user SET displayName = ?, avatarColor = ? ';
-	          	sql += 'WHERE id = ?;';
+				var sql = 'UPDATE users SET displayName = ?, avatarColor = ? ';
+	          	sql += 'WHERE id = ? ;';
 				connection.query(sql,
 				[displayName, avatarColor,id], (err, res) => {
 				
@@ -169,7 +169,7 @@ module.exports = { MySQLConnection: connection };
 	
 	//funciton returns "user" object from db
 	module.exports.selectUser = function(userID ,callback) {
-				connection.query('SELECT * FROM userStats WHERE userID = ?', 
+				connection.query('SELECT * FROM users WHERE id = ? ', 
 	        	userID, (err, res, fields) => 
 	        	{
 	        		if(err){
