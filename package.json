@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/dsullivan89/cst336-tp1#readme",
   "dependencies": {
+    "@dicebear/avatars": "^4.4.1",
+    "@dicebear/avatars-male-sprites": "^4.4.1",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
@@ -25,6 +27,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "express-sessions": "^1.0.6",
+    "faker": "^5.1.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.6",
     "socket.io": "^3.0.1"
