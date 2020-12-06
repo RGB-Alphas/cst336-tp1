@@ -1,11 +1,10 @@
 
-
 var userRegistry = require('./userRegistrar');
 var lobbyRegistry = require('./lobbyRegistrar');
-var sql = require('./mysqlService');
 
 let userList = [];
 let usersOnline = 0;
+
 
 module.exports = function(socket, client) {
 
@@ -17,6 +16,7 @@ module.exports = function(socket, client) {
 
 		if(addedUser)
 			return;
+
 		const userName = data.userName;
 		const alias = data.alias;
 		client.username = userName; // the socket will hold the real username.
@@ -30,7 +30,7 @@ module.exports = function(socket, client) {
 
 		if(!userRegistry.IsOnline(userName))
 		{
-			userRegistry.AddUser(userName, alias, userId);
+			userRegistry.AddUser(userName, alias);
 			addedUser = true;
 		}
 
@@ -50,19 +50,6 @@ module.exports = function(socket, client) {
 
 	});
 
-
-	client.on('save-Profile', (data) => {
-		console.log(data.userId );
-		sql.updateUser(data.userId, client.username, data.profilePicture, function(results){
-		if(!results){
-			console.log("Error pushing to db");
-		}	
-		else{
-			console.log("Profile Sucessfully Updated");
-		}
-		});
-		
-	});
 	// ///////////////
 	// joining a lobby
 
@@ -204,7 +191,7 @@ module.exports = function(socket, client) {
 			 onlineUsers: userRegistry.GetUsers()
 		  });
 
-		  userRegistry.RemoveUser(client.client.username);
+		  userRegistry.RemoveUser(client.username);
 		  addedUser = false;
 		}
 	 });

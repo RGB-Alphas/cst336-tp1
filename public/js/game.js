@@ -1,79 +1,97 @@
-import Circle from "./GameObjects/Circle.js"
-import {drawCircle} from "./GameFunctions/drawCircle.js"
-import {controller} from "./GameFunctions/controller.js"
-import {checkCollision} from "./GameFunctions/checkCollision.js"
-// import {map1} from "./GameFunctions/mapping.js"
+/*global Path*/
+/*global view*/
+/*global Point*/
+/*global $*/
+$(document).ready(function() {
 
-$(document).ready(function(){
-	var socket = io();
-	var currentPlayer;
-	var canvas = document.getElementById("myCanvas");
-	var ctx = canvas.getContext('2d');
+	socket.emit('enter_game', { userName: userName, alias: displayName } );
 
-	let screenWidth = 1000;
-	let screenHeight = 500;
+	socket.on('entered_game', (data) => {
 
-	let x = Math.floor(Math.random() * Math.floor(800) + 100);
-	let y = Math.floor(Math.random() * Math.floor(300) + 100);
-	let randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-	var player = new Circle(x,y,15,0,randomColor,0);
-	socket.emit("playerJoined", JSON.stringify(player));
+	});
 
-	var step = function() {
-		socket.on("received",(data)=>{
-			//console.log("This is the ", data);
-			let playerFromServer = JSON.parse(data);
-			//console.log("this is the player ", playerFromServer);
-			for(let i = 0; i < playerFromServer.length; i++) {
-				if( player.randomColor === playerFromServer[i].randomColor) {
-					currentPlayer = playerFromServer[i];
-				}
-			}
-			//console.log("The current player is ", currentPlayer);
-		});
-		controller(currentPlayer);
-		ctx.clearRect(0,0,screenWidth,screenHeight);
-		//window.requestAnimationFrame(step);
+	var maxWidth = view.size.width;
+	var maxHeight = view.size.height;
+	var step = 15;				// Number of pixels to move each keypress
+	var circles = [];    		// Store circles
+
+	AddCircle("turquoise");		// Player == Blue
+	AddCircle("red");			// CPU 1
+	AddCircle("lime");      	// CPU 2
+	AddCircle("yellow");        // CPU 3
+
+	// Adds a circle to the screen w/ random color & position
+	function AddCircle(color){
+		var maxPoint = new Point(view.size.width, view.size.height);
+		var randomPoint = Point.random();
+		var point = maxPoint * randomPoint;
+		var newCircle = new Path.Circle(point, 15);
+		newCircle.fillColor = color;
+		circles.push(newCircle);
 	}
 
-	step();
-})
+	// 'WASD' Movement Listeners
+	function onKeyDown(event) {
+		if(event.key == 'a'){
+			// Only move if next position is within boundaries
+			if (circles[0].position.x - step <= 10){
+				return;
+			}
+			else{
+				circles[0].position.x -= step;
+			}
+		}
 
+		if(event.key == 'd') {
+			// Only move if next position is within boundaries
+			if (circles[0].position.x + step >= maxWidth - 10){
+				return;
+			}
+			else{
+				circles[0].position.x += step;
+			}
+		}
 
+		if(event.key == 'w') {
+			// Only move if next position is within boundaries
+			if (circles[0].position.y - step <  10){
+				return;
+			}
+			else{
+				circles[0].position.y -= step;
+			}
+		}
 
-// var socket = io();
-// console.log(socket)
-// socket.emit("login_success",{data: "hello world"});
+		if(event.key == 's') {
+			// Only move if next position is within boundaries
+			if (circles[0].position.y + step > maxHeight - 10){
+				return;
+			}
+			else{
+				circles[0].position.y += step;
+			}
+		}
+	}
 
-// var canvas = document.getElementById("myCanvas");
-// var ctx = canvas.getContext('2d');
+	// Collision Detection
+	function onFrame(event) {
+		if (circles[0].intersects(circles[1])){
+			circles[1].fillColor = "white";
+		}
+		
+		if (circles[0].intersects(circles[2])){
+			circles[2].fillColor = "white";
+		}
+		
+		if (circles[0].intersects(circles[3])){
+			circles[3].fillColor = "white";
+		}
+	}
 
-// let screenWidth = 1000;
-// let screenHeight = 500;
-
-// var circle1 = new Circle(100,100,15,0, "turquoise",0);	// Player
-// var circle2 = new Circle(200,100,15,0, "yellow",0);		// CPU
-
-// var step = function() {
-// 	controller(circle1);
-// 	ctx.clearRect(0,0,screenWidth,screenHeight);
-// 	if (checkCollision(circle1, circle2)) {
-// 		circle1.speed = -circle1.speed;
-// 		circle1.x += circle1.speed;
-// 		circle1.y += circle1.speed;
-// 		circle2.color = "white";
-// 	}
-// 	drawCircle(circle1, ctx);
-// 	drawCircle(circle2, ctx);
-// 	window.requestAnimationFrame(step);
-// }
-
-// step();
-
-/******************************************************
-				Sending data to server
-socket.emit("login_success",{data: "hello world"});
-socket.on("received",(data)=>{
-	console.log(data)
+	// For removing circles
+	function removeCircle(circle){
+		circles[circle].remove();
+		circles.splice(circle, 1);
+		console.log(circles);
+	}
 });
-*******************************************************/
