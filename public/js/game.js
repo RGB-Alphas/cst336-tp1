@@ -4,94 +4,118 @@
 /*global $*/
 $(document).ready(function() {
 
+	var socket = io();
+
+	// globals
+	//var mapWidth = view.size.width;
+	//var mapHeight = view.size.height;
+
+	var keyW = false;
+	var keyA = false;
+	var keyS = false;
+	var keyD = false;
+
+	// the input system will tick slowly.
+	var inputFPS = 2;  // 2 frames per second
+	var inputFrameTime = 1000/inputFPS; // Approx. 500ms per frame
+
+	var playerList = [];
+	// var mapData = [];
+
 	socket.emit('enter_game', { userName: userName, alias: displayName } );
 
-	socket.on('entered_game', (data) => {
-
+	socket.on('game_entered', () => {
+		console.log("Entered the game")
+		// fire up the "input system"
+		initializeInput();
 	});
 
-	var maxWidth = view.size.width;
-	var maxHeight = view.size.height;
-	var step = 15;				// Number of pixels to move each keypress
-	var circles = [];    		// Store circles
+	socket.on('update players', (data) => {
+		playerList = data.players;
+		render(data.players);
+	});
 
-	AddCircle("turquoise");		// Player == Blue
-	AddCircle("red");			// CPU 1
-	AddCircle("lime");      	// CPU 2
-	AddCircle("yellow");        // CPU 3
+	// functions
+	function initializeInput() {
+		window.addEventListener("keydown", onKeyDown, false);
+		window.addEventListener("keyup", onKeyUp, false);
+		
+		setInterval(function() {
+			socket.emit("update player", { 
+				wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
+			});
+			// console.log(`Input State: W: ${keyW} A: ${keyA} S: ${keyS} D: ${keyD}`);
+		}, inputFrameTime);
+	};
 
-	// Adds a circle to the screen w/ random color & position
-	function AddCircle(color){
-		var maxPoint = new Point(view.size.width, view.size.height);
-		var randomPoint = Point.random();
-		var point = maxPoint * randomPoint;
-		var newCircle = new Path.Circle(point, 15);
-		newCircle.fillColor = color;
-		circles.push(newCircle);
-	}
+	function render(players) {
+		
+  		var canvas = document.getElementById("myCanvas");
+		var context = canvas.getContext("2d");
+		
+		// clear the canvas to that color from the css sheet.
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.rect(0, 0, canvas.width, canvas.height);
+		context.fillStyle = "black";
+		context.fill();
 
-	// 'WASD' Movement Listeners
+		console.log(JSON.stringify(players));
+
+		// begin drawing circles
+		players.forEach(player => {
+			context.beginPath();
+			// draw the player
+			context.arc(player.x, player.y, 20, 0, Math.PI * 2, false);
+			context.fillStyle = player.color;
+			context.fill();
+			// draw the "aura" for a glow effect.
+			context.arc(player.x, player.y, 21, 0, Math.PI * 2, false);
+			context.fillStyle = "orange";
+			context.stroke();
+			context.closePath();
+		});
+		
+
+	};
+
 	function onKeyDown(event) {
-		if(event.key == 'a'){
-			// Only move if next position is within boundaries
-			if (circles[0].position.x - step <= 10){
-				return;
-			}
-			else{
-				circles[0].position.x -= step;
-			}
+		var keyCode = event.keyCode;
+		switch (keyCode) {
+		  case 68: //d
+			 keyD = true;
+			 break;
+		  case 83: //s
+			 keyS = true;
+			 break;
+		  case 65: //a
+			 keyA = true;
+			 break;
+		  case 87: //w
+			 keyW = true;
+			 break;
 		}
+	 }
+	 
+	 function onKeyUp(event) {
+		var keyCode = event.keyCode;
+	 
+		switch (keyCode) {
+		  case 68: //d
+			 keyD = false;
+			 break;
+		  case 83: //s
+			 keyS = false;
+			 break;
+		  case 65: //a
+			 keyA = false;
+			 break;
+		  case 87: //w
+			 keyW = false;
+			 break;
+		}
+	 }
 
-		if(event.key == 'd') {
-			// Only move if next position is within boundaries
-			if (circles[0].position.x + step >= maxWidth - 10){
-				return;
-			}
-			else{
-				circles[0].position.x += step;
-			}
-		}
+	// event listeners
 
-		if(event.key == 'w') {
-			// Only move if next position is within boundaries
-			if (circles[0].position.y - step <  10){
-				return;
-			}
-			else{
-				circles[0].position.y -= step;
-			}
-		}
-
-		if(event.key == 's') {
-			// Only move if next position is within boundaries
-			if (circles[0].position.y + step > maxHeight - 10){
-				return;
-			}
-			else{
-				circles[0].position.y += step;
-			}
-		}
-	}
-
-	// Collision Detection
-	function onFrame(event) {
-		if (circles[0].intersects(circles[1])){
-			circles[1].fillColor = "white";
-		}
-		
-		if (circles[0].intersects(circles[2])){
-			circles[2].fillColor = "white";
-		}
-		
-		if (circles[0].intersects(circles[3])){
-			circles[3].fillColor = "white";
-		}
-	}
-
-	// For removing circles
-	function removeCircle(circle){
-		circles[circle].remove();
-		circles.splice(circle, 1);
-		console.log(circles);
-	}
+	
 });
