@@ -445,7 +445,6 @@ $(document).ready(function() {
 	    let url = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
 	    let response = await fetch(url);
 	    let data = await response.json();
-	    console.log(data);
 	    let photoUrl = data[0].urls.small;
 	    $("#avatar").attr("src", photoUrl);
 	}
@@ -458,13 +457,13 @@ $(document).ready(function() {
 	getCountries();
 	// Generate a list of countries for drop-down menu
 	async function getCountries(){
-		let url = `https://api.first.org/data/v1/countries`;
+		let url = `https://restcountries.eu/rest/v2/all`;
 		let response = await fetch(url);
 		let data = await response.json();
-		let dataList = data.data;
 		
-		for (let key in dataList){
-			$("#country").append(`<option value=${key}> ${dataList[key].country} </option>`);
+		// Add countries to drop-down
+		for (var i = 0; i < data.length; i++){
+			$("#country").append(`<option value=${data[i].alpha2Code}> ${data[i].name} </option>`);
 		}
 	}
 });
