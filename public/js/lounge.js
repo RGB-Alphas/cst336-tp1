@@ -177,7 +177,6 @@ $(document).ready(function() {
 
 	// /////////////////
 	// chat events begin
-
 	input.addEventListener("keyup", function(event) {
 		// Number 13 is the "Enter" key on the keyboard
 		if (event.keyCode === 13) {
@@ -237,11 +236,9 @@ $(document).ready(function() {
 
 		$("#messageList").append(item);
 	})
-
 	// chat events end
-	// ///////////////
+	// /////////////////
 
-	// ////////////////////
 	// chat functions begin
 	$("#messageSend").click( function() {
 		var message = $("#messageInput").val(); // get message
@@ -439,18 +436,35 @@ $(document).ready(function() {
 	$("#usernameBtn").on("click", function(){
 		$("#usernameInput").val(randomUsername());
 	})
+
 	
 	// Generate random avatar from faker API
 	async function randomAvatar(){
-		let url = `https://avatars.dicebear.com/api/human/123.svg?background=%23ffffff`;
-		const response = await fetch(url);
-		console.log(response);
-		console.log(response.url);
-		$("#avatar").attr("src", response.url);
+		// Fetch random background from Unsplash
+		var key = `7WEnZ0-HH3el9avQVajOeFDCW3rKQBj-LmaxAk6I6GY`;
+	    let url = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
+	    let response = await fetch(url);
+	    let data = await response.json();
+	    console.log(data);
+	    let photoUrl = data[0].urls.small;
+	    $("#avatar").attr("src", photoUrl);
 	}
 	
 	// Random avatar button
 	$("#avatarBtn").on("click", function(){
 		randomAvatar();
 	})	
+	
+	getCountries();
+	// Generate a list of countries for drop-down menu
+	async function getCountries(){
+		let url = `https://api.first.org/data/v1/countries`;
+		let response = await fetch(url);
+		let data = await response.json();
+		let dataList = data.data;
+		
+		for (let key in dataList){
+			$("#country").append(`<option value=${key}> ${dataList[key].country} </option>`);
+		}
+	}
 });

@@ -56,36 +56,12 @@
 						<div id="profilePanel" class="mx-3 panel rounded">
 							<form method="get" action="/" id="profileForm" class="py-3 scroll">
 								<h3><strong>Profile</strong></h4><br>
-								<h5>Display Name</h5>
-								<div class="d-flex align-items-center justify-content-center my-2">
-										<input type="text" id="usernameInput" name="username" class="rounded mx-2 text-center"/>
-										<button id="usernameBtn" type="button" class="btn btn-info btn-sm"><i class="fas fa-random"></i></button>
-										</input>
-								</div><br>
-								<div class="d-flex justify-content-around align-items-center">
-									<div>
-										<h5>Gender</h5>
-										<input type="radio" id="male" name="gender" value="male">
-										<label for="male" class="mr-3">Male</label>
-										<input type="radio" id="female" name="gender" value="female">
-										<label for="female"  class="mr-3">Female</label>
-									</div>
-									<div>
-										<h5>Location</h5>
-										<select name="state" id="state" class="my-1 rounded px-4">
-							                <option>Select One</option>
-							                <option value="ca">California</option>
-							                <option value="ny">New York  </option>
-							                <option value="tx">Texas     </option>
-							            </select>
-									</div>
-								</div><br><br>
-								<div class="d-flex justify-content-around align-items-center">
+								<div class="d-flex justify-content-around align-items-start">
 									<div class="container">
-										<h5>Skin</h5><br>
+										<h5>Skin</h5>
 										<div id="skins" class="container d-flex align-items-center justify-content-around">
 											<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
-											<i id="skinSelect" class="fas fa-circle fa-3x"></i>
+											<i id="skinSelect" class="fas fa-circle fa-4x"></i>
 											<i id="rightArrow" class="fas fa-chevron-right fa-2x arrow"></i>
 										</div>
 									</div>
@@ -94,6 +70,27 @@
 										<img id=avatar src="" width="75" height="75" alt="avatar"></img><br>
 										<button id="avatarBtn" type="button" class="btn btn-info btn-sm mt-3"><i class="fas fa-random"></i></button>
 									</div>	
+								</div><br><br>
+								<h5>Display Name</h5>
+								<div class="d-flex align-items-center justify-content-center my-2">
+										<input type="text" id="usernameInput" name="username" class="rounded mx-2 text-center"/>
+										<button id="usernameBtn" type="button" class="btn btn-info btn-sm"><i class="fas fa-random"></i></button>
+										</input>
+								</div><br><br>
+								<div class="d-flex justify-content-around align-items-center">
+									<div class="w-50">
+										<h5>Gender</h5>
+										<input type="radio" id="male" name="gender" value="male">
+										<label for="male" class="mr-3">Male</label>
+										<input type="radio" id="female" name="gender" value="female">
+										<label for="female"  class="mr-3">Female</label>
+									</div>
+									<div class="w-50">
+										<h5>Location</h5>
+										<select name="country" id="country" class="my-1 rounded w-75 pl-1">
+							                <option>Select One</option>
+							            </select>
+									</div>
 								</div><br><br>
 								<button type="button" id="saveButton" class="submit btn btn-info m-3 lobby-link">Save</button><br>
 							</form>						

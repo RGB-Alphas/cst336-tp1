@@ -18,6 +18,7 @@ const connection = mysql.createConnection({
  password: process.env.Password,
  database: process.env.Database
 });
+
 // Connection to database
  connection.connect((err) => {
     if(err){
