@@ -6,9 +6,15 @@ const { Server } = require('socket.io');
 var serverFPS = 20;	// 20 updates per second.
 var serverFrameTime = 1000/serverFPS; 	// 50ms per frame
 
+
 module.exports = function(socket, client) {
 
-	var userAdded = false;
+	client.on("playerJoined", (data)=>{
+		var player = JSON.parse(data);
+		playerArray.push(player);
+		console.log("# of Players: ", playerArray.length);
+		client.emit("received", JSON.stringify(playerArray));
+	})
 
 	client.on('enter_game', (data) => {
 		client.username = data.userName;
@@ -82,4 +88,3 @@ module.exports = function(socket, client) {
 		});
 		*/
 	});
-};

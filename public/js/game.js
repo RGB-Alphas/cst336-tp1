@@ -1,9 +1,4 @@
-/*global Path*/
-/*global view*/
-/*global Point*/
-/*global $*/
 $(document).ready(function() {
-
 	var socket = io();
 
 	// globals
