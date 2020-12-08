@@ -10,3 +10,13 @@ canvas{
     height: 100%;
     background-color: #292b2c;
 }
+
+#timer{
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    left: 10px;
+    font-size: 30px;
+}

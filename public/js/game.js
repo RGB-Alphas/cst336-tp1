@@ -21,6 +21,7 @@ $(document).ready(function() {
 
 	var playerList = [];
 	// var mapData = [];
+	var timerCount = 0;
 
 	socket.emit('enter_game', { userName: userName, alias: displayName } );
 
@@ -40,6 +41,12 @@ $(document).ready(function() {
 		window.addEventListener("keydown", onKeyDown, false);
 		window.addEventListener("keyup", onKeyUp, false);
 		
+		//add timer
+		var timer = setInterval(()=>{
+			timerCount++;
+		},1000);
+		$("#timer").text("Clock: " + timerCount);
+
 		setInterval(function() {
 			socket.emit("update player", { 
 				wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
@@ -74,8 +81,8 @@ $(document).ready(function() {
 			context.stroke();
 			context.closePath();
 		});
-		
 
+		$("#timer").text("Clock: " + timerCount);
 	};
 
 	function onKeyDown(event) {
