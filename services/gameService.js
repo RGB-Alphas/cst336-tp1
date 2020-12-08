@@ -1,5 +1,6 @@
 var userRegistry = require('./userRegistrar');
 var gameSessionManager = require('./gameSession');
+var mapGenerator = require('./Game/maps');
 const { Server } = require('socket.io');
 
 // config
@@ -14,6 +15,9 @@ module.exports = function(socket, client) {
 		client.username = data.userName;
 		var alias = data.alias;
 
+		if(data === undefined)
+			return;
+
 		if(userAdded)
 			return;
 
@@ -26,10 +30,15 @@ module.exports = function(socket, client) {
 		var players = gameSessionManager.GetAllPlayers(gameSessionID);
 		var options = gameSessionManager.GetOptions(gameSessionID);
 
+		var mapData = mapGenerator.CreateDestiny(options.map);
+		
+		// console.log(JSON.stringify(mapData));
+		// timeLimit = options.time;
+		// winCondition = options.scenario;
 
 		// gameSessionManager.UpdatePlayerRelativePosition();
 
-		client.emit('game_entered');
+		client.emit('game_entered', { mapData: mapData });
 
 		console.log(JSON.stringify(data));
 		
