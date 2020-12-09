@@ -99,10 +99,10 @@ module.exports = function(socket, client) {
 			var sessionID = gameSessionManager.AddGameSession(
 				lobbyName, 
 				lobby.players.map(player => { 
-					return player.name 
-					}),
+					return { 
+						"name": player.name 
+					} }),
 				lobby.options);
-			gameSessionManager.Initialize(sessionID);
 			socket.to(`${lobbyName}`).emit('ready check success');
 		}
 	});

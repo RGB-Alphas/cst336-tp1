@@ -12,9 +12,7 @@ var GameSessionID = 100000; // 100,000
 
 module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCount, gameSessionID: GameSessionID };
 
-function getRandomNumber(min, max) {
-	return Math.random() * (max - min) + min;
-}
+
 
 
 (function() {
@@ -29,7 +27,7 @@ function getRandomNumber(min, max) {
 		// because there is extra data.
 		for(var i = 0; i < playerAliases.length; i++)
 		{
-			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, "color": "red",
+			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, 
 				"isHot": false, "isPoweredUp": false, "isFast": false, "isBig": false };
 
 			newSession.players.push(newPlayer);
@@ -42,38 +40,18 @@ function getRandomNumber(min, max) {
 		return newSession.id;
 	};
 
-	module.exports.Initialize = function(gameSessionID) {
+	module.exports.WhereIsPlayer = function(playerAlias) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
 		if(sessionIndex === -1)
-			return;
+			return "";
 
-		// spawn players
-		gameSessions[sessionIndex].players.forEach(player => {
-			player.x = getRandomNumber(25, 100);
-			player.y = getRandomNumber(25, 100);
-		});
-		
-	};
+		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
-	module.exports.WhereIsPlayer = function(playerAlias) {
+		if(playerIndex === -1)
+			return "";
 
-		//console.log(`Looking for ${playerAlias} in any game session.`);
-		for(var sessionIndex = 0; sessionIndex < gameSessions.length; sessionIndex++)
-		{
-			for(var playerIndex = 0; playerIndex < gameSessions[sessionIndex].players.length; playerIndex++)
-			{
-				var alias = gameSessions[sessionIndex].players[playerIndex].name;
-				//console.log(JSON.stringify(gameSessions[sessionIndex].players[playerIndex]));
-				//console.log(`Comparing ${alias} and ${playerAlias}`)
-
-				if(alias === playerAlias)
-					return gameSessions[sessionIndex].id;
-			}
-		}
-
-		//console.log(`Can not find '${playerAlias}' in any game`);
-		return -1;
+		return gameSessions[sessionIndex].id;
 	};
 
 	// might not need...
@@ -110,7 +88,7 @@ function getRandomNumber(min, max) {
 		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
 		gameSessions[sessionIndex].players[playerIndex].x = newX;
-		gameSessions[sessionIndex].players[playerIndex].y = newY;
+		gameSessions[sessionIndex].players[playerIndex].x = newY;
 
 	};
 
@@ -118,22 +96,13 @@ function getRandomNumber(min, max) {
 	module.exports.UpdatePlayerRelativePosition = function(gameSessionID, playerAlias, offsetX, offsetY) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
-		if(sessionIndex === -1) {
-			console.log(`UpdatePlayerRelativePosition(${gameSessionID}, ${playerAlias}, ${offsetX}, ${offsetY}`);
+		if(sessionIndex === -1)
 			return;
-		}
-			
 
 		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
-		if(playerIndex === -1) {
-			console.log("UpdatePlayerRelativePosition() player not found");
-			return;
-		}
-
-		// console.log(`Moved ${playerAlias} (relative) {X:${offsetX},Y:${offsetY}}`);
-		gameSessions[sessionIndex].players[playerIndex].x += offsetX;
-		gameSessions[sessionIndex].players[playerIndex].y += offsetY;
+		gameSessions[sessionIndex].players[playerIndex].x = offsetX;
+		gameSessions[sessionIndex].players[playerIndex].x = offsetY;
 	};
 
 	module.exports.UpdatePlayerFlags = function(gameSessionID, playerAlias, isHot, isPoweredUp, isFast, isBig) {
@@ -153,10 +122,8 @@ function getRandomNumber(min, max) {
 	module.exports.GetAllPlayers = function(gameSessionID) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
-		if(sessionIndex === -1) {
-			console.log(`GetAllPlayers() can't find this session, id: ${gameSessionID}`);
-			return [];
-		}
+		if(sessionIndex === -1)
+			return;
 
 		return gameSessions[sessionIndex].players;
 	};

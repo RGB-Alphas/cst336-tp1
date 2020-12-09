@@ -5,7 +5,7 @@ var usersOnline = 0;
 module.exports = { profiles: userProfiles };
 module.exports = { usersOnline: usersOnline };
 
-(function() {
+(function() { 
 
 	module.exports.AddUser = function(name, alias) {
 		
