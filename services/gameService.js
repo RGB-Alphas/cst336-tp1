@@ -13,9 +13,9 @@ module.exports = function(socket, client) {
 
 	client.on('enter_game', (data) => {
 		client.username = data.userName;
-		const alias = data.alias;
-		const sessionId = client.id;
+		var alias = data.alias;
 		const userId = data.userId;
+		const sessionId = client.id;
 
 		if(data === undefined)
 			return;
@@ -86,5 +86,9 @@ module.exports = function(socket, client) {
 		let yOffset = vector.y * 20;
 
 		gameSessionManager.UpdatePlayerRelativePosition(gameSessionID, alias, xOffset, yOffset);
+
+		socket.to(`${gameSessionID}`).emit("update players", { 
+			players: gameSessionManager.GetAllPlayers(gameSessionID) 
+		});
 	});
 };
