@@ -11,7 +11,7 @@ const session = require('express-session');
 require('dotenv').config();
 var sql = require('./services/mysqlService');
 
-//Setting up data base
+// Setting up data base
 const connection = mysql.createConnection({
  host: process.env.Host,
  user: process.env.User,
@@ -56,13 +56,15 @@ io.on('connection', (client) => {
   require('./services/gameService.js')(io, client);
   
 });
-//Home page 
+
+// Routes
+// Home page 
 app.get('/', (req, res, next) => {
   const message = "Please register or sign in.";
   res.render('index.html', {message: message});
 });
 
-// for action
+// For action
 app.post('/login', function(req, res) 
 {
     var username = req.body.loginName;
@@ -88,6 +90,9 @@ app.post('/login', function(req, res)
           req.session.authenticated = true;
           req.session.username = results[0].accountName;
           req.session.alias = results[0].displayName;
+          req.session.skinID = results[0].avatarColor;
+          req.session.gender = results[0].gender;
+          req.session.locationCode = results[0].locationCode;
 
           console.log(`${results[0].accountName} ${results[0].displayName}`);
           res.redirect('/authenticated');
@@ -102,11 +107,13 @@ app.post('/login', function(req, res)
       // res.end();
     }
 });
-//Gets data from form anc pushes to DataBase
+
+// Gets data from form anc pushes to DataBase
 app.post('/register', function (req, res) {
   let valid = false
   let user = { accountName: req.body.accountName, password: req.body.password, displayName: req.body.displayName };
-  //insert data into db
+  
+  // Insert data into DB
   connection.query('INSERT INTO users SET ?', user, (err, res) => {
     if(err) {
       console.log("Error inserting into DB Code:")
@@ -116,27 +123,30 @@ app.post('/register', function (req, res) {
     valid = true;
     }
   });
-  //Because of stupid js
-setTimeout(() => {  console.log(valid); 
-   if(valid){
-    const message = "You may log into your new account.";
-    res.render('index.html', {message: message});
-  }
-  else {
-    const message = "Registration Failed: User already exists.";
-    res.render('index.html', {message: message});
-  }
-}, 250);
- 
+
+  // Because of stupid js
+  setTimeout(() => {  console.log(valid); 
+    if(valid){
+      const message = "You may log into your new account.";
+      res.render('index.html', {message: message});
+    }
+    else {
+      const message = "Registration Failed: User already exists.";
+      res.render('index.html', {message: message});
+    }
+  }, 250);
 });
 
 app.get('/authenticated', isAuthenticated, function(req, res){
   let name = req.session.username;
   let alias = req.session.alias;
-  res.render("authenticated/lounge.html", {name: name, alias: alias });
-   
-});
+  let skinID = req.session.skinID;
+  let gender = req.session.gender;
+  let locationCode = req.session.locationCode;
 
+  res.render("authenticated/lounge.html", {name: name, alias: alias, skinID: skinID, gender: gender, locationCode: locationCode});
+  
+});
 
 app.get('/lobby', isAuthenticated, function(req, res){
   const lobbyName = req.query.lobbyName || req.query.inputLobbyName;
@@ -160,13 +170,12 @@ server.listen(port, () => {
   console.log("Server is running on port %d.", port);
 });
 
-//functions for database
-
-//function accepts data from form, if user name is taken return false else return true
+// Functions for database
+// Function accepts data from form, if user name is taken return false else return true
 function dbInsertData(accountName, password, displayName){
-  
   let user = { accountName: accountName, password: password, displayName: displayName };
-  //insert data into db
+  
+  // Insert data into DB
   connection.query('INSERT INTO users SET ?', user, (err, res) => {
     if(err) {
       console.log("Error inserting into DB Code:")
@@ -176,10 +185,9 @@ function dbInsertData(accountName, password, displayName){
     console.log('Last insert ID:', res.insertId); 
     return 1;
   });
- 
 }
 
-//Function to authenticate user
+// Function to authenticate user
 function isAuthenticated(req,res,next){
   if(!req.session.authenticated){
     res.redirect('/');
@@ -188,3 +196,5 @@ function isAuthenticated(req,res,next){
     next();
   }
 }
+
+

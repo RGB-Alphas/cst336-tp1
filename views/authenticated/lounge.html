@@ -12,9 +12,12 @@
 	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script> 
 		<script>
+			/*global $*/
 			var userName = "<%= name %>";
-			var displayName = "<%= alias %>";
-			// console.log("Username: %s", userName);
+			var displayName = "<%= alias %>"
+			var SkinId = "<%= skinID %>"
+			var gender = "<%= gender %>"
+			var locationCode = "<%= locationCode %>"
 		</script>
 		<script src = "/scripts/@dicebear/avatars/dist/avatars.js"></script> 
 		<script src = "/scripts/faker/dist/faker.js"></script> 
@@ -54,6 +57,9 @@
 						</div>
 						<!-- Profile Panel -->
 						<div id="profilePanel" class="mx-3 panel rounded">
+							<input type="hidden" id="skinID" value='<%= skinID %>'>
+							<input type="hidden" id="locationCode" value='<%= locationCode %>'>
+							<input type="hidden" id="gender" value='<%= gender %>'>
 							<form method="get" action="/" id="profileForm" class="py-3 scroll">
 								<h3><strong>Profile</strong></h4><br>
 								<div class="d-flex justify-content-around align-items-start">
@@ -73,7 +79,7 @@
 								</div><br><br>
 								<h5>Display Name</h5>
 								<div class="d-flex align-items-center justify-content-center my-2">
-										<input type="text" id="usernameInput" name="username" class="rounded mx-2 text-center"/>
+										<input type="text" id="usernameInput" name="username" class="rounded mx-2 text-center" value='<%= alias%>'>
 										<button id="usernameBtn" type="button" class="btn btn-info btn-sm"><i class="fas fa-random"></i></button>
 										</input>
 								</div><br><br>
@@ -92,7 +98,7 @@
 							            </select>
 									</div>
 								</div><br><br>
-								<button type="button" id="saveButton" class="submit btn btn-info m-3 lobby-link">Save</button><br>
+								<button type="button" id="updateBtn" class="submit btn btn-info m-3 lobby-link">Update</button><br>
 							</form>						
 						</div>
 					</div>
