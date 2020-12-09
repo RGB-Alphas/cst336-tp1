@@ -1,5 +1,6 @@
 var userRegistry = require('./userRegistrar');
 var lobbyRegistry = require('./lobbyRegistrar');
+var gameSessionManager = require('./gameSession');
 
 
 
@@ -11,6 +12,11 @@ module.exports = function(socket, client) {
 		
 		var lobbyName = data.lobbyName;
 		client.join(`${lobbyName}`);
+
+		if(lobbyRegistry.GetLobbyByName(lobbyName) === 'unknown')
+		{
+			client.emit('redirect user home');
+		}
 
 		if(addedUser)
 			return;
@@ -34,7 +40,7 @@ module.exports = function(socket, client) {
 			console.log(`${alias} is receiving initial lobby data.`);
 			console.log(JSON.stringify(lobby));
 			const playerCount = lobby.players.length;
-			const players = lobby.players;
+			const players = lobby.players.map(player => { return player.name; });
 			const options = lobby.options;
 
 			console.log(`Sending { playerCount: ${playerCount}, players:${JSON.stringify(players)}, options: ${options}, myAlias: ${alias} }`);
@@ -58,6 +64,50 @@ module.exports = function(socket, client) {
 		}
 		
 	});
+
+	client.on('player ready', () => {
+		var alias = userRegistry.GetAliasByUserName(client.username);
+		var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+
+		lobbyRegistry.SetPlayerReadyState(lobbyName, alias, true);
+	});
+
+	client.on('player not ready', () => {
+		var alias = userRegistry.GetAliasByUserName(client.username);
+		var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+
+		lobbyRegistry.SetPlayerReadyState(lobbyName, alias, false);
+	});
+
+	client.on('ready check', () => {
+		// to get a list of players use these 3 lines of code.
+		var alias = userRegistry.GetAliasByUserName(client.username);
+		var lobbyName = lobbyRegistry.WhereisPlayer(alias);
+
+		var unreadyList = lobbyRegistry.WhoIsNotReady(lobbyName);
+		console.log("Unready users: %s", JSON.stringify(unreadyList));
+
+		if(unreadyList.length > 0) {
+			socket.to(`${lobbyName}`).emit(`ready check failed`, {
+				waitingFor: unreadyList
+			})
+		}
+		else {
+			const lobby = lobbyRegistry.GetLobbyByName(lobbyName);
+
+			// add a game session and get an id.
+			var sessionID = gameSessionManager.AddGameSession(
+				lobbyName, 
+				lobby.players.map(player => { 
+					return { 
+						"name": player.name 
+					} }),
+				lobby.options);
+			socket.to(`${lobbyName}`).emit('ready check success');
+		}
+	});
+
+
 
 	client.on('ruleSet changed', ruleSet => {
 
@@ -142,14 +192,14 @@ module.exports = function(socket, client) {
 			client.to(`${lobbyName}`).broadcast.emit('lobby user left', {
 				alias: alias,
 				userCount: lobby.players.length,
-				users: lobby.players
+				users: lobby.players.map(player => { return player.name; })
 			});
 
 			console.log(`Left [${lobbyName}], here's the new info for it:`);
 			console.log(JSON.stringify(lobby));
 
 			lobbyRegistry.RemoveLobbyIfEmpty(lobbyName);
-			userRegistry.RemoveUser(client.username);
+			// userRegistry.RemoveUser(client.username);
 			addedUser = false;
 		}
 	});
