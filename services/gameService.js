@@ -12,6 +12,7 @@ module.exports = function(socket, client) {
 	var userAdded = false;
 
 	client.on('enter_game', (data) => {
+		console.log(JSON.stringify(data));
 		client.username = data.userName;
 		var alias = data.alias;
 		var userId = data.userId;
@@ -54,6 +55,8 @@ module.exports = function(socket, client) {
 
 	client.on('update player', (data) => {
 
+		if(!userAdded)
+			return;
 		// identify player
 		const alias = userRegistry.GetAliasByUserName(client.username);
 		const gameSessionID = gameSessionManager.WhereIsPlayer(alias);
