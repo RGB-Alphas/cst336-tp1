@@ -6,88 +6,124 @@ import {checkCollision} from "./GameFunctions/checkCollision.js"
 
 $(document).ready(function(){
 	var socket = io();
-	var currentPlayer;
-	var playerFromServer
-	var canvas = document.getElementById("myCanvas");
-	var ctx = canvas.getContext('2d');
 
-	let screenWidth = 1000;
-	let screenHeight = 500;
+	// globals
+	//var mapWidth = view.size.width;
+	//var mapHeight = view.size.height;
 
-	let x = Math.floor(Math.random() * Math.floor(800) + 100);
-	let y = Math.floor(Math.random() * Math.floor(300) + 100);
-	let randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
-	var player = new Circle(x,y,15,0,randomColor,0);
-	socket.emit("playerJoined", JSON.stringify(player));
+	var keyW = false;
+	var keyA = false;
+	var keyS = false;
+	var keyD = false;
 
-	var step = function() {
-		ctx.clearRect(0,0,screenWidth,screenHeight);
-		socket.on("received",async (data)=>{
-			//console.log("This is the ", data);
-			playerFromServer = JSON.parse(data);
-			console.log("this is the player ", playerFromServer);
-			for(let i = 0; i < playerFromServer.length; i++) {
-				if( player.randomColor === playerFromServer[i].randomColor) {
-					currentPlayer = playerFromServer[i];
-				}
-			}
-			console.log("The current player is ", currentPlayer);
-			// playerFromServer.forEach(player => {
-			// 	drawCircle(player, ctx);
-			// });
+	// the input system will tick slowly.
+	var inputFPS = 2;  // 2 frames per second
+	var inputFrameTime = 1000/inputFPS; // Approx. 500ms per frame
+
+	var playerList = [];
+	// var mapData = [];
+	var timerCount = 0;
+
+	socket.emit('enter_game', { userName: userName, alias: displayName } );
+
+	socket.on('game_entered', () => {
+		console.log("Entered the game")
+		// fire up the "input system"
+		initializeInput();
+	});
+
+	socket.on('update players', (data) => {
+		playerList = data.players;
+		render(data.players);
+	});
+
+	// functions
+	function initializeInput() {
+		window.addEventListener("keydown", onKeyDown, false);
+		window.addEventListener("keyup", onKeyUp, false);
+		
+		//add timer
+		var timer = setInterval(()=>{
+			timerCount++;
+		},1000);
+		$("#timer").text("Clock: " + timerCount);
+
+		setInterval(function() {
+			socket.emit("update player", { 
+				wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
+			});
+			// console.log(`Input State: W: ${keyW} A: ${keyA} S: ${keyS} D: ${keyD}`);
+		}, inputFrameTime);
+	};
+
+	function render(players) {
+		
+  		var canvas = document.getElementById("myCanvas");
+		var context = canvas.getContext("2d");
+		
+		// clear the canvas to that color from the css sheet.
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		context.rect(0, 0, canvas.width, canvas.height);
+		context.fillStyle = "black";
+		context.fill();
+
+		console.log(JSON.stringify(players));
+
+		// begin drawing circles
+		players.forEach(player => {
+			context.beginPath();
+			// draw the player
+			context.arc(player.x, player.y, 20, 0, Math.PI * 2, false);
+			context.fillStyle = player.color;
+			context.fill();
+			// draw the "aura" for a glow effect.
+			context.arc(player.x, player.y, 21, 0, Math.PI * 2, false);
+			context.fillStyle = "orange";
+			context.stroke();
+			context.closePath();
 		});
-		await playerFromServer.forEach(player => {
-			drawCircle(player, ctx);
-		});
-		controller(currentPlayer);
-		// 	if (checkCollision(circle1, circle2)) {
-		// 		circle1.speed = -circle1.speed;
-		// 		circle1.x += circle1.speed;
-		// 		circle1.y += circle1.speed;
-		// 		circle2.color = "white";
-		// 	}
-		//console.log(playerFromServer);
-		window.requestAnimationFrame(step);
-	}
 
-	step();
-})
+		$("#timer").text("Clock: " + timerCount);
+	};
 
+	function onKeyDown(event) {
+		var keyCode = event.keyCode;
+		switch (keyCode) {
+		  case 68: //d
+			 keyD = true;
+			 break;
+		  case 83: //s
+			 keyS = true;
+			 break;
+		  case 65: //a
+			 keyA = true;
+			 break;
+		  case 87: //w
+			 keyW = true;
+			 break;
+		}
+	 }
+	 
+	 function onKeyUp(event) {
+		var keyCode = event.keyCode;
+	 
+		switch (keyCode) {
+		  case 68: //d
+			 keyD = false;
+			 break;
+		  case 83: //s
+			 keyS = false;
+			 break;
+		  case 65: //a
+			 keyA = false;
+			 break;
+		  case 87: //w
+			 keyW = false;
+			 break;
+		}
+	 }
 
+	// event listeners
 
-// var socket = io();
-// console.log(socket)
-// socket.emit("login_success",{data: "hello world"});
-
-// var canvas = document.getElementById("myCanvas");
-// var ctx = canvas.getContext('2d');
-
-// let screenWidth = 1000;
-// let screenHeight = 500;
-
-// var circle1 = new Circle(100,100,15,0, "turquoise",0);	// Player
-// var circle2 = new Circle(200,100,15,0, "yellow",0);		// CPU
-
-// var step = function() {
-// 	controller(circle1);
-// 	ctx.clearRect(0,0,screenWidth,screenHeight);
-// 	if (checkCollision(circle1, circle2)) {
-// 		circle1.speed = -circle1.speed;
-// 		circle1.x += circle1.speed;
-// 		circle1.y += circle1.speed;
-// 		circle2.color = "white";
-// 	}
-// 	drawCircle(circle1, ctx);
-// 	drawCircle(circle2, ctx);
-// 	window.requestAnimationFrame(step);
-// }
-
-// step();
-
-/******************************************************
-				Sending data to server
-socket.emit("login_success",{data: "hello world"});
-socket.on("received",(data)=>{
-	console.log(data)
+	
 });
-*******************************************************/
