@@ -22,15 +22,15 @@ var mapheight = 19;
 	module.exports.CreateMap = function(mapName) {
 		switch (mapName) {
 			case "destiny":
-				CreateDestiny();
+				return module.exports.CreateDestiny();
 				break;
 
 			case "crucible":
-				CreateCrucible();
+				return module.exports.CreateCrucible();
 				break;
 
 			case "icefortress":
-				CreateIceFortress();
+				return module.exports.CreateIceFortress();
 			default:
 				return [];
 				break;
@@ -112,6 +112,30 @@ var mapheight = 19;
 		mapData.tiles.push(c2);
 		mapData.tiles.push(c3);
 		mapData.tiles.push(c4);
+
+		return mapData;
+	};
+
+	module.exports.CreateCrucible = function() {
+		
+		var mapData = { "mapWidth": 32, "mapheight": 19, "tiles": [] };
+		var index = 0;
+
+		for(index = 3; index < 15; index++)
+		{
+			var newTile = { "x": (tileWidth * 15), "y": (index * tileHeight), 
+								 "width": tileWidth, "height": tileHeight, 
+								 "type": "wall", "color": "white" };
+			mapData.tiles.push(newTile);
+		}
+
+		for(index = 3; index < 16; index++)
+		{
+			var newTile = { "x": (tileWidth * 15), "y": (index * tileHeight), 
+								 "width": tileWidth, "height": tileHeight, 
+								 "type": "wall", "color": "white" };
+			mapData.tiles.push(newTile);
+		}
 
 		return mapData;
 	};

@@ -30,8 +30,8 @@ module.exports = function(socket, client) {
 		var players = gameSessionManager.GetAllPlayers(gameSessionID);
 		var options = gameSessionManager.GetOptions(gameSessionID);
 
-		var mapData = mapGenerator.CreateDestiny(options.map);
-		
+		var mapData = mapGenerator.CreateMap(options.map);
+
 		// console.log(JSON.stringify(mapData));
 		// timeLimit = options.time;
 		// winCondition = options.scenario;
