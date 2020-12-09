@@ -23,11 +23,12 @@ module.exports = function(socket, client) {
 
 		const userName = data.userName;
 		const alias = data.alias;
-		var sessionID = client.id;
+		const userId = data.userId;
+		const sessionID = client.id;
 
 		if(!userRegistry.IsOnline(userName))
 		{
-			userRegistry.AddUser(userName, alias);
+			userRegistry.AddUser(userName, alias, userId, sessionID);
 			client.username = userName;
 			addedUser = true;
 		}

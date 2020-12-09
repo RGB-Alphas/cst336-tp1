@@ -19,8 +19,9 @@ module.exports = function(socket, client) {
 			return;
 		const userName = data.userName;
 		const alias = data.alias;
+		const userId = data.userId;
 		client.username = userName; // the socket will hold the real username.
-		var sessionID = client.id;
+		const sessionID = client.id;
 
 		console.log("Received: %s", userName);
 
@@ -30,7 +31,7 @@ module.exports = function(socket, client) {
 
 		if(!userRegistry.IsOnline(userName))
 		{
-			userRegistry.AddUser(userName, alias, userId);
+			userRegistry.AddUser(userName, alias, userId, sessionID);
 			addedUser = true;
 		}
 
@@ -204,7 +205,7 @@ module.exports = function(socket, client) {
 			 onlineUsers: userRegistry.GetUsers()
 		  });
 
-		  userRegistry.RemoveUser(client.client.username);
+		  userRegistry.RemoveUser(client.username);
 		  addedUser = false;
 		}
 	 });

@@ -22,11 +22,15 @@ $(document).ready(function(){
 
 	var playerList = [];
 
-	 var mapData;
+	var mapData;
 	var timerCount = 0;
 	var score = 0;
 
-	socket.emit('enter_game', { userName: userName, alias: displayName } );
+	socket.emit('enter_game', { 
+		userName: userName, 
+		alias: displayName,
+		userId: userId 
+	});
 
 	socket.on('game_entered', (data) => {
 		console.log("Entered the game")

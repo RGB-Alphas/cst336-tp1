@@ -7,14 +7,14 @@ module.exports = { usersOnline: usersOnline };
 
 (function() { 
 
-	module.exports.AddUser = function(name, alias) {
+	module.exports.AddUser = function(name, alias, userId, sessionId) {
 		
 		var indexOfExistingUser = userProfiles.findIndex(user => user.name === name);
 
 		if(indexOfExistingUser === -1) // user doesn't exist. we add them.
 		{
 			console.log(`Adding new user: ${name} with alias: ${alias}.`)
-			const entry = { "name": name, "alias": alias };
+			const entry = { "name": name, "alias": alias, "userId": userId, "sessionId": sessionId };
 			userProfiles.push(entry);
 			usersOnline++;
 
