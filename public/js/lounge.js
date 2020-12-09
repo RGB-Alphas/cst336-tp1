@@ -33,7 +33,7 @@ $(document).ready(function() {
 	var selectedPlayer = "";
 
 	console.log("Emitting: %s, %s", userName, displayName);
-	socket.emit('enter_lounge', { userName: userName, alias: displayName} );
+	socket.emit('enter_lounge', { userName: userName, alias: displayName, userId: userId } );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {

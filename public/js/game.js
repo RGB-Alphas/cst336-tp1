@@ -1,10 +1,5 @@
-import Circle from "./GameObjects/Circle.js"
-import {drawCircle} from "./GameFunctions/drawCircle.js"
-import {controller} from "./GameFunctions/controller.js"
-import {checkCollision} from "./GameFunctions/checkCollision.js"
-// import {map1} from "./GameFunctions/mapping.js"
+$(document).ready(function() {
 
-$(document).ready(function(){
 	var socket = io();
 
 	// globals
@@ -22,49 +17,85 @@ $(document).ready(function(){
 
 	var playerList = [];
 
-	 var mapData;
-	var timerCount = 0;
+	var mapData;
+	var timeLeft = 0;
 	var score = 0;
+	var timerInterval; // interval handle.
+	var updatePlayerInterval;
 
-	socket.emit('enter_game', { userName: userName, alias: displayName } );
+	var isRunning = false;
+
+	socket.emit('enter_game', { 
+		userName: userName, 
+		alias: displayName,
+		userId: userId 
+	});
 
 	socket.on('game_entered', (data) => {
 		console.log("Entered the game")
 
 		mapData = data.mapData;
+		timeLeft = data.options.time;
 
 		// fire up the "input system"
+		isRunning = true;
+		initializeTimer();
 		initializeInput();
+
+		
 	});
 
 	socket.on('update players', (data) => {
 		playerList = data.players;
 		render(data.players);
+		console.log("players updated");
 	});
+
+	function initializeTimer() {
+		//add timer
+		timerInterval = setInterval( () => {
+			timeLeft--;
+			$("#timer").text("Time Remaining: " + timeLeft);
+			if(timeLeft < 1)
+			{
+				timeLeft = 0;
+				isRunning = false;
+				clearInterval(timerInterval);
+			}
+				
+		},1000);
+		// $("#timer").text("Clock: " + timerInterval);
+
+		// add score
+		// $("#score").text("Score: " + score);
+	};
 
 	// functions
 	function initializeInput() {
 		window.addEventListener("keydown", onKeyDown, false);
 		window.addEventListener("keyup", onKeyUp, false);
-		
-		//add timer
-		var timer = setInterval(()=>{
-			timerCount++;
-		},1000);
-		$("#timer").text("Clock: " + timerCount);
 
-		//add score
-		$("#score").text("Score: " + score);
+		updatePlayerInterval = setInterval(function() {
 
-		setInterval(function() {
-			socket.emit("update player", { 
-				wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
-			});
+			if(isRunning === true)
+			{
+				console.log("sending player input");
+				socket.emit("update player", { 
+					wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
+				});
+			}
+			else
+			{
+				clearInterval(updatePlayerInterval);
+			}
+			
 			// console.log(`Input State: W: ${keyW} A: ${keyA} S: ${keyS} D: ${keyD}`);
 		}, inputFrameTime);
 	};
 
 	function render(players) {
+
+		console.log("Rendering: %d objects", mapData.tiles.length + players.length);
 		
   		var canvas = document.getElementById("myCanvas");
 		var context = canvas.getContext("2d");
@@ -75,7 +106,7 @@ $(document).ready(function(){
 		context.fillStyle = "black";
 		context.fill();
 
-		console.log(JSON.stringify(players));
+		// console.log(JSON.stringify(players));
 
 		mapData.tiles.forEach(tile => {
 			context.beginPath();
@@ -99,9 +130,6 @@ $(document).ready(function(){
 			context.stroke();
 			context.closePath();
 		});
-
-		$("#timer").text("Clock: " + timerCount);
-		$("#score").text("Score: " + score);
 	};
 
 	function onKeyDown(event) {

@@ -12,7 +12,9 @@ var GameSessionID = 100000; // 100,000
 
 module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCount, gameSessionID: GameSessionID };
 
-
+function getRandomNumber(min, max) {
+	return Math.random() * (max - min) + min;
+}
 
 
 (function() {
@@ -27,7 +29,7 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 		// because there is extra data.
 		for(var i = 0; i < playerAliases.length; i++)
 		{
-			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, 
+			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, "color": "red",
 				"isHot": false, "isPoweredUp": false, "isFast": false, "isBig": false };
 
 			newSession.players.push(newPlayer);
@@ -40,18 +42,40 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 		return newSession.id;
 	};
 
-	module.exports.WhereIsPlayer = function(playerAlias) {
+	module.exports.Initialize = function(gameSessionID) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
 		if(sessionIndex === -1)
-			return "";
+			return;
 
-		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
+		// spawn players
+		gameSessions[sessionIndex].players.forEach(player => {
+			player.x = getRandomNumber(25, 100);
+			player.y = getRandomNumber(25, 100);
+		});
+		
+	};
 
-		if(playerIndex === -1)
-			return "";
+	module.exports.WhereIsPlayer = function(playerAlias) {
 
-		return gameSessions[sessionIndex].id;
+		//console.log(`Looking for ${playerAlias} in any game session.`);
+		for(var sessionIndex = 0; sessionIndex < gameSessions.length; sessionIndex++)
+		{
+			for(var playerIndex = 0; playerIndex < gameSessions[sessionIndex].players.length; playerIndex++)
+			{
+				var alias = gameSessions[sessionIndex].players[playerIndex].name;
+				//console.log(JSON.stringify(gameSessions[sessionIndex].players[playerIndex]));
+				//console.log(`Comparing ${alias} and ${playerAlias}`)
+
+				// console.log(`WhereIsPlayer() Comparing: ${alias} with ${playerAlias}.`);
+				if(alias === playerAlias)
+					return gameSessions[sessionIndex].id;
+			}
+		}
+
+		//console.log(`Can not find '${playerAlias}' in any game`);
+		console.log(`I don't know where ${playerAlias} is...`);
+		return -1;
 	};
 
 	// might not need...
@@ -88,7 +112,7 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
 		gameSessions[sessionIndex].players[playerIndex].x = newX;
-		gameSessions[sessionIndex].players[playerIndex].x = newY;
+		gameSessions[sessionIndex].players[playerIndex].y = newY;
 
 	};
 
@@ -96,13 +120,22 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 	module.exports.UpdatePlayerRelativePosition = function(gameSessionID, playerAlias, offsetX, offsetY) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
-		if(sessionIndex === -1)
+		if(sessionIndex === -1) {
+			console.log(`UpdatePlayerRelativePosition(${gameSessionID}, ${playerAlias}, ${offsetX}, ${offsetY}`);
 			return;
+		}
+			
 
 		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
-		gameSessions[sessionIndex].players[playerIndex].x = offsetX;
-		gameSessions[sessionIndex].players[playerIndex].x = offsetY;
+		if(playerIndex === -1) {
+			console.log("UpdatePlayerRelativePosition() player not found");
+			return;
+		}
+
+		// console.log(`Moved ${playerAlias} (relative) {X:${offsetX},Y:${offsetY}}`);
+		gameSessions[sessionIndex].players[playerIndex].x += offsetX;
+		gameSessions[sessionIndex].players[playerIndex].y += offsetY;
 	};
 
 	module.exports.UpdatePlayerFlags = function(gameSessionID, playerAlias, isHot, isPoweredUp, isFast, isBig) {
@@ -122,8 +155,10 @@ module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCoun
 	module.exports.GetAllPlayers = function(gameSessionID) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
-		if(sessionIndex === -1)
-			return;
+		if(sessionIndex === -1) {
+			console.log(`GetAllPlayers() can't find this session, id: ${gameSessionID}`);
+			return [];
+		}
 
 		return gameSessions[sessionIndex].players;
 	};

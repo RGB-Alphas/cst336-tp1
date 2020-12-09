@@ -11,7 +11,7 @@
 	Layer5 = 2nd floor walls
 */
 
-
+// these numbers are for 1280x760 resolution.
 var tileWidth = 40;
 var tileHeight = 40;
 var mapWidth = 32;
