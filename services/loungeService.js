@@ -1,6 +1,7 @@
 
 var userRegistry = require('./userRegistrar');
 var lobbyRegistry = require('./lobbyRegistrar');
+var sql = require('./mysqlService');
 
 let userList = [];
 let usersOnline = 0;
@@ -176,6 +177,29 @@ module.exports = function(socket, client) {
 	// end chat events
 	// ///////////////
 
+	//when user clicks update profile
+	// send data to db
+
+	client.on('save-Profile', (data) => {
+		console.log(client.username);
+		sql.updateUser(data.userId, 
+			data.displayName, 
+			data.skinID, 
+			data.gender,
+			data.locationCode,
+			data.avatarUrl,
+			function(results){
+				if(!results){
+					console.log("Error pushing to db");
+				}	
+					else{
+						console.log("Profile Sucessfully Updated");
+				}
+			});
+		
+	});
+	//end update profile
+	
 	// when the user disconnects.. perform this
 	client.on('disconnect', () => {
 

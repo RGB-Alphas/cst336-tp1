@@ -22,6 +22,8 @@ $(document).ready(function() {
 	var locationCode = $("#locationCode").val();
 	var gender = $("#gender").val();
 	
+	
+	
 	// Skin ID & Corresponding Color
 	var skins = {0: "blue",
 				 1: "lightblue",
@@ -45,7 +47,7 @@ $(document).ready(function() {
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
 		// console.log("Users Online: %d", data.onlineCount);
-
+		
 		var users = data.onlineUsers;
 		var userCount = data.onlineCount;
 		lobbies = data.lobbies;
@@ -401,6 +403,8 @@ $(document).ready(function() {
 		// Pre-fill profile data
 		// Skin
 		updateSkin();
+		console.log(avatarUrl + "hellow@");
+		$("#avatar").attr("src", avatarUrl);
 		
 		// Gender (male == 0, female == 1)
 		if (gender == "0"){
@@ -458,8 +462,8 @@ $(document).ready(function() {
 	async function randomAvatar(){
 		// Fetch random background from Unsplash
 		var key = `7WEnZ0-HH3el9avQVajOeFDCW3rKQBj-LmaxAk6I6GY`;
-	    let url = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
-	    let response = await fetch(url);
+	    avatarUrl = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
+	    let response = await fetch(avatarUrl);
 	    let data = await response.json();
 	    let photoUrl = data[0].urls.small;
 	    $("#avatar").attr("src", photoUrl);
@@ -484,7 +488,15 @@ $(document).ready(function() {
 	}
 	
 	// Update profile
-	// $("#updateBtn").on("click", function(){
+	$("#updateBtn").on("click", function(){
+		socket.emit('save-Profile', {
+			displayName : $('#usernameInput').val(),
+			skinID : skinID, 
+			userId: userId, 
+			gender: $('#female').is(':checked'),
+			locationCode:$("#country").val(),
+			avatarUrl: $("#avatar").attr("src")
+		});
+	});
 
-	// });
 });

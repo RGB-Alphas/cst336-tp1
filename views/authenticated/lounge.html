@@ -12,11 +12,14 @@
 	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script> 
 		<script>
+			var userId = "<%= userId %>";
 			var userName = "<%= name %>";
-			var displayName = "<%= alias %>"
-			var SkinId = "<%= skinID %>"
-			var gender = "<%= gender %>"
-			var locationCode = "<%= locationCode %>"
+			var displayName = "<%= alias %>";
+			var SkinId = "<%= skinID %>";
+			var gender = "<%= gender %>";
+			var locationCode = "<%= locationCode %>";
+			var avatarUrl = "<%= avatarUrl %>";
+			console.log(avatarUrl+ "hello!");
 		</script>
 		<script src = "/scripts/@dicebear/avatars/dist/avatars.js"></script> 
 		<script src = "/scripts/faker/dist/faker.js"></script> 

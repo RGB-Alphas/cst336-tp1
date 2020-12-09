@@ -1,5 +1,5 @@
 const Promise = require('bluebird');
-const express = require('express');
+const express = require('express'); 
 const app = express();
 const path = require('path');
 const server = require('http').createServer(app);
@@ -9,25 +9,11 @@ const mysql = require('mysql');
 // var registry = require('./services/userRegistrar');
 const session = require('express-session');
 require('dotenv').config();
+
 var sql = require('./services/mysqlService');
+//Setting up data base
+const connection = sql.Connect();
 
-// Setting up data base
-const connection = mysql.createConnection({
- host: process.env.Host,
- user: process.env.User,
- password: process.env.Password,
- database: process.env.Database
-});
-
-// Connection to database
- connection.connect((err) => {
-    if(err){
-        console.log('Error connection to DB');
-        return;
-    }
-    console.log('Connected!');
-  });
-  
 // import { AddUser, VerifyUser } from './services/registrar.js';
 
 
@@ -39,7 +25,6 @@ app.use(express.urlencoded({extended: true}));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
-app.use('/scripts', express.static(path.join(__dirname + '/node_modules/')));   // Used for accessing faker.js
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
@@ -56,15 +41,13 @@ io.on('connection', (client) => {
   require('./services/gameService.js')(io, client);
   
 });
-
-// Routes
-// Home page 
+//Home page 
 app.get('/', (req, res, next) => {
   const message = "Please register or sign in.";
   res.render('index.html', {message: message});
 });
 
-// For action
+// for action
 app.post('/login', function(req, res) 
 {
     var username = req.body.loginName;
@@ -73,30 +56,28 @@ app.post('/login', function(req, res)
     if (username && password) 
     {
       // check if user exists
-      var queryResults;
-      connection.query('SELECT * FROM users WHERE accountName = ? AND password = ?', 
-        [username, password], 
-        function(error, results, fields) 
-        {
-          if(error)
-            console.error(error);
-          
+        sql.login(username, password, function(results){
+          if(!results)
+            console.log("Error selecting from DB");
+
           if(results.length === 0)
           {
             const message = "Incorrect Username and/or Password.";
             res.render('index.html', {message: message});
           }
-
+          else{
           req.session.authenticated = true;
           req.session.username = results[0].accountName;
           req.session.alias = results[0].displayName;
           req.session.skinID = results[0].avatarColor;
           req.session.gender = results[0].gender;
           req.session.locationCode = results[0].locationCode;
+          req.session.userId = results[0].id;
+          req.session.avatarUrl = results[0].avatarUrl;
 
           console.log(`${results[0].accountName} ${results[0].displayName}`);
           res.redirect('/authenticated');
-
+          }
         });
     } 
     else 
@@ -107,34 +88,20 @@ app.post('/login', function(req, res)
       // res.end();
     }
 });
-
-// Gets data from form anc pushes to DataBase
+//Gets data from form anc pushes to DataBase
 app.post('/register', function (req, res) {
-  let valid = false
   let user = { accountName: req.body.accountName, password: req.body.password, displayName: req.body.displayName };
-  
-  // Insert data into DB
-  connection.query('INSERT INTO users SET ?', user, (err, res) => {
-    if(err) {
-      console.log("Error inserting into DB Code:")
-      console.log(err.code);
-    }else{
-    console.log('Last insert ID:', res.insertId); 
-    valid = true;
-    }
-  });
-
-  // Because of stupid js
-  setTimeout(() => {  console.log(valid); 
+  //insert data into db
+  sql.register(user,function(valid){
     if(valid){
-      const message = "You may log into your new account.";
-      res.render('index.html', {message: message});
-    }
-    else {
-      const message = "Registration Failed: User already exists.";
-      res.render('index.html', {message: message});
-    }
-  }, 250);
+    const message = "You may log into your new account.";
+    res.render('index.html', {message: message});
+  }
+  else {
+    const message = "Registration Failed: User already exists.";
+    res.render('index.html', {message: message});
+  }
+  })
 });
 
 app.get('/authenticated', isAuthenticated, function(req, res){
@@ -143,10 +110,19 @@ app.get('/authenticated', isAuthenticated, function(req, res){
   let skinID = req.session.skinID;
   let gender = req.session.gender;
   let locationCode = req.session.locationCode;
-
-  res.render("authenticated/lounge.html", {name: name, alias: alias, skinID: skinID, gender: gender, locationCode: locationCode});
-  
+  let userId = req.session.userId;
+  let avatarUrl = req.session.avatarUrl
+   res.render("authenticated/lounge.html", {name: name,
+   alias: alias, 
+   skinID: skinID, 
+   gender: gender, 
+   locationCode: locationCode,
+   userId: userId,
+   avatarUrl: avatarUrl
+   });
+   
 });
+
 
 app.get('/lobby', isAuthenticated, function(req, res){
   const lobbyName = req.query.lobbyName || req.query.inputLobbyName;
@@ -170,24 +146,8 @@ server.listen(port, () => {
   console.log("Server is running on port %d.", port);
 });
 
-// Functions for database
-// Function accepts data from form, if user name is taken return false else return true
-function dbInsertData(accountName, password, displayName){
-  let user = { accountName: accountName, password: password, displayName: displayName };
-  
-  // Insert data into DB
-  connection.query('INSERT INTO users SET ?', user, (err, res) => {
-    if(err) {
-      console.log("Error inserting into DB Code:")
-      console.log(err.code);
-      return 0;
-    }else
-    console.log('Last insert ID:', res.insertId); 
-    return 1;
-  });
-}
 
-// Function to authenticate user
+//Function to authenticate user
 function isAuthenticated(req,res,next){
   if(!req.session.authenticated){
     res.redirect('/');
@@ -196,5 +156,3 @@ function isAuthenticated(req,res,next){
     next();
   }
 }
-
-
