@@ -1,9 +1,10 @@
-/*global Path*/
-/*global view*/
-/*global Point*/
-/*global $*/
-$(document).ready(function() {
+import Circle from "./GameObjects/Circle.js"
+import {drawCircle} from "./GameFunctions/drawCircle.js"
+import {controller} from "./GameFunctions/controller.js"
+import {checkCollision} from "./GameFunctions/checkCollision.js"
+// import {map1} from "./GameFunctions/mapping.js"
 
+$(document).ready(function(){
 	var socket = io();
 
 	// globals

@@ -1,4 +1,4 @@
-/* global $ */
+/* global $ */ 
 /* global io */
 
 $(document).ready(function() {
@@ -33,16 +33,17 @@ $(document).ready(function() {
 	var selectedPlayer = "";
 
 	console.log("Emitting: %s, %s", userName, displayName);
-	socket.emit('enter_lounge', { userName: userName, alias: displayName } );
+	socket.emit('enter_lounge', { userName: userName, alias: displayName} );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
-		// console.log("Users Online: %d", data.onlineCount);
+		// co nsole.log("Users Online: %d", data.onlineCount);
 
 		var users = data.onlineUsers;
 		var userCount = data.onlineCount;
 		lobbies = data.lobbies;
 		lobbyCount = data.lobbyCount;
+		var userId = data.userId;
 		
 		$("#playerListHeading").html(`Users: ${userCount}`);
 		$("#playerList").empty();
@@ -311,6 +312,14 @@ $(document).ready(function() {
 			lobbyName: $("#lobbyName").val(),
 			lobbyPassword: $("#lobbyPassword").val(),
 			lobbyCapacity: $("#lobbyCapacity").val()
+		});
+		
+	});
+	
+		// emit to save profile settings into db.
+	$("#saveButton").click(function(){
+		socket.emit('save-Profile', {
+		profilePicture	: skinId, userId: userId
 		});
 		
 	});
