@@ -15,10 +15,12 @@ $(document).ready(function() {
 	// var userCount = 0;
 	var lobbies = [];
 	var lobbyCount = 0;
-	var skinId = 0;
 	var maxSkinId = 13;
 	var selectedLobby = "";
 	var selectedPlayer = "";
+	var skinID = parseInt($("#skinID").val());
+	var locationCode = $("#locationCode").val();
+	var gender = $("#gender").val();
 	
 	// Skin ID & Corresponding Color
 	var skins = {0: "blue",
@@ -178,7 +180,6 @@ $(document).ready(function() {
 
 	// /////////////////
 	// chat events begin
-
 	input.addEventListener("keyup", function(event) {
 		// Number 13 is the "Enter" key on the keyboard
 		if (event.keyCode === 13) {
@@ -238,11 +239,9 @@ $(document).ready(function() {
 
 		$("#messageList").append(item);
 	})
-
 	// chat events end
-	// ///////////////
+	// /////////////////
 
-	// ////////////////////
 	// chat functions begin
 	$("#messageSend").click( function() {
 		var message = $("#messageInput").val(); // get message
@@ -407,35 +406,49 @@ $(document).ready(function() {
 		$("#chatPanel").hide();
 		$("#joinPanel").hide();
 		$("#profilePanel").show();
-		updateSelector();
+		
+		// Pre-fill profile data
+		// Skin
+		updateSkin();
+		
+		// Gender (male == 0, female == 1)
+		if (gender == "0"){
+			$(`#male`).prop("checked", true);
+		}
+		if (gender == "1"){
+			$(`#female`).prop("checked", true);
+		}
+		
+		// Location
+		$("#country option[value=" + locationCode + "]").attr("selected", "selected");
 	})
 	
 	// Skin Selection - Right Arrow
 	$("#rightArrow").on("click", function(){
-		console.log(skins.count);
-		if(skinId == maxSkinId){
-			skinId = 0;
+		if(skinID == maxSkinId){
+			skinID = 0;
 		}
 		else{
-			skinId += 1;
+			skinID += 1
+			console.log(skinID);
 		}
-		updateSelector();
+		updateSkin();
 	})
 	
 	// Skin Selection - Left Arrow
 	$("#leftArrow").on("click", function(){
-		if(skinId == 0){
-			skinId = maxSkinId;
+		if(skinID == 0){
+			skinID = maxSkinId;
 		}
 		else{
-			skinId -= 1;
+			skinID -= 1;
 		}
-		updateSelector();
+		updateSkin();
 	})
 	
-	// Update skin selector icon
-	function updateSelector(){
-		$("#skinSelect").css("color", skins[skinId]);
+	// Update skin icon color
+	function updateSkin(){
+		$("#skinSelect").css("color", skins[skinID]);
 	}
 	
 	// Generate random username from faker API
@@ -448,18 +461,39 @@ $(document).ready(function() {
 	$("#usernameBtn").on("click", function(){
 		$("#usernameInput").val(randomUsername());
 	})
+
 	
 	// Generate random avatar from faker API
 	async function randomAvatar(){
-		let url = `https://avatars.dicebear.com/api/human/123.svg?background=%23ffffff`;
-		const response = await fetch(url);
-		console.log(response);
-		console.log(response.url);
-		$("#avatar").attr("src", response.url);
+		// Fetch random background from Unsplash
+		var key = `7WEnZ0-HH3el9avQVajOeFDCW3rKQBj-LmaxAk6I6GY`;
+	    let url = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
+	    let response = await fetch(url);
+	    let data = await response.json();
+	    let photoUrl = data[0].urls.small;
+	    $("#avatar").attr("src", photoUrl);
 	}
 	
 	// Random avatar button
 	$("#avatarBtn").on("click", function(){
 		randomAvatar();
 	})	
+	
+	getCountries();
+	// Generate a list of countries for drop-down menu
+	async function getCountries(){
+		let url = `https://restcountries.eu/rest/v2/all`;
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		// Add countries to drop-down
+		for (var i = 0; i < data.length; i++){
+			$("#country").append(`<option value=${data[i].alpha2Code}> ${data[i].name} </option>`);
+		}
+	}
+	
+	// Update profile
+	// $("#updateBtn").on("click", function(){
+
+	// });
 });
