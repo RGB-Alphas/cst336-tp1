@@ -21,14 +21,18 @@ $(document).ready(function(){
 	var inputFrameTime = 1000/inputFPS; // Approx. 500ms per frame
 
 	var playerList = [];
-	// var mapData = [];
+
+	 var mapData;
 	var timerCount = 0;
 	var score = 0;
 
 	socket.emit('enter_game', { userName: userName, alias: displayName } );
 
-	socket.on('game_entered', () => {
+	socket.on('game_entered', (data) => {
 		console.log("Entered the game")
+
+		mapData = data.mapData;
+
 		// fire up the "input system"
 		initializeInput();
 	});
@@ -72,6 +76,15 @@ $(document).ready(function(){
 		context.fill();
 
 		console.log(JSON.stringify(players));
+
+		mapData.tiles.forEach(tile => {
+			context.beginPath();
+			// draw the tile
+			context.rect(tile.x, tile.y, tile.width, tile.height);
+			context.fillStyle = tile.color;
+			context.fill();
+			context.closePath();
+		});
 
 		// begin drawing circles
 		players.forEach(player => {
