@@ -22,6 +22,7 @@ $(document).ready(function() {
 	var playerList = [];
 	// var mapData = [];
 	var timerCount = 0;
+	var score = 0;
 
 	socket.emit('enter_game', { userName: userName, alias: displayName } );
 
@@ -46,6 +47,9 @@ $(document).ready(function() {
 			timerCount++;
 		},1000);
 		$("#timer").text("Clock: " + timerCount);
+
+		//add score
+		$("#score").text("Score: " + score);
 
 		setInterval(function() {
 			socket.emit("update player", { 
@@ -83,6 +87,7 @@ $(document).ready(function() {
 		});
 
 		$("#timer").text("Clock: " + timerCount);
+		$("#score").text("Score: " + score);
 	};
 
 	function onKeyDown(event) {
