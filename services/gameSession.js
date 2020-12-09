@@ -67,7 +67,7 @@ function getRandomNumber(min, max) {
 				//console.log(JSON.stringify(gameSessions[sessionIndex].players[playerIndex]));
 				//console.log(`Comparing ${alias} and ${playerAlias}`)
 
-				console.log(`WhereIsPlayer() Comparing: ${alias} with ${playerAlias}.`);
+				// console.log(`WhereIsPlayer() Comparing: ${alias} with ${playerAlias}.`);
 				if(alias === playerAlias)
 					return gameSessions[sessionIndex].id;
 			}
