@@ -1,9 +1,10 @@
-/*global Path*/
-/*global view*/
-/*global Point*/
-/*global $*/
-$(document).ready(function() {
+import Circle from "./GameObjects/Circle.js"
+import {drawCircle} from "./GameFunctions/drawCircle.js"
+import {controller} from "./GameFunctions/controller.js"
+import {checkCollision} from "./GameFunctions/checkCollision.js"
+// import {map1} from "./GameFunctions/mapping.js"
 
+$(document).ready(function(){
 	var socket = io();
 
 	// globals
@@ -20,7 +21,10 @@ $(document).ready(function() {
 	var inputFrameTime = 1000/inputFPS; // Approx. 500ms per frame
 
 	var playerList = [];
+
 	 var mapData;
+	var timerCount = 0;
+	var score = 0;
 
 	socket.emit('enter_game', { userName: userName, alias: displayName } );
 
@@ -43,6 +47,15 @@ $(document).ready(function() {
 		window.addEventListener("keydown", onKeyDown, false);
 		window.addEventListener("keyup", onKeyUp, false);
 		
+		//add timer
+		var timer = setInterval(()=>{
+			timerCount++;
+		},1000);
+		$("#timer").text("Clock: " + timerCount);
+
+		//add score
+		$("#score").text("Score: " + score);
+
 		setInterval(function() {
 			socket.emit("update player", { 
 				wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
@@ -86,8 +99,9 @@ $(document).ready(function() {
 			context.stroke();
 			context.closePath();
 		});
-		
 
+		$("#timer").text("Clock: " + timerCount);
+		$("#score").text("Score: " + score);
 	};
 
 	function onKeyDown(event) {

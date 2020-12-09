@@ -1,5 +1,5 @@
 const Promise = require('bluebird');
-const express = require('express');
+const express = require('express'); 
 const app = express();
 const path = require('path');
 const server = require('http').createServer(app);
@@ -12,21 +12,8 @@ require('dotenv').config();
 
 var sql = require('./services/mysqlService');
 //Setting up data base
-const connection = mysql.createConnection({
- host: process.env.Host,
- user: process.env.User,
- password: process.env.Password,
- database: process.env.Database
-});
-// Connection to database
- connection.connect((err) => {
-    if(err){
-        console.log('Error connection to DB');
-        return;
-    }
-    console.log('Connected!');
-  });
-  
+const connection = sql.Connect();
+
 // import { AddUser, VerifyUser } from './services/registrar.js';
 
 
@@ -69,27 +56,24 @@ app.post('/login', function(req, res)
     if (username && password) 
     {
       // check if user exists
-      var queryResults;
-      connection.query('SELECT * FROM users WHERE accountName = ? AND password = ?', 
-        [username, password], 
-        function(error, results, fields) 
-        {
-          if(error)
-            console.error(error);
-          
+        sql.login(username, password, function(results){
+          if(!results)
+            console.log("Error selecting from DB");
+
           if(results.length === 0)
           {
             const message = "Incorrect Username and/or Password.";
             res.render('index.html', {message: message});
           }
-
+          else{
           req.session.authenticated = true;
           req.session.username = results[0].accountName;
           req.session.alias = results[0].displayName;
+          req.session.userId = results[0].id;
 
           console.log(`${results[0].accountName} ${results[0].displayName}`);
           res.redirect('/authenticated');
-
+          }
         });
     } 
     else 
@@ -102,21 +86,10 @@ app.post('/login', function(req, res)
 });
 //Gets data from form anc pushes to DataBase
 app.post('/register', function (req, res) {
-  let valid = false
   let user = { accountName: req.body.accountName, password: req.body.password, displayName: req.body.displayName };
   //insert data into db
-  connection.query('INSERT INTO users SET ?', user, (err, res) => {
-    if(err) {
-      console.log("Error inserting into DB Code:")
-      console.log(err.code);
-    }else{
-    console.log('Last insert ID:', res.insertId); 
-    valid = true;
-    }
-  });
-  //Because of stupid js
-setTimeout(() => {  console.log(valid); 
-   if(valid){
+  sql.register(user,function(valid){
+    if(valid){
     const message = "You may log into your new account.";
     res.render('index.html', {message: message});
   }
@@ -124,14 +97,14 @@ setTimeout(() => {  console.log(valid);
     const message = "Registration Failed: User already exists.";
     res.render('index.html', {message: message});
   }
-}, 250);
- 
+  })
 });
 
 app.get('/authenticated', isAuthenticated, function(req, res){
   let name = req.session.username;
   let alias = req.session.alias;
-  res.render("authenticated/lounge.html", {name: name, alias: alias });
+  let userId = req.session.userId;
+  res.render("authenticated/lounge.html", {name: name, alias: alias , userId: userId });
    
 });
 
@@ -158,24 +131,6 @@ server.listen(port, () => {
   console.log("Server is running on port %d.", port);
 });
 
-//functions for database
-
-//function accepts data from form, if user name is taken return false else return true
-function dbInsertData(accountName, password, displayName){
-  
-  let user = { accountName: accountName, password: password, displayName: displayName };
-  //insert data into db
-  connection.query('INSERT INTO users SET ?', user, (err, res) => {
-    if(err) {
-      console.log("Error inserting into DB Code:")
-      console.log(err.code);
-      return 0;
-    }else
-    console.log('Last insert ID:', res.insertId); 
-    return 1;
-  });
- 
-}
 
 //Function to authenticate user
 function isAuthenticated(req,res,next){

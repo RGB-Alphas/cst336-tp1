@@ -84,11 +84,4 @@ module.exports = function(socket, client) {
 		let yOffset = vector.y * 20;
 
 		gameSessionManager.UpdatePlayerRelativePosition(gameSessionID, alias, xOffset, yOffset);
-
-		/*
-		socket.to(`${gameSessionID}`).emit("update players", { 
-			players: gameSessionManager.GetAllPlayers(gameSessionID) 
-		});
-		*/
-	});
 };
