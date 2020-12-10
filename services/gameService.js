@@ -1,6 +1,6 @@
 var userRegistry = require('./userRegistrar');
 var gameSessionManager = require('./gameSession');
-var mapGenerator = require('./Game/maps');
+var physics = require('./Game/collision');
 
 // config
 var serverFPS = 20;	// 20 updates per second.
@@ -25,10 +25,10 @@ module.exports = function(socket, client) {
 		
 		userAdded = true;
 
-		var players = gameSessionManager.GetAllPlayers(gameSessionID);
+		// var players = gameSessionManager.GetAllPlayers(gameSessionID);
 		var options = gameSessionManager.GetOptions(gameSessionID);
 
-		var mapData = mapGenerator.CreateMap(options.map);
+		var mapData = gameSessionManager.GetMapData(gameSessionID);
 
 		// console.log(JSON.stringify(mapData));
 		// timeLimit = options.time;
@@ -55,37 +55,65 @@ module.exports = function(socket, client) {
 			// identify player
 			const alias = userRegistry.GetAliasByUserName(client.username);
 			const gameSessionID = gameSessionManager.WhereIsPlayer(alias);
-			// wasdState = data.wasdState;
 
+			// get the map data.
+			const mapData = gameSessionManager.GetMapData(gameSessionID);
+
+			// get current player positions
+			const players = gameSessionManager.GetAllPlayerNamesAndPositions(gameSessionID);
+			const me = players.findIndex(player => player.name === alias);
+			console.log(JSON.stringify(players[me]));
+			
+			// client's keyboard state:
 			let wKey = data.wasdState.w;
 			let aKey = data.wasdState.a;
 			let sKey = data.wasdState.s;
 			let dKey = data.wasdState.d;
 
 			let vector = { x: 0, y: 0 };
+
+			// important
+			var hasCollided = false;
+
+			// we are seeing if a circle is colliding with a quad.
+			// circles are drawn from center so offsets are needed.
+			let currentX = players[me].x;
+			let currentY = players[me].y;
+			let halfWidth = players[me].radius;
+
+			let currentX1 = currentX - halfWidth;
+			let currentY1 = currentY - halfWidth;
+			let currentX2 = currentX + halfWidth;
+			let currentY2 = currentY + halfWidth;
 			
 			if(wKey === true) {
 				vector.y = -1;
+				hasCollided = physics.isPointInRect(currentX, currentY1, mapData.tiles);
 			}
 				
 			if(aKey === true) {
 				vector.x = -1;
+				hasCollided = physics.isPointInRect(currentX1, currentY, mapData.tiles);
 			}
 				
 			if(sKey === true) {
 				vector.y = 1;
+				hasCollided = physics.isPointInRect(currentX, currentY2, mapData.tiles);
 			}
-				
+			
 			if(dKey === true) {
 				vector.x = 1;
+				hasCollided = physics.isPointInRect(currentX2, currentY, mapData.tiles);
 			}
-
+			
+			// how much we are moving this frame:
 			let xOffset = vector.x * 20;
 			let yOffset = vector.y * 20;
+			
+			if(hasCollided === false)
+				gameSessionManager.UpdatePlayerRelativePosition(gameSessionID, alias, xOffset, yOffset);
 
-			gameSessionManager.UpdatePlayerRelativePosition(gameSessionID, alias, xOffset, yOffset);
-
-			console.log(`${gameSessionID}: ${alias} moved Rel(${xOffset}, ${yOffset}).`)
+			// console.log(`${gameSessionID}: ${alias} moved Rel(${xOffset}, ${yOffset}).`)
 			socket.to(`${gameSessionID}`).emit("update players", { 
 				players: gameSessionManager.GetAllPlayers(gameSessionID) 
 			});

@@ -120,15 +120,24 @@ $(document).ready(function() {
 		// begin drawing circles
 		players.forEach(player => {
 			context.beginPath();
+
 			// draw the player
 			context.arc(player.x, player.y, 20, 0, Math.PI * 2, false);
 			context.fillStyle = player.color;
 			context.fill();
+
 			// draw the "aura" for a glow effect.
 			context.arc(player.x, player.y, 21, 0, Math.PI * 2, false);
 			context.fillStyle = "orange";
 			context.stroke();
 			context.closePath();
+
+			// draw the nameplate
+			var offsetX = player.x - player.radius;
+			var offsetY = player.y - player.radius - 10;
+			context.font = '10px serif';
+			context.fillStyle = "white";
+			context.fillText(player.name, offsetX, offsetY);
 		});
 	};
 
