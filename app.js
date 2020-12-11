@@ -128,15 +128,17 @@ app.get('/lobby', isAuthenticated, function(req, res){
   const lobbyName = req.query.lobbyName || req.query.inputLobbyName;
   const userName = req.session.username;
   const alias = req.session.alias;
+  let userId = req.session.userId;
 
   // console.log(`Lobby Created: name: ${name}, ${password}.`);
-  res.render("authenticated/lobby.html", { lobbyName: lobbyName, userName: userName, alias: alias });
+  res.render("authenticated/lobby.html", { lobbyName: lobbyName, userName: userName, alias: alias, userId: userId });
 });
 
 app.get('/game', isAuthenticated, function(req, res){
   let name = req.session.username;
   let alias = req.session.alias;
-  res.render("authenticated/game.html", { userName: name, alias: alias });
+  let userId = req.session.userId;
+  res.render("authenticated/game.html", { name: name, alias: alias, userId: userId });
 });
 
 server.listen(port, () => {
