@@ -24,10 +24,11 @@ module.exports = function(socket, client) {
 		const userName = data.userName;
 		const alias = data.alias;
 		var sessionID = client.id;
+		var userId = data.userId;
 
 		if(!userRegistry.IsOnline(userName))
 		{
-			userRegistry.AddUser(userName, alias);
+			userRegistry.AddUser(userName, alias, userId, sessionID);
 			client.username = userName;
 			addedUser = true;
 		}
@@ -99,10 +100,10 @@ module.exports = function(socket, client) {
 			var sessionID = gameSessionManager.AddGameSession(
 				lobbyName, 
 				lobby.players.map(player => { 
-					return { 
-						"name": player.name 
-					} }),
+					return player.name 
+					}),
 				lobby.options);
+			gameSessionManager.Initialize(sessionID);
 			socket.to(`${lobbyName}`).emit('ready check success');
 		}
 	});

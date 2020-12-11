@@ -13,7 +13,8 @@ $(document).ready(function() {
 	socket.emit("enter_lobby", {
 		lobbyName: lobbyName,
 		userName: userName,
-		alias: displayName
+		alias: displayName,
+		userId: userId
 	});
 
 	socket.on('lobby_entered', (data) => {
