@@ -1,4 +1,4 @@
-	const mysql = require('mysql');
+const mysql = require('mysql');
 	
 	// Add this to any file that needs DB support
 	// var sql = require('./services/mysqlService');

@@ -10,6 +10,7 @@ const mysql = require('mysql');
 const session = require('express-session');
 require('dotenv').config();
 
+
 var sql = require('./services/mysqlService');
 //Setting up data base
 const connection = sql.Connect();
@@ -121,6 +122,7 @@ app.get('/authenticated', isAuthenticated, function(req, res){
    avatarUrl: avatarUrl
    });
    
+
 });
 
 
@@ -149,7 +151,9 @@ server.listen(port, () => {
 });
 
 
+
 //Function to authenticate user
+
 function isAuthenticated(req,res,next){
   if(!req.session.authenticated){
     res.redirect('/');

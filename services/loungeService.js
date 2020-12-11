@@ -1,5 +1,6 @@
  
 
+
 var userRegistry = require('./userRegistrar');
 var lobbyRegistry = require('./lobbyRegistrar');
 var sql = require('./mysqlService');
@@ -230,7 +231,7 @@ module.exports = function(socket, client) {
 			 onlineUsers: userRegistry.GetUsers()
 		  });
 
-		  userRegistry.RemoveUser(client.username);
+		  userRegistry.RemoveUser(client.client.username);
 		  addedUser = false;
 		}
 	 });

@@ -1,6 +1,5 @@
 var mapGenerator = require('./Game/maps');
 
-
 // Define a game session:
 // options, map, scenario
 // players:
@@ -13,10 +12,10 @@ var GameSessionID = 100000; // 100,000
 
 module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCount, gameSessionID: GameSessionID };
 
+
 function getRandomNumber(min, max) {
 	return Math.random() * (max - min) + min;
 }
-
 
 (function() {
 
@@ -24,6 +23,7 @@ function getRandomNumber(min, max) {
 	module.exports.AddGameSession = function(sessionName, playerAliases, options) {
 
 		// define a session object
+
 		var newSession = { "id": GameSessionID, "name": sessionName, "players": [], mapData: [], "options": options };
 
 		// add players to the object. we can't do this directly with "session.players = players"
@@ -201,7 +201,6 @@ function getRandomNumber(min, max) {
 			console.log(`GetAllPlayers() can't find this session, id: ${gameSessionID}`);
 			return [];
 		}
-
 		return gameSessions[sessionIndex].players;
 	};
 
@@ -210,8 +209,9 @@ function getRandomNumber(min, max) {
 
 		if(sessionIndex === -1)
 			return;
-
+    
 		return gameSessions[sessionIndex].players.map( player => { return { "name": player.name, "x": player.x, "y": player.y, "radius": player.radius } } )
+
 	};
 
 	module.exports.GetAllPlayerNamesAndFlags = function(gameSessionID) {
