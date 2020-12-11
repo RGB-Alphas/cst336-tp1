@@ -87,7 +87,6 @@ $(document).ready(function() {
 			else
 			{
 				clearInterval(updatePlayerInterval);
-				$("#gameover").css("visibility", "visible");
 			}
 			
 			// console.log(`Input State: W: ${keyW} A: ${keyA} S: ${keyS} D: ${keyD}`);
