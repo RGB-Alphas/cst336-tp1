@@ -5,16 +5,16 @@ var usersOnline = 0;
 module.exports = { profiles: userProfiles };
 module.exports = { usersOnline: usersOnline };
 
-(function() { 
+(function() {
 
-	module.exports.AddUser = function(name, alias, userId, sessionId) {
+	module.exports.AddUser = function(name, alias) {
 		
 		var indexOfExistingUser = userProfiles.findIndex(user => user.name === name);
 
 		if(indexOfExistingUser === -1) // user doesn't exist. we add them.
 		{
 			console.log(`Adding new user: ${name} with alias: ${alias}.`)
-			const entry = { "name": name, "alias": alias, "userId": userId, "sessionId": sessionId };
+			const entry = { "name": name, "alias": alias };
 			userProfiles.push(entry);
 			usersOnline++;
 

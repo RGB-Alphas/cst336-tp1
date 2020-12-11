@@ -1,185 +1,79 @@
-$(document).ready(function() {
+import Circle from "./GameObjects/Circle.js"
+import {drawCircle} from "./GameFunctions/drawCircle.js"
+import {controller} from "./GameFunctions/controller.js"
+import {checkCollision} from "./GameFunctions/checkCollision.js"
+// import {map1} from "./GameFunctions/mapping.js"
 
+$(document).ready(function(){
 	var socket = io();
+	var currentPlayer;
+	var canvas = document.getElementById("myCanvas");
+	var ctx = canvas.getContext('2d');
 
-	// globals
-	//var mapWidth = view.size.width;
-	//var mapHeight = view.size.height;
+	let screenWidth = 1000;
+	let screenHeight = 500;
 
-	var keyW = false;
-	var keyA = false;
-	var keyS = false;
-	var keyD = false;
+	let x = Math.floor(Math.random() * Math.floor(800) + 100);
+	let y = Math.floor(Math.random() * Math.floor(300) + 100);
+	let randomColor = "#" + Math.floor(Math.random()*16777215).toString(16);
+	var player = new Circle(x,y,15,0,randomColor,0);
+	socket.emit("playerJoined", JSON.stringify(player));
 
-	// the input system will tick slowly.
-	var inputFPS = 2;  // 2 frames per second
-	var inputFrameTime = 1000/inputFPS; // Approx. 500ms per frame
-
-	var playerList = [];
-
-	var mapData;
-	var timeLeft = 0;
-	var score = 0;
-	var timerInterval; // interval handle.
-	var updatePlayerInterval;
-
-	var isRunning = false;
-
-	socket.emit('enter_game', { 
-		userName: userName, 
-		alias: displayName,
-		userId: userId 
-	});
-
-	socket.on('game_entered', (data) => {
-		console.log("Entered the game")
-
-		mapData = data.mapData;
-		timeLeft = data.options.time;
-
-		// fire up the "input system"
-		isRunning = true;
-		initializeTimer();
-		initializeInput();
-
-		
-	});
-
-	socket.on('update players', (data) => {
-		playerList = data.players;
-		render(data.players);
-		console.log("players updated");
-	});
-
-	function initializeTimer() {
-		//add timer
-		timerInterval = setInterval( () => {
-			timeLeft--;
-			$("#timer").text("Time Remaining: " + timeLeft);
-			if(timeLeft < 1)
-			{
-				timeLeft = 0;
-				isRunning = false;
-				clearInterval(timerInterval);
+	var step = function() {
+		socket.on("received",(data)=>{
+			//console.log("This is the ", data);
+			let playerFromServer = JSON.parse(data);
+			//console.log("this is the player ", playerFromServer);
+			for(let i = 0; i < playerFromServer.length; i++) {
+				if( player.randomColor === playerFromServer[i].randomColor) {
+					currentPlayer = playerFromServer[i];
+				}
 			}
-				
-		},1000);
-		// $("#timer").text("Clock: " + timerInterval);
-
-		// add score
-		// $("#score").text("Score: " + score);
-	};
-
-	// functions
-	function initializeInput() {
-		window.addEventListener("keydown", onKeyDown, false);
-		window.addEventListener("keyup", onKeyUp, false);
-
-		updatePlayerInterval = setInterval(function() {
-
-			if(isRunning === true)
-			{
-				console.log("sending player input");
-				socket.emit("update player", { 
-					wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
-				});
-			}
-			else
-			{
-				clearInterval(updatePlayerInterval);
-				$("#gameover").css("visibility", "visible");
-			}
-			
-			// console.log(`Input State: W: ${keyW} A: ${keyA} S: ${keyS} D: ${keyD}`);
-		}, inputFrameTime);
-	};
-
-	function render(players) {
-
-		console.log("Rendering: %d objects", mapData.tiles.length + players.length);
-		
-  		var canvas = document.getElementById("myCanvas");
-		var context = canvas.getContext("2d");
-		
-		// clear the canvas to that color from the css sheet.
-		context.clearRect(0, 0, canvas.width, canvas.height);
-		context.rect(0, 0, canvas.width, canvas.height);
-		context.fillStyle = "black";
-		context.fill();
-
-		// console.log(JSON.stringify(players));
-
-		mapData.tiles.forEach(tile => {
-			context.beginPath();
-			// draw the tile
-			context.rect(tile.x, tile.y, tile.width, tile.height);
-			context.fillStyle = tile.color;
-			context.fill();
-			context.closePath();
+			//console.log("The current player is ", currentPlayer);
 		});
+		controller(currentPlayer);
+		ctx.clearRect(0,0,screenWidth,screenHeight);
+		//window.requestAnimationFrame(step);
+	}
 
-		// begin drawing circles
-		players.forEach(player => {
-			context.beginPath();
+	step();
+})
 
-			// draw the player
-			context.arc(player.x, player.y, 20, 0, Math.PI * 2, false);
-			context.fillStyle = player.color;
-			context.fill();
 
-			// draw the "aura" for a glow effect.
-			context.arc(player.x, player.y, 21, 0, Math.PI * 2, false);
-			context.fillStyle = "orange";
-			context.stroke();
-			context.closePath();
 
-			// draw the nameplate
-			var offsetX = player.x - player.radius;
-			var offsetY = player.y - player.radius - 10;
-			context.font = '10px serif';
-			context.fillStyle = "white";
-			context.fillText(player.name, offsetX, offsetY);
-		});
-	};
+// var socket = io();
+// console.log(socket)
+// socket.emit("login_success",{data: "hello world"});
 
-	function onKeyDown(event) {
-		var keyCode = event.keyCode;
-		switch (keyCode) {
-		  case 68: //d
-			 keyD = true;
-			 break;
-		  case 83: //s
-			 keyS = true;
-			 break;
-		  case 65: //a
-			 keyA = true;
-			 break;
-		  case 87: //w
-			 keyW = true;
-			 break;
-		}
-	 }
-	 
-	 function onKeyUp(event) {
-		var keyCode = event.keyCode;
-	 
-		switch (keyCode) {
-		  case 68: //d
-			 keyD = false;
-			 break;
-		  case 83: //s
-			 keyS = false;
-			 break;
-		  case 65: //a
-			 keyA = false;
-			 break;
-		  case 87: //w
-			 keyW = false;
-			 break;
-		}
-	 }
+// var canvas = document.getElementById("myCanvas");
+// var ctx = canvas.getContext('2d');
 
-	// event listeners
+// let screenWidth = 1000;
+// let screenHeight = 500;
 
-	
+// var circle1 = new Circle(100,100,15,0, "turquoise",0);	// Player
+// var circle2 = new Circle(200,100,15,0, "yellow",0);		// CPU
+
+// var step = function() {
+// 	controller(circle1);
+// 	ctx.clearRect(0,0,screenWidth,screenHeight);
+// 	if (checkCollision(circle1, circle2)) {
+// 		circle1.speed = -circle1.speed;
+// 		circle1.x += circle1.speed;
+// 		circle1.y += circle1.speed;
+// 		circle2.color = "white";
+// 	}
+// 	drawCircle(circle1, ctx);
+// 	drawCircle(circle2, ctx);
+// 	window.requestAnimationFrame(step);
+// }
+
+// step();
+
+/******************************************************
+				Sending data to server
+socket.emit("login_success",{data: "hello world"});
+socket.on("received",(data)=>{
+	console.log(data)
 });
+*******************************************************/
