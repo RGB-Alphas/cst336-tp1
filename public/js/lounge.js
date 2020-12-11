@@ -1,4 +1,4 @@
-/* global $ */ 
+/* global $ */
 /* global io */
 /* global userName */
 /* global displayName */
@@ -22,8 +22,6 @@ $(document).ready(function() {
 	var locationCode = $("#locationCode").val();
 	var gender = $("#gender").val();
 	
-	
-	
 	// Skin ID & Corresponding Color
 	var skins = {0: "blue",
 				 1: "lightblue",
@@ -42,13 +40,12 @@ $(document).ready(function() {
 				 
 	// User joined messages
 	console.log("Emitting: %s, %s", userName, displayName);
-
-	socket.emit('enter_lounge', { userName: userName, alias: displayName, avatarUrl: avatarUrl } );
+	socket.emit('enter_lounge', { userName: userName, alias: displayName} );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
-		// console.log("Users Online: %d", data.onlineCount);
-		
+		// co nsole.log("Users Online: %d", data.onlineCount);
+
 		var users = data.onlineUsers;
 		var userCount = data.onlineCount;
 		lobbies = data.lobbies;
@@ -222,7 +219,7 @@ $(document).ready(function() {
 		const message = data.message;
 		
 		var avatar = document.createElement("img");
-		avatar.setAttribute("src", data.avatarUrl);
+		avatar.setAttribute("src", "../img/avatar-male.jpg");
 		avatar.setAttribute("class", "avatar-margin");
 		avatar.setAttribute("alt", "avatar");
 		avatar.setAttribute("width", "25px");
@@ -257,7 +254,7 @@ $(document).ready(function() {
 		socket.emit('new message', message);
 
 		var avatar = document.createElement("img");
-		avatar.setAttribute("src", avatarUrl);
+		avatar.setAttribute("src", "../img/avatar-male.jpg");
 		avatar.setAttribute("class", "avatar-margin");
 		avatar.setAttribute("alt", "avatar");
 		avatar.setAttribute("width", "25px");
@@ -413,8 +410,6 @@ $(document).ready(function() {
 		// Pre-fill profile data
 		// Skin
 		updateSkin();
-		console.log(avatarUrl + "hellow@");
-		$("#avatar").attr("src", avatarUrl);
 		
 		// Gender (male == 0, female == 1)
 		if (gender == "0"){
@@ -475,8 +470,8 @@ $(document).ready(function() {
 	    let url = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
 	    let response = await fetch(url);
 	    let data = await response.json();
-	    avatarUrl = data[0].urls.small;
-	    $("#avatar").attr("src", avatarUrl);
+	    let photoUrl = data[0].urls.small;
+	    $("#avatar").attr("src", photoUrl);
 	}
 	
 	// Random avatar button
@@ -498,15 +493,7 @@ $(document).ready(function() {
 	}
 	
 	// Update profile
-	$("#updateBtn").on("click", function(){
-		socket.emit('save-Profile', {
-			displayName : $('#usernameInput').val(),
-			skinID : skinID, 
-			userId: userId, 
-			gender: $('#female').is(':checked'),
-			locationCode:$("#country").val(),
-			avatarUrl: $("#avatar").attr("src")
-		});
-	});
+	// $("#updateBtn").on("click", function(){
 
+	// });
 });

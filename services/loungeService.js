@@ -1,4 +1,3 @@
- 
 
 
 var userRegistry = require('./userRegistrar');
@@ -10,7 +9,6 @@ let usersOnline = 0;
 
 module.exports = function(socket, client) {
 
-	var avatarUrl;
 	let addedUser = false;
 
 	client.on("enter_lounge", (data) => {
@@ -21,10 +19,8 @@ module.exports = function(socket, client) {
 			return;
 		const userName = data.userName;
 		const alias = data.alias;
-		const userId = data.userId;
 		client.username = userName; // the socket will hold the real username.
 		var sessionID = client.id;
-		avatarUrl = data.avatarUrl;
 
 		console.log("Received: %s", userName);
 
@@ -34,7 +30,7 @@ module.exports = function(socket, client) {
 
 		if(!userRegistry.IsOnline(userName))
 		{
-			userRegistry.AddUser(userName, alias, userId, sessionID);
+			userRegistry.AddUser(userName, alias);
 			addedUser = true;
 		}
 
@@ -186,36 +182,13 @@ module.exports = function(socket, client) {
 		
 		client.to('lounge').broadcast.emit('new message', {
 			alias: userRegistry.GetAliasByUserName(client.username),
-			message: clientMessage, avatarUrl: avatarUrl
+			message: clientMessage
 		});
 	});
 
 	// end chat events
 	// ///////////////
 
-	//when user clicks update profile
-	// send data to db
-
-	client.on('save-Profile', (data) => {
-		avatarUrl = data.avatarUrl;
-		sql.updateUser(data.userId, 
-			data.displayName, 
-			data.skinID, 
-			data.gender,
-			data.locationCode,
-			data.avatarUrl,
-			function(results){
-				if(!results){
-					console.log("Error pushing to db");
-				}	
-					else{
-						console.log("Profile Sucessfully Updated");
-				}
-			});
-		
-	});
-	//end update profile
-	
 	// when the user disconnects.. perform this
 	client.on('disconnect', () => {
 

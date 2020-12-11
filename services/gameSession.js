@@ -1,4 +1,4 @@
-var mapGenerator = require('./Game/maps');
+
 
 // Define a game session:
 // options, map, scenario
@@ -13,9 +13,7 @@ var GameSessionID = 100000; // 100,000
 module.exports = { gameSessions: gameSessions, gameSessionCount: GameSessionCount, gameSessionID: GameSessionID };
 
 
-function getRandomNumber(min, max) {
-	return Math.random() * (max - min) + min;
-}
+
 
 (function() {
 
@@ -23,14 +21,13 @@ function getRandomNumber(min, max) {
 	module.exports.AddGameSession = function(sessionName, playerAliases, options) {
 
 		// define a session object
-
-		var newSession = { "id": GameSessionID, "name": sessionName, "players": [], mapData: [], "options": options };
+		var newSession = { "id": GameSessionID, "name": sessionName, "players": [], "options": options };
 
 		// add players to the object. we can't do this directly with "session.players = players"
 		// because there is extra data.
 		for(var i = 0; i < playerAliases.length; i++)
 		{
-			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, "radius": 20, "color": "red",
+			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, 
 				"isHot": false, "isPoweredUp": false, "isFast": false, "isBig": false };
 
 			newSession.players.push(newPlayer);
@@ -43,81 +40,18 @@ function getRandomNumber(min, max) {
 		return newSession.id;
 	};
 
-	module.exports.Initialize = function(gameSessionID) {
-		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
-
-		if(sessionIndex === -1)
-			return;
-
-		// ///////////////////
-		// spawning code begin
-		var spawnX1 = 1280 / 4;						// 1280x760 is our resolution.
-		var spawnX2 = (1280 / 4) + (1280 / 2); 
-		var spawnY1 = 720 / 4;						// 760 / 40 has a remainder. That remainder
-		var spawnY2 = (720 / 4) + (720 / 2);	// is screwing up my math.
-
-		var spawnX3 = 1280 / 2;
-		// var spawnX4 =
-		var spawnY3 = 760 / 2;
-		// var spawnY4 =
-
-		// to randomize just use _shuffle...
-		var spawnPoints = [
-			{ "name": "spawn1", "x": spawnX1, "y":spawnY1 },
-			{ "name": "spawn2", "x": spawnX2, "y":spawnY1 },
-			{ "name": "spawn3", "x": spawnX2, "y":spawnY2 },
-			{ "name": "spawn4", "x": spawnX1, "y":spawnY2 },
-			{ "name": "spawn5", "x": spawnX3, "y":spawnY1 },
-			{ "name": "spawn6", "x": spawnX2, "y":spawnY3 },
-			{ "name": "spawn7", "x": spawnX3, "y":spawnY2 },
-			{ "name": "spawn8", "x": spawnX1, "y":spawnY3 }
-		];
-
-		// spawn players
-		gameSessions[sessionIndex].players.forEach((player, i) => {
-			// player.x = getRandomNumber(20, 1260) % 40;
-			// player.y = getRandomNumber(20, 720) % 40;
-			player.x = spawnPoints[i].x;
-			player.y = spawnPoints[i].y;
-		});
-
-		// spawning code end
-		// /////////////////
-
-		// fill mapData with... you guessed it: data!
-		var options = gameSessions[sessionIndex].options;
-		gameSessions[sessionIndex].mapData = mapGenerator.CreateMap(options.map);
-	};
-
-	module.exports.GetMapData = function(gameSessionID) {
-		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
-
-		if(sessionIndex === -1)
-			return;
-
-		return gameSessions[sessionIndex].mapData;
-	};
-
 	module.exports.WhereIsPlayer = function(playerAlias) {
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
-		//console.log(`Looking for ${playerAlias} in any game session.`);
-		for(var sessionIndex = 0; sessionIndex < gameSessions.length; sessionIndex++)
-		{
-			for(var playerIndex = 0; playerIndex < gameSessions[sessionIndex].players.length; playerIndex++)
-			{
-				var alias = gameSessions[sessionIndex].players[playerIndex].name;
-				//console.log(JSON.stringify(gameSessions[sessionIndex].players[playerIndex]));
-				//console.log(`Comparing ${alias} and ${playerAlias}`)
+		if(sessionIndex === -1)
+			return "";
 
-				// console.log(`WhereIsPlayer() Comparing: ${alias} with ${playerAlias}.`);
-				if(alias === playerAlias)
-					return gameSessions[sessionIndex].id;
-			}
-		}
+		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
-		//console.log(`Can not find '${playerAlias}' in any game`);
-		console.log(`I don't know where ${playerAlias} is...`);
-		return -1;
+		if(playerIndex === -1)
+			return "";
+
+		return gameSessions[sessionIndex].id;
 	};
 
 	// might not need...
@@ -154,7 +88,7 @@ function getRandomNumber(min, max) {
 		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
 		gameSessions[sessionIndex].players[playerIndex].x = newX;
-		gameSessions[sessionIndex].players[playerIndex].y = newY;
+		gameSessions[sessionIndex].players[playerIndex].x = newY;
 
 	};
 
@@ -162,22 +96,13 @@ function getRandomNumber(min, max) {
 	module.exports.UpdatePlayerRelativePosition = function(gameSessionID, playerAlias, offsetX, offsetY) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
-		if(sessionIndex === -1) {
-			console.log(`UpdatePlayerRelativePosition(${gameSessionID}, ${playerAlias}, ${offsetX}, ${offsetY}`);
+		if(sessionIndex === -1)
 			return;
-		}
-			
 
 		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
 
-		if(playerIndex === -1) {
-			console.log("UpdatePlayerRelativePosition() player not found");
-			return;
-		}
-
-		// console.log(`Moved ${playerAlias} (relative) {X:${offsetX},Y:${offsetY}}`);
-		gameSessions[sessionIndex].players[playerIndex].x += offsetX;
-		gameSessions[sessionIndex].players[playerIndex].y += offsetY;
+		gameSessions[sessionIndex].players[playerIndex].x = offsetX;
+		gameSessions[sessionIndex].players[playerIndex].x = offsetY;
 	};
 
 	module.exports.UpdatePlayerFlags = function(gameSessionID, playerAlias, isHot, isPoweredUp, isFast, isBig) {
@@ -197,10 +122,9 @@ function getRandomNumber(min, max) {
 	module.exports.GetAllPlayers = function(gameSessionID) {
 		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
 
-		if(sessionIndex === -1) {
-			console.log(`GetAllPlayers() can't find this session, id: ${gameSessionID}`);
-			return [];
-		}
+		if(sessionIndex === -1)
+			return;
+
 		return gameSessions[sessionIndex].players;
 	};
 
@@ -209,9 +133,8 @@ function getRandomNumber(min, max) {
 
 		if(sessionIndex === -1)
 			return;
-    
-		return gameSessions[sessionIndex].players.map( player => { return { "name": player.name, "x": player.x, "y": player.y, "radius": player.radius } } )
 
+		return gameSessions[sessionIndex].players.map( player => { return { "name": player.name, "X": player.X, "Y": player.Y } } )
 	};
 
 	module.exports.GetAllPlayerNamesAndFlags = function(gameSessionID) {
