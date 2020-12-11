@@ -42,7 +42,7 @@ $(document).ready(function() {
 				 
 	// User joined messages
 	console.log("Emitting: %s, %s", userName, displayName);
-	socket.emit('enter_lounge', { userName: userName, alias: displayName } );
+	socket.emit('enter_lounge', { userName: userName, alias: displayName, avatarUrl: avatarUrl } );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
@@ -220,7 +220,7 @@ $(document).ready(function() {
 		const message = data.message;
 		
 		var avatar = document.createElement("img");
-		avatar.setAttribute("src", "../img/avatar-male.jpg");
+		avatar.setAttribute("src", data.avatarUrl);
 		avatar.setAttribute("class", "avatar-margin");
 		avatar.setAttribute("alt", "avatar");
 		avatar.setAttribute("width", "25px");
@@ -255,7 +255,7 @@ $(document).ready(function() {
 		socket.emit('new message', message);
 
 		var avatar = document.createElement("img");
-		avatar.setAttribute("src", "../img/avatar-male.jpg");
+		avatar.setAttribute("src", avatarUrl);
 		avatar.setAttribute("class", "avatar-margin");
 		avatar.setAttribute("alt", "avatar");
 		avatar.setAttribute("width", "25px");
@@ -462,11 +462,11 @@ $(document).ready(function() {
 	async function randomAvatar(){
 		// Fetch random background from Unsplash
 		var key = `7WEnZ0-HH3el9avQVajOeFDCW3rKQBj-LmaxAk6I6GY`;
-	    avatarUrl = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
-	    let response = await fetch(avatarUrl);
+	    let url = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
+	    let response = await fetch(url);
 	    let data = await response.json();
-	    let photoUrl = data[0].urls.small;
-	    $("#avatar").attr("src", photoUrl);
+	    avatarUrl = data[0].urls.small;
+	    $("#avatar").attr("src", avatarUrl);
 	}
 	
 	// Random avatar button
