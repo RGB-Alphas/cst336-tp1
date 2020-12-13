@@ -6,6 +6,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 const mysql = require('mysql');
+const faker = require('faker');
 // var registry = require('./services/userRegistrar');
 const session = require('express-session');
 require('dotenv').config();
@@ -24,7 +25,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
-
+app.use('/scripts', express.static(path.join(__dirname + '/node_modules/')));   // Used for accessing faker.js
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
@@ -69,7 +70,11 @@ app.post('/login', function(req, res)
           req.session.authenticated = true;
           req.session.username = results[0].accountName;
           req.session.alias = results[0].displayName;
+          req.session.skinID = results[0].avatarColor;
+          req.session.gender = results[0].gender;
+          req.session.locationCode = results[0].locationCode;
           req.session.userId = results[0].id;
+          req.session.avatarUrl = results[0].avatarUrl;
 
           console.log(`${results[0].accountName} ${results[0].displayName}`);
           res.redirect('/authenticated');
@@ -103,8 +108,19 @@ app.post('/register', function (req, res) {
 app.get('/authenticated', isAuthenticated, function(req, res){
   let name = req.session.username;
   let alias = req.session.alias;
+  let skinID = req.session.skinID;
+  let gender = req.session.gender;
+  let locationCode = req.session.locationCode;
   let userId = req.session.userId;
-  res.render("authenticated/lounge.html", {name: name, alias: alias, userId: userId });
+  let avatarUrl = req.session.avatarUrl
+   res.render("authenticated/lounge.html", {name: name,
+   alias: alias, 
+   skinID: skinID, 
+   gender: gender, 
+   locationCode: locationCode,
+   userId: userId,
+   avatarUrl: avatarUrl
+   });
    
 });
 

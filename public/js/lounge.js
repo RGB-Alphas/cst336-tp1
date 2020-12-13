@@ -1,10 +1,13 @@
 /* global $ */ 
 /* global io */
+/* global userName */
+/* global displayName */
+/* global faker*/
+/* global fetch*/
 
 $(document).ready(function() {
 
 	var socket = io();
-
 	var input = document.getElementById("messageInput")
 
 	// keep this stuff updated via socket events and append it to our UI.
@@ -12,8 +15,12 @@ $(document).ready(function() {
 	// var userCount = 0;
 	var lobbies = [];
 	var lobbyCount = 0;
-	var skinId = 0;
 	var maxSkinId = 13;
+	var selectedLobby = "";
+	var selectedPlayer = "";
+	
+
+	// Skin ID & Corresponding Color
 	var skins = {0: "blue",
 				 1: "lightblue",
 				 2: "steelblue",
@@ -28,17 +35,16 @@ $(document).ready(function() {
 				 11: "purple",
 				 12: "lavender", 
 				 13: "pink"};
-
-	var selectedLobby = "";
-	var selectedPlayer = "";
-
+				 
+	// User joined messages
 	console.log("Emitting: %s, %s", userName, displayName);
-	socket.emit('enter_lounge', { userName: userName, alias: displayName, userId: userId } );
+
+	socket.emit('enter_lounge', { userName: userName, alias: displayName, avatarUrl: avatarUrl } );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {
-		// co nsole.log("Users Online: %d", data.onlineCount);
-
+		// console.log("Users Online: %d", data.onlineCount);
+		
 		var users = data.onlineUsers;
 		var userCount = data.onlineCount;
 		lobbies = data.lobbies;
@@ -55,7 +61,6 @@ $(document).ready(function() {
 			const alias = users[i].alias;
 			$("#playerList").append(
 				`<li id="${alias}" class="player list-item">${alias}</li>`);
-			
 		}
 
 		// we recieve lobbies as lists of lobby names. the user types or clicks the
@@ -98,23 +103,27 @@ $(document).ready(function() {
 		 });
 	});
 
+	// Password required message
 	socket.on('password_required', () => {
 		$("#joinLobbyDialogValidation").html("Password Required");
 		$("#joinLobbyDialogValidation").css("color", "red");
 	});
-
+	
+	// Join lobby failed message
 	socket.on('join_lobby_request_rejected', () => {
 		$("#joinLobbyDialogValidation").html("Unable to join.");
 		$("#joinLobbyDialogValidation").css("color", "red");
 		console.log("Join unsuccessful.");
 	});
 
+	// Join lobby success message
 	socket.on('join_lobby_request_accepted', () => {
 		console.log("Join Success. Moving to the lobby.");
 		window.location = `/lobby?lobbyName=${selectedLobby}`;
 		// $("#joinLobbyForm").submit();
 	});
-
+	
+	// Join Lobby button click listener
 	$("#joinLobby").on("click", function() {
 
 		var password = $("#inputLobbyPassword").val();
@@ -160,7 +169,7 @@ $(document).ready(function() {
 		$("#messageList").append(
 			`<li class="list-item">${alias} has left.</li>`);
 		$("#playerList").empty();
-		for(i = 0; i < userCount; i++)
+		for(let i = 0; i < userCount; i++)
 		{
 			$("#playerList").append(
 				`<li class="player list-item">${users[i].alias}</li>`);
@@ -169,7 +178,6 @@ $(document).ready(function() {
 
 	// /////////////////
 	// chat events begin
-
 	input.addEventListener("keyup", function(event) {
 		// Number 13 is the "Enter" key on the keyboard
 		if (event.keyCode === 13) {
@@ -209,7 +217,7 @@ $(document).ready(function() {
 		const message = data.message;
 		
 		var avatar = document.createElement("img");
-		avatar.setAttribute("src", "../img/avatar-male.jpg");
+		avatar.setAttribute("src", data.avatarUrl);
 		avatar.setAttribute("class", "avatar-margin");
 		avatar.setAttribute("alt", "avatar");
 		avatar.setAttribute("width", "25px");
@@ -229,11 +237,9 @@ $(document).ready(function() {
 
 		$("#messageList").append(item);
 	})
-
 	// chat events end
-	// ///////////////
+	// /////////////////
 
-	// ////////////////////
 	// chat functions begin
 	$("#messageSend").click( function() {
 		var message = $("#messageInput").val(); // get message
@@ -246,7 +252,7 @@ $(document).ready(function() {
 		socket.emit('new message', message);
 
 		var avatar = document.createElement("img");
-		avatar.setAttribute("src", "../img/avatar-male.jpg");
+		avatar.setAttribute("src", avatarUrl);
 		avatar.setAttribute("class", "avatar-margin");
 		avatar.setAttribute("alt", "avatar");
 		avatar.setAttribute("width", "25px");
@@ -305,21 +311,12 @@ $(document).ready(function() {
 
 	// ///////////////////////
 	// Create lobby flow Begin
-
 	// emit a request to add lobby, act on response.
 	$("#createButton").click(function(){
 		socket.emit('lobby-add-request', {
 			lobbyName: $("#lobbyName").val(),
 			lobbyPassword: $("#lobbyPassword").val(),
 			lobbyCapacity: $("#lobbyCapacity").val()
-		});
-		
-	});
-	
-		// emit to save profile settings into db.
-	$("#saveButton").click(function(){
-		socket.emit('save-Profile', {
-		profilePicture	: skinId, userId: userId
 		});
 		
 	});
@@ -398,19 +395,34 @@ $(document).ready(function() {
 		$("#chatPanel").hide();
 		$("#joinPanel").hide();
 		$("#profilePanel").show();
-		updateSelector();
+		
+		// Pre-fill profile data
+		// Skin
+		updateSkin();
+		console.log(avatarUrl + "hellow@");
+		$("#avatar").attr("src", avatarUrl);
+		
+		// Gender (male == 0, female == 1)
+		if (gender == "0"){
+			$(`#male`).prop("checked", true);
+		}
+		if (gender == "1"){
+			$(`#female`).prop("checked", true);
+		}
+		
+		// Location
+		$("#country option[value=" + locationCode + "]").attr("selected", "selected");
 	})
 	
 	// Skin Selection - Right Arrow
 	$("#rightArrow").on("click", function(){
-		console.log(skins.count);
 		if(skinId == maxSkinId){
 			skinId = 0;
 		}
 		else{
-			skinId += 1;
+			skinId += 1
 		}
-		updateSelector();
+		updateSkin();
 	})
 	
 	// Skin Selection - Left Arrow
@@ -421,11 +433,68 @@ $(document).ready(function() {
 		else{
 			skinId -= 1;
 		}
-		updateSelector();
+		updateSkin();
 	})
 	
-	// Update skin selector icon
-	function updateSelector(){
+	// Update skin icon color
+	function updateSkin(){
+		console.log(skinId);
+		if(!skinId)
+			skinId = 0;
 		$("#skinSelect").css("color", skins[skinId]);
 	}
+	
+	// Generate random username from faker API
+	function randomUsername(){
+		let random = faker.vehicle.color() + faker.random.word();
+		return random;
+	}
+	
+	// Random username button
+	$("#usernameBtn").on("click", function(){
+		$("#usernameInput").val(randomUsername());
+	})
+
+	
+	// Generate random avatar from faker API
+	async function randomAvatar(){
+		// Fetch random background from Unsplash
+		var key = `7WEnZ0-HH3el9avQVajOeFDCW3rKQBj-LmaxAk6I6GY`;
+	    let url = `https://api.unsplash.com/photos/random/?count=1&client_id=${key}&featured=true&orientation=landscape&query=animal`;
+	    let response = await fetch(url);
+	    let data = await response.json();
+	    avatarUrl = data[0].urls.small;
+	    $("#avatar").attr("src", avatarUrl);
+	}
+	
+	// Random avatar button
+	$("#avatarBtn").on("click", function(){
+		randomAvatar();
+	})	
+	
+	getCountries();
+	// Generate a list of countries for drop-down menu
+	async function getCountries(){
+		let url = `https://restcountries.eu/rest/v2/all`;
+		let response = await fetch(url);
+		let data = await response.json();
+		
+		// Add countries to drop-down
+		for (var i = 0; i < data.length; i++){
+			$("#country").append(`<option value=${data[i].alpha2Code}> ${data[i].name} </option>`);
+		}
+	}
+	
+	// Update profile
+	$("#updateBtn").on("click", function(){
+		socket.emit('save-Profile', {
+			displayName : $('#usernameInput').val(),
+			skinID : skinId, 
+			userId: userId, 
+			gender: $('#female').is(':checked'),
+			locationCode:$("#country").val(),
+			avatarUrl: $("#avatar").attr("src")
+		});
+	});
+
 });

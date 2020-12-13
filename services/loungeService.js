@@ -9,6 +9,7 @@ let usersOnline = 0;
 
 module.exports = function(socket, client) {
 
+	var avatarUrl;
 	let addedUser = false;
 
 	client.on("enter_lounge", (data) => {
@@ -21,7 +22,8 @@ module.exports = function(socket, client) {
 		const alias = data.alias;
 		const userId = data.userId;
 		client.username = userName; // the socket will hold the real username.
-		const sessionID = client.id;
+		var sessionID = client.id;
+		avatarUrl = data.avatarUrl;
 
 		console.log("Received: %s", userName);
 
@@ -51,19 +53,6 @@ module.exports = function(socket, client) {
 
 	});
 
-
-	client.on('save-Profile', (data) => {
-		console.log(data.userId );
-		sql.updateUser(data.userId, client.username, data.profilePicture, function(results){
-		if(!results){
-			console.log("Error pushing to db");
-		}	
-		else{
-			console.log("Profile Sucessfully Updated");
-		}
-		});
-		
-	});
 	// ///////////////
 	// joining a lobby
 
@@ -183,13 +172,35 @@ module.exports = function(socket, client) {
 		
 		client.to('lounge').broadcast.emit('new message', {
 			alias: userRegistry.GetAliasByUserName(client.username),
-			message: clientMessage
+			message: clientMessage, avatarUrl: avatarUrl
 		});
 	});
 
 	// end chat events
 	// ///////////////
 
+	//when user clicks update profile
+	// send data to db
+
+	client.on('save-Profile', (data) => {
+		avatarUrl = data.avatarUrl;
+		sql.updateUser(data.userId, 
+			data.displayName, 
+			data.skinID, 
+			data.gender,
+			data.locationCode,
+			data.avatarUrl,
+			function(results){
+				if(!results){
+					console.log("Error pushing to db");
+				}	
+					else{
+						console.log("Profile Sucessfully Updated");
+				}
+			});//callback funciton
+	});
+	//end update profile
+	
 	// when the user disconnects.. perform this
 	client.on('disconnect', () => {
 
