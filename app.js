@@ -6,6 +6,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 var bodyParser = require('body-parser');
 const mysql = require('mysql');
+const faker = require('faker');
 // var registry = require('./services/userRegistrar');
 const session = require('express-session');
 require('dotenv').config();
@@ -24,7 +25,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
-
+app.use('/scripts', express.static(path.join(__dirname + '/node_modules/')));   // Used for accessing faker.js
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());

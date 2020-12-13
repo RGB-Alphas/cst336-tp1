@@ -9,6 +9,7 @@
 		 crossorigin="anonymous"> 
 	 	<link rel="stylesheet" href="../css/styles.css" type="text/css">
 	 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+	 	<script src = "/scripts/faker/dist/faker.js"></script>
 	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script> 
 		<script>
@@ -16,7 +17,7 @@
 			var userId = "<%= userId %>";
 			var userName = "<%= name %>";
 			var displayName = "<%= alias %>";
-			var SkinId = "<%= skinID %>";
+			var skinId = parseInt("<%= skinID %>");
 			var gender = "<%= gender %>";
 			var locationCode = "<%= locationCode %>";
 			var avatarUrl = "<%= avatarUrl %>";
@@ -59,9 +60,6 @@
 						</div>
 						<!-- Profile Panel -->
 						<div id="profilePanel" class="mx-3 panel rounded">
-							<input type="hidden" id="skinID" value='<%= skinID %>'>
-							<input type="hidden" id="locationCode" value='<%= locationCode %>'>
-							<input type="hidden" id="gender" value='<%= gender %>'>
 							<form method="get" action="/" id="profileForm" class="py-3 scroll">
 								<h3><strong>Profile</strong></h4><br>
 								<div class="d-flex justify-content-around align-items-start">
@@ -96,7 +94,7 @@
 									<div class="w-50">
 										<h5>Location</h5>
 										<select name="country" id="country" class="my-1 rounded w-75 px-2">
-							                <option>Select One</option>
+							                <option value="XXX">Select One</option>
 							            </select>
 									</div>
 								</div><br><br>

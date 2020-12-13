@@ -18,12 +18,8 @@ $(document).ready(function() {
 	var maxSkinId = 13;
 	var selectedLobby = "";
 	var selectedPlayer = "";
-	var skinID = parseInt($("#skinID").val());
-	var locationCode = $("#locationCode").val();
-	var gender = $("#gender").val();
 	
-	
-	
+
 	// Skin ID & Corresponding Color
 	var skins = {0: "blue",
 				 1: "lightblue",
@@ -65,7 +61,6 @@ $(document).ready(function() {
 			const alias = users[i].alias;
 			$("#playerList").append(
 				`<li id="${alias}" class="player list-item">${alias}</li>`);
-			
 		}
 
 		// we recieve lobbies as lists of lobby names. the user types or clicks the
@@ -316,21 +311,12 @@ $(document).ready(function() {
 
 	// ///////////////////////
 	// Create lobby flow Begin
-
 	// emit a request to add lobby, act on response.
 	$("#createButton").click(function(){
 		socket.emit('lobby-add-request', {
 			lobbyName: $("#lobbyName").val(),
 			lobbyPassword: $("#lobbyPassword").val(),
 			lobbyCapacity: $("#lobbyCapacity").val()
-		});
-		
-	});
-	
-		// emit to save profile settings into db.
-	$("#saveButton").click(function(){
-		socket.emit('save-Profile', {
-		profilePicture	: skinId, userId: userId
 		});
 		
 	});
@@ -430,30 +416,32 @@ $(document).ready(function() {
 	
 	// Skin Selection - Right Arrow
 	$("#rightArrow").on("click", function(){
-		if(skinID == maxSkinId){
-			skinID = 0;
+		if(skinId == maxSkinId){
+			skinId = 0;
 		}
 		else{
-			skinID += 1
-			console.log(skinID);
+			skinId += 1
 		}
 		updateSkin();
 	})
 	
 	// Skin Selection - Left Arrow
 	$("#leftArrow").on("click", function(){
-		if(skinID == 0){
-			skinID = maxSkinId;
+		if(skinId == 0){
+			skinId = maxSkinId;
 		}
 		else{
-			skinID -= 1;
+			skinId -= 1;
 		}
 		updateSkin();
 	})
 	
 	// Update skin icon color
 	function updateSkin(){
-		$("#skinSelect").css("color", skins[skinID]);
+		console.log(skinId);
+		if(!skinId)
+			skinId = 0;
+		$("#skinSelect").css("color", skins[skinId]);
 	}
 	
 	// Generate random username from faker API
@@ -501,7 +489,7 @@ $(document).ready(function() {
 	$("#updateBtn").on("click", function(){
 		socket.emit('save-Profile', {
 			displayName : $('#usernameInput').val(),
-			skinID : skinID, 
+			skinID : skinId, 
 			userId: userId, 
 			gender: $('#female').is(':checked'),
 			locationCode:$("#country").val(),

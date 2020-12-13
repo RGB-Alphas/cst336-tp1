@@ -133,8 +133,8 @@
 		//function updates user table with displayName and  
 		//avatar color returns false if failed and true if success
 		module.exports.updateUser = function(id, displayName, avatarColor, gender, locationCode, avatarUrl, callback) {
+			
 			this.selectUser(id, function(results){
-				console.log(id, "id", displayName, "displayName", avatarColor, " color", gender, "gender", locationCode,"cpde", avatarUrl, "avatar");
 				//if results is false there was an error
 				if(!results)
 				{
@@ -148,15 +148,14 @@
 					callback(false);
 				}
 				else{
-					
-					var sql = 'UPDATE users SET displayName = ?, avatarColor = ?, gender = ?, locationCode = ?, avatarUrl = ?';
-		          	sql += 'WHERE id = ? ;';
+					var sql = 'UPDATE users SET displayName = ?, avatarColor = ?, gender = ?, locationCode = ?, avatarUrl = ? ';
+		          	sql += 'WHERE id = ?;';
 					connection.query(sql,
 					[displayName, avatarColor, gender, locationCode, avatarUrl, id], (err, res) => {
 					
 					if(err) {
 						console.log("Error Updating into DB, Error Code!:");
-						console.log(err.sqlMessage);
+						console.log(err);
 						callback(false);
 					}else{
 						console.log(res.affectedRows + " record(s) updated"); 

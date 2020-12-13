@@ -53,19 +53,6 @@ module.exports = function(socket, client) {
 
 	});
 
-
-	client.on('save-Profile', (data) => {
-		console.log(data.userId );
-		sql.updateUser(data.userId, client.username, data.profilePicture, function(results){
-		if(!results){
-			console.log("Error pushing to db");
-		}	
-		else{
-			console.log("Profile Sucessfully Updated");
-		}
-		});
-		
-	});
 	// ///////////////
 	// joining a lobby
 
@@ -210,8 +197,7 @@ module.exports = function(socket, client) {
 					else{
 						console.log("Profile Sucessfully Updated");
 				}
-			});
-		
+			});//callback funciton
 	});
 	//end update profile
 	
