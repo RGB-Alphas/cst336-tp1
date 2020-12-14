@@ -93,6 +93,10 @@ module.exports = { LobbyID: LobbyID };
 	{
 		var lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
 		// var players = lobbyList[lobbyIndex].players;
+
+		if(lobbyIndex === -1)
+			return [];
+
 		var playerCount = lobbyList[lobbyIndex].occupants;
 
 		unreadyPlayers = [];
@@ -268,9 +272,13 @@ module.exports = { LobbyID: LobbyID };
 	module.exports.UpdateLobbyPlayers = function(lobbyName, lobby) {
 		const name = lobby.name;
 		const id = lobby.id;
-		var index = lobbyList.findIndex((element => element.name === lobbyName));
-		lobbyList[index].players = lobby.players;
-		lobbyList[index].occupants = lobby.players.length;
+		var lobbyIndex = lobbyList.findIndex((element => element.name === lobbyName));
+
+		if(lobbyIndex === -1)
+			return [];
+			
+		lobbyList[lobbyIndex].players = lobby.players;
+		lobbyList[lobbyIndex].occupants = lobby.players.length;
 	};
 
 	/*
