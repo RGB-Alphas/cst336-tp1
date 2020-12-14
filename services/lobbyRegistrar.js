@@ -200,10 +200,12 @@ module.exports = { LobbyID: LobbyID };
 		const lobbyIndex = lobbyList.findIndex(lobby => { return lobby.name === lobbyName } );
 
 		if(lobbyIndex === -1)
-			return;
+			return false;
 
 		if(lobbyList[lobbyIndex].players.length === 0)
 			lobbyList.splice(lobbyIndex, 1);
+
+		return true;
 	};
 
 	module.exports.SetLobbyOptions = function(lobbyName, options) {
@@ -276,7 +278,7 @@ module.exports = { LobbyID: LobbyID };
 
 		if(lobbyIndex === -1)
 			return [];
-			
+
 		lobbyList[lobbyIndex].players = lobby.players;
 		lobbyList[lobbyIndex].occupants = lobby.players.length;
 	};

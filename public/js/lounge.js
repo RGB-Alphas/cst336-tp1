@@ -135,16 +135,19 @@ $(document).ready(function() {
 	});
 
 	socket.on('user joined', (data) => {
-		const alias = data.userAlias;
-		var userCount = data.onlineCount;
+		const onlineUsers = data.onlineUsers;
+		var onlineCount = data.onlineCount;
 		//console.log(data.userAlias + ' joined');
 		//console.log("%d users online.", data.onlineCount);
 
-		$("#playerListHeading").html(`Users: ${userCount}`);
-		$("#playerList").append(
-			`<li id="${alias}" class="player list-item">${alias}</li>`);
-		$("#messageList").append(
-			`<li id="${alias}" class="player list-item">${alias} has joined.</li>`);
+		$("#playerListHeading").html(`Users: ${onlineCount}`);
+		$("#playerList").empty();
+
+		onlineUsers.forEach(user => {
+			
+			$("#playerList").append(
+				`<li id="${user.userId}" class="player list-item">${user.alias}</li>`);
+		});
 
 		/*
 		$('#playerList').on("click", '.player', function (e) {
@@ -303,9 +306,22 @@ $(document).ready(function() {
 		 */
 	});
 
+	
 	socket.on('lobby destroyed', (data) => {
-		const lobbies = data.name;
-		const lobbyCount = data.id; // don't show this visibly on the page.
+		const lobbies = data.lobbies;
+		const lobbyCount = data.lobbyCount; // don't show this visibly on the page.
+
+		$("#lobbyList").empty();
+		lobbies.forEach(lobby => {
+			var name = lobby.name;
+			var host = lobby.players[0];
+			var occupants = lobby.occupants;
+			var capacity = lobby.capacity;
+			$("#lobbyList").append(
+				`<li id="${name}" class="lobby list-item lobby-link my-1 rounded"><i class="fas fa-users pr-1"></i> ${name} (${occupants}/${capacity}) - Host: ${host}</li>`)
+				let newLobby = { "id": id, "name": name, "host": host, "occupants": occupants, "capacity": capacity };
+			lobbies.push(newLobby);
+		});
 	});
 
 

@@ -199,8 +199,17 @@ module.exports = function(socket, client) {
 			console.log(`Left [${lobbyName}], here's the new info for it:`);
 			console.log(JSON.stringify(lobby));
 
-			lobbyRegistry.RemoveLobbyIfEmpty(lobbyName);
-			// userRegistry.RemoveUser(client.username);
+			var isEmpty = lobbyRegistry.RemoveLobbyIfEmpty(lobbyName);
+
+			if(isEmpty === true)
+			{
+				client.to(`${lobbyName}`).broadcast.emit("lobby destroyed", {
+					lobbies: lobbyRegistry.GetAllLobbies(),
+					lobbyCount: lobbyRegistry.GetLobbyCount()
+				});
+			}
+
+			userRegistry.RemoveUser(client.username);
 			addedUser = false;
 		}
 	});

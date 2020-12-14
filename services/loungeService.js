@@ -46,8 +46,7 @@ module.exports = function(socket, client) {
 		});
 
 		client.to('lounge').broadcast.emit('user joined', {
-			userAlias: alias,
-			sessionID: sessionID,
+			onlineUsers: userRegistry.GetUsers(),
 			onlineCount: userRegistry.GetUserCount()
 		});
 
@@ -145,12 +144,6 @@ module.exports = function(socket, client) {
 		} else {
 			client.emit('lobby-add-request-denied');
 		}
-	});
-
-	client.on('lobby destroyed', (data) => {
-		//client.to('lounge').broadcast.emit('lobby destroyed', {
-		//	lobbies: lobbyRegistry.GetAllLobbies
-		//});
 	});
 	
 
