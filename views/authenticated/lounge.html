@@ -60,29 +60,27 @@
 						</div>
 						<!-- Profile Panel -->
 						<div id="profilePanel" class="mx-3 panel rounded">
-							<form method="get" action="/" id="profileForm" class="py-3 scroll">
-								<h3><strong>Profile</strong></h4><br>
-								<div class="d-flex justify-content-around align-items-start">
-									<div class="container">
-										<h5>Skin</h5>
-										<div id="skins" class="container d-flex align-items-center justify-content-around">
-											<i id="leftArrow" class="fas fa-chevron-left fa-2x arrow"></i>
-											<i id="skinSelect" class="fas fa-circle fa-4x"></i>
-											<i id="rightArrow" class="fas fa-chevron-right fa-2x arrow"></i>
-										</div>
-									</div>
-									<div class="container">
-										<h5>Avatar</h5>
-										<img id=avatar src="" width="75" height="75" alt="avatar"></img><br>
-										<button id="avatarBtn" type="button" class="btn btn-info btn-sm mt-3"><i class="fas fa-random"></i></button>
-									</div>	
-								</div><br><br>
+							<form method="get" action="/" id="profileForm" class="scroll">
+								<h4 class="py-3"><strong>Profile</strong></h4><br>
 								<h5>Display Name</h5>
 								<div class="d-flex align-items-center justify-content-center my-2">
 										<input type="text" id="usernameInput" name="username" class="rounded mx-2 text-center" value='<%= alias%>'>
 										<button id="usernameBtn" type="button" class="btn btn-info btn-sm"><i class="fas fa-random"></i></button>
 										</input>
 								</div><br><br>
+								<div class="d-flex justify-content-around align-items-start">
+									<div class="container">
+										<h5>Skin</h5>
+										<i id="skinSelect" class="fas fa-circle fa-5x"></i><br>
+										<button id="avatarBtn" type="button" class="btn btn-info btn-sm mt-3 mr-4"><i id="leftArrow" class="fas fa-chevron-left fa-sm arrow"></i></button>
+										<button id="avatarBtn" type="button" class="btn btn-info btn-sm mt-3"><i id="rightArrow" class="fas fa-chevron-right fa-sm arrow"></i></button>	
+									</div>
+									<div class="container">
+										<h5>Avatar</h5>
+										<img id=avatar src="" width="75" height="75" alt="avatar"></img><br>
+										<button id="avatarBtn" type="button" class="btn btn-info btn-sm mt-3"><i class="fas fa-random"></i></button>
+									</div>	
+								</div><br><br><br>
 								<div class="d-flex justify-content-around align-items-center">
 									<div class="w-50">
 										<h5>Gender</h5>
@@ -97,19 +95,18 @@
 							                <option value="XXX">Select One</option>
 							            </select>
 									</div>
-								</div><br><br>
-								<button type="button" id="updateBtn" class="submit btn btn-info m-3 lobby-link">Update</button><br>
+								</div><br>
+								<button type="button" id="updateBtn" class="submit btn btn-info mt-3">Update</button><br><br>
 							</form>						
 						</div>
-					</div>
 						<!-- Create Lobby Panel -->
-						<div id="createPanel" class="mx-3 panel rounded">
-							<form method="get" action="/lobby" id="createlobbyForm" class="py-3">
-								<h4 class="rounded py-3"><strong>Create A lobby</strong></h4>
+						<div id="createPanel" class="panel rounded mx-3">
+							<form method="get" action="/lobby" id="createlobbyForm">
+								<h4 class="py-3"><strong>Create A lobby</strong></h4>
 								<input type="text" name="lobbyName" id="lobbyName" placeholder="Lobby Name" class="rounded my-2 text-center"><br>
-								<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br>
+								<input type="password" name="lobbyPassword" id="lobbyPassword" placeholder="Lobby Password" class="rounded my-2 text-center"><br><br>
 								<strong>Capacity: </strong>
-								<select id="lobbyCapacity" name="capacity" class="m-2 rounded px-2">
+								<select class="rounded px-1 ml-2">
 									<option value="2">2 Players</option>
 									<option value="3">3 Players</option>
 									<option value="4">4 Players</option>
@@ -118,19 +115,19 @@
 									<option value="7">7 Players</option>
 									<option value="8">8 Players</option>
 								</select><br><br>
-								<button type="button" class="close-button btn btn-info m-3 lobby-link">Back</i></i></button>
-								<button type="button" id="createButton" class="submit btn btn-info m-3 lobby-link">Create</button><br>
+								<button type="button" class="close-button btn btn-info m-3">Back</i></i></button>
+								<button type="button" id="createButton" class="submit btn btn-info m-3">Create</button><br>
 								<span id="createLobbyDialogValidation"></span>
 							</form>
 						</div>
 						<!-- Join Lobby Panel -->
-						<div id="joinPanel" class="mx-3 panel rounded py-3">
+						<div id="joinPanel" class="mx-3 panel rounded">
 							<form method="get" action="/lobby" id="joinlobbyForm">
 								<h4 class="py-3"><strong>Join a Lobby</strong></h4>
-								<ul id="lobbyList" class="scroll"></ul>
-								<input type="text" name ="inputLobbyName" id="inputLobbyName" class="rounded my-2 text-center" placeholder="Lobby Name"> <br>
-								<input type="password" name="inputLobbyPassword" id="inputLobbyPassword" class="rounded my-2 text-center" placeholder="password"> <br>
-								<button id="joinLobby" type="button">Join</button><br>
+								<ul id="lobbyList" class="scroll"></ul><br>
+								<input type="text" name ="inputLobbyName" id="inputLobbyName" class="rounded my-2 text-center" placeholder="Lobby Name">
+								<input type="password" name="inputLobbyPassword" id="inputLobbyPassword" class="rounded my-2 text-center" placeholder="Lobby Password"><br>
+								<button id="joinLobby" type="button" class="btn btn-info mt-2">Join</button><br>
 								<span id="joinLobbyDialogValidation"></span><br>
 							</form>
 						</div>

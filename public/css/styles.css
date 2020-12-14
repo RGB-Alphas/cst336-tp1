@@ -6,7 +6,7 @@ html{
 body{
 	min-height: 100vh;
 	text-align: center;
-	background-color: #394046;
+	background-color: #454d54;
 	color: #FFFFFF;
 }
 
@@ -73,16 +73,8 @@ input{
 
 #avatar{
 	border-radius: 100%;
-	width: 70px;
-	height: 70px;
-}
-
-.arrow{
-	color: gainsboro;
-}
-
-.arrow:hover{
-	color: white;
+	width: 80px;
+	height: 80px;
 }
 
 #skinSelect{
@@ -142,7 +134,7 @@ input{
 
 #lobbyList{
 	list-style-type: none;
-	height: 100%;
+	max-height: 300px;
 	margin: 0 auto;
 }
 
@@ -153,7 +145,7 @@ input{
 }
 
 .lobby-link{
-	padding: 1% 10%;
+	padding: .5%;
 	background-color: #f7f7f7;
 	color: black;
 	font-weight: 700;
@@ -229,7 +221,7 @@ footer{
 .dialog-popup {
 	height: 20%;
 	width: 25%;
-	background-color: #394046;
+	background-color: #454d54;
 	display: none;
 	z-index: 99999; 
    	border-radius: 10px;
