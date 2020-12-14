@@ -175,6 +175,29 @@ var mapHeightInTiles = 19;
 			mapData.tiles.push(newTile);
 		}
 
+		// ///////////////////
+		// spawning code begin
+		var spawnX1 = mapWidthInPixels / 4;			// 1280x760 is our resolution.
+		var spawnX2 = (mapWidthInPixels / 4) + (mapWidthInPixels / 2); 
+		var spawnY1 = (mapHeightInPixels - 40) / 4;	// 760 / 40 has a remainder. That remainder
+		var spawnY2 = ((mapHeightInPixels - 40) / 4) + ((mapHeightInPixels - 40) / 2);	// is screwing up my math.
+
+		var spawnX3 = mapWidthInPixels / 2;
+		// var spawnX4 =
+		var spawnY3 = (mapHeightInPixels - 40) / 2;
+		// var spawnY4 =
+
+		mapData.spawnPoints = [
+			{ "name": "spawn1", "x": spawnX1, "y":spawnY1 },
+			{ "name": "spawn2", "x": spawnX2, "y":spawnY1 },
+			{ "name": "spawn3", "x": spawnX2, "y":spawnY2 },
+			{ "name": "spawn4", "x": spawnX1, "y":spawnY2 },
+			{ "name": "spawn5", "x": spawnX3, "y":spawnY1 },
+			{ "name": "spawn6", "x": spawnX2, "y":spawnY3 },
+			{ "name": "spawn7", "x": spawnX3, "y":spawnY2 },
+			{ "name": "spawn8", "x": spawnX1, "y":spawnY3 }
+		];
+
 		return mapData;
 	};
 

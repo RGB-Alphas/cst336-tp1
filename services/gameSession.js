@@ -31,7 +31,7 @@ function getRandomNumber(min, max) {
 		for(var i = 0; i < playerAliases.length; i++)
 		{
 			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, "radius": 20, "color": "red",
-				"isHot": false, "isPoweredUp": false, "isFast": false, "isBig": false };
+				"isHot": false, "isFrozen": false, "isPoweredUp": false, "isFast": false, "isBig": false };
 
 			newSession.players.push(newPlayer);
 		}
@@ -44,7 +44,7 @@ function getRandomNumber(min, max) {
 	};
 
 	module.exports.Initialize = function(gameSessionID) {
-		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID );
 
 		if(sessionIndex === -1)
 			return;
@@ -60,6 +60,13 @@ function getRandomNumber(min, max) {
 			player.x = gameSessions[sessionIndex].mapData.spawnPoints[i].x;
 			player.y = gameSessions[sessionIndex].mapData.spawnPoints[i].y;
 		});
+
+		// set a tagger with 'isHot' = true;
+		var playerCount = gameSessions[sessionIndex].players.length;
+		var randomIndex = Math.floor(Math.random() * playerCount)
+		var newPredatorAlias = gameSessions[sessionIndex].players[randomIndex].name;
+		this.UpdatePlayerFlags(gameSessionID, newPredatorAlias, true, false, true, false);
+		gameSessions[sessionIndex].players[randomIndex].color = "white";
 	};
 
 	module.exports.GetMapData = function(gameSessionID) {
@@ -151,6 +158,29 @@ function getRandomNumber(min, max) {
 		// console.log(`Moved ${playerAlias} (relative) {X:${offsetX},Y:${offsetY}}`);
 		gameSessions[sessionIndex].players[playerIndex].x += offsetX;
 		gameSessions[sessionIndex].players[playerIndex].y += offsetY;
+	};
+
+	module.exports.UpdatePlayer = function(gameSessionID, player) {
+		var sessionIndex = gameSessions.indexOf(session => { return session.id === gameSessionID } );
+
+		if(sessionIndex === -1)
+		{
+			console.log("UpdatePlayer() session not found");
+			return;
+		}
+			
+
+		var playerIndex = gameSessions.indexOf(_player => { return _player.name === player.name } );
+
+		if(playerIndex === -1)
+		{
+			console.log("UpdatePlayer() player not found");
+			return;
+		}
+
+		gameSessions[gameSessionID].players[playerIndex] = player;
+
+		// console.log(gameSessions[gameSessionID].players[playerIndex]);
 	};
 
 	module.exports.UpdatePlayerFlags = function(gameSessionID, playerAlias, isHot, isPoweredUp, isFast, isBig) {

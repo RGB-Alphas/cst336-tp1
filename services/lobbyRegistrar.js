@@ -266,9 +266,13 @@ module.exports = { LobbyID: LobbyID };
 	};
 
 	module.exports.GetLobbyByName = function(lobbyName) {
-		var lobby = lobbyList.find(lobby => { 
-			return lobby.name === lobbyName }); // || {}.execs || [];
-		return lobby;
+
+		const lobbyIndex = lobbyList.findIndex(lobby => { return lobby.name === lobbyName } );
+
+		if(lobbyIndex === -1)
+			return false;
+
+		return lobbyList[lobbyIndex];
 	};
 
 	module.exports.UpdateLobbyPlayers = function(lobbyName, lobby) {

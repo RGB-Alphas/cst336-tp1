@@ -114,6 +114,10 @@ module.exports = function(socket, client) {
 	// //////////////
 	// add lobby flow
 	client.on('lobby-add-request', (data) => {
+
+		if(!addedUser)
+			return;
+
 		const lobbyName = data.lobbyName;
 		const lobbyPassword = data.lobbyPassword;
 		const lobbyCapacity = data.lobbyCapacity;

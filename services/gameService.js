@@ -1,6 +1,7 @@
 var userRegistry = require('./userRegistrar');
 var gameSessionManager = require('./gameSession');
-var physics = require('./Game/collision');
+var physics = require('./Game/physics');
+var gameEvent = require('./Game/gameEvents');
 
 // config
 var serverFPS = 20;	// 20 updates per second.
@@ -58,11 +59,15 @@ module.exports = function(socket, client) {
 
 			// get the map data.
 			const mapData = gameSessionManager.GetMapData(gameSessionID);
+			const options = gameSessionManager.GetOptions(gameSessionID);
 
 			// get current player positions
-			const players = gameSessionManager.GetAllPlayerNamesAndPositions(gameSessionID);
+			const players = gameSessionManager.GetAllPlayers(gameSessionID);
 			const me = players.findIndex(player => player.name === alias);
-			console.log(JSON.stringify(players[me]));
+			// console.log(JSON.stringify(players[me]));
+
+			if(players[me].isFrozen === true)
+				return;
 			
 			// client's keyboard state:
 			let wKey = data.wasdState.w;
@@ -105,10 +110,34 @@ module.exports = function(socket, client) {
 				vector.x = 1;
 				hasCollided = physics.isPointInRect(currentX2, currentY, mapData.tiles);
 			}
+
+			// has a player collided?
+			players.some(player => {
+
+				if(player.name === alias)
+					return false;
+
+				if(physics.isCircleCollision( 
+					{ "x": player.x, "y": player.y }, player.radius, // other player
+					{ "x": players[me].x, "y": players[me].y }, players[me].radius )) // current
+				{
+					gameEvent.playerCollisionEvent(players[me], player, options.ruleset);
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			})
 			
 			// how much we are moving this frame:
-			let xOffset = vector.x * 20;
-			let yOffset = vector.y * 20;
+			var speed = 20;
+
+			if(players[me].isFast)
+				speed += 5;
+
+			let xOffset = vector.x * speed;
+			let yOffset = vector.y * speed;
 			
 			if(hasCollided === false)
 				gameSessionManager.UpdatePlayerRelativePosition(gameSessionID, alias, xOffset, yOffset);
@@ -119,4 +148,6 @@ module.exports = function(socket, client) {
 			});
 		}
 	});
+
+
 };
