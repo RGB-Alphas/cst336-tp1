@@ -111,6 +111,9 @@ module.exports = { LobbyID: LobbyID };
 	module.exports.SetPlayerReadyState = function(lobbyName, alias, state) {
 		var lobbyIndex = lobbyList.findIndex(lobby => lobby.name === lobbyName);
 
+		if(lobbyIndex === -1)
+			return;
+
 		var playerIndex = lobbyList[lobbyIndex].players.findIndex(player => player.name === alias);
 
 		lobbyList[lobbyIndex].players[playerIndex].isReady = state;

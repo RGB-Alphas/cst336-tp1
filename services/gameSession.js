@@ -49,44 +49,17 @@ function getRandomNumber(min, max) {
 		if(sessionIndex === -1)
 			return;
 
-		// ///////////////////
-		// spawning code begin
-		var spawnX1 = 1280 / 4;						// 1280x760 is our resolution.
-		var spawnX2 = (1280 / 4) + (1280 / 2); 
-		var spawnY1 = 720 / 4;						// 760 / 40 has a remainder. That remainder
-		var spawnY2 = (720 / 4) + (720 / 2);	// is screwing up my math.
-
-		var spawnX3 = 1280 / 2;
-		// var spawnX4 =
-		var spawnY3 = 760 / 2;
-		// var spawnY4 =
-
-		// to randomize just use _shuffle...
-		var spawnPoints = [
-			{ "name": "spawn1", "x": spawnX1, "y":spawnY1 },
-			{ "name": "spawn2", "x": spawnX2, "y":spawnY1 },
-			{ "name": "spawn3", "x": spawnX2, "y":spawnY2 },
-			{ "name": "spawn4", "x": spawnX1, "y":spawnY2 },
-			{ "name": "spawn5", "x": spawnX3, "y":spawnY1 },
-			{ "name": "spawn6", "x": spawnX2, "y":spawnY3 },
-			{ "name": "spawn7", "x": spawnX3, "y":spawnY2 },
-			{ "name": "spawn8", "x": spawnX1, "y":spawnY3 }
-		];
+		// fill mapData with... you guessed it: data!
+		var options = gameSessions[sessionIndex].options;
+		gameSessions[sessionIndex].mapData = mapGenerator.CreateMap(options.map);
 
 		// spawn players
 		gameSessions[sessionIndex].players.forEach((player, i) => {
 			// player.x = getRandomNumber(20, 1260) % 40;
 			// player.y = getRandomNumber(20, 720) % 40;
-			player.x = spawnPoints[i].x;
-			player.y = spawnPoints[i].y;
+			player.x = gameSessions[sessionIndex].mapData.spawnPoints[i].x;
+			player.y = gameSessions[sessionIndex].mapData.spawnPoints[i].y;
 		});
-
-		// spawning code end
-		// /////////////////
-
-		// fill mapData with... you guessed it: data!
-		var options = gameSessions[sessionIndex].options;
-		gameSessions[sessionIndex].mapData = mapGenerator.CreateMap(options.map);
 	};
 
 	module.exports.GetMapData = function(gameSessionID) {
