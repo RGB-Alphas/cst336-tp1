@@ -39,7 +39,7 @@ $(document).ready(function() {
 
 		// fire up the "input system"
 		isRunning = true;
-		initializeTimer();
+		// initializeTimer();
 		initializeInput();
 
 		
@@ -51,6 +51,15 @@ $(document).ready(function() {
 		console.log("players updated");
 	});
 
+	socket.on('update timer', (data) => {
+		$("#timer").text("Time Remaining: " + data.timeLeft);
+	});
+
+	socket.on('end game session', () => {
+
+	});
+
+	/*
 	function initializeTimer() {
 		//add timer
 		timerInterval = setInterval( () => {
@@ -69,6 +78,7 @@ $(document).ready(function() {
 		// add score
 		// $("#score").text("Score: " + score);
 	};
+	*/
 
 	// functions
 	function initializeInput() {

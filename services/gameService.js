@@ -6,10 +6,12 @@ var gameEvent = require('./Game/gameEvents');
 // config
 var serverFPS = 20;	// 20 updates per second.
 var serverFrameTime = 1000/serverFPS; 	// 50ms per frame
+var second = 1000;
 
 module.exports = function(socket, client) {
 
 	var userAdded = false;
+	var gameIsRunning = true;
 
 	client.on('enter_game', (data) => {
 		client.username = data.userName;
@@ -28,6 +30,7 @@ module.exports = function(socket, client) {
 
 		// var players = gameSessionManager.GetAllPlayers(gameSessionID);
 		var options = gameSessionManager.GetOptions(gameSessionID);
+		var timeLeft = parseInt(options.time);
 
 		var mapData = gameSessionManager.GetMapData(gameSessionID);
 
@@ -41,12 +44,38 @@ module.exports = function(socket, client) {
 
 		console.log(JSON.stringify(data));
 		
-		setInterval(function() {
-			socket.to(`${gameSessionID}`).emit("update players", { 
-				players: gameSessionManager.GetAllPlayers(gameSessionID) 
-			});
+		var updatePlayerInterval = setInterval(function() {
+
+			if(gameIsRunning)
+			{
+				socket.to(`${gameSessionID}`).emit("update players", { 
+					players: gameSessionManager.GetAllPlayers(gameSessionID) 
+				});
+			}
+			else
+			{
+				clearInterval(updatePlayerInterval);
+			}
+			
 		}, serverFrameTime);
 		
+		var timerInterval = setInterval(function() {
+
+			socket.to(`${gameSessionID}`).emit("update timer", {
+				timeLeft: timeLeft
+			});
+
+			timeLeft--;
+			
+			if(timeLeft < 0)
+			{
+				timeLeft = 0;
+				gameIsRunning = false;
+				socket.to(`${gameSessionID}`).emit('end game session');
+				
+				clearInterval(timerInterval); // call last
+			}
+		}, second);
 	});
 
 	client.on('update player', (data) => {
