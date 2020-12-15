@@ -88,10 +88,11 @@ module.exports = function(socket, client) {
 		var unreadyList = lobbyRegistry.WhoIsNotReady(lobbyName);
 		console.log("Unready users: %s", JSON.stringify(unreadyList));
 
-		if(unreadyList.length > 0) {
+		if(unreadyList.length > 0) { 
+			/*
 			socket.to(`${lobbyName}`).emit(`ready check failed`, {
 				waitingFor: unreadyList
-			})
+			}) */
 		}
 		else {
 			const lobby = lobbyRegistry.GetLobbyByName(lobbyName);
