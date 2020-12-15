@@ -198,6 +198,9 @@ module.exports = function(socket, client) {
 						console.log("Profile Sucessfully Updated");
 				}
 			});//callback funciton
+		sql.addUserStats(data.userId, false, function(stuff){
+			console.log(stuff);
+		});
 	});
 	//end update profile
 	
