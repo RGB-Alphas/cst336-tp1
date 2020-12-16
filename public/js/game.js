@@ -11,6 +11,8 @@ $(document).ready(function() {
 	var keyS = false;
 	var keyD = false;
 
+	var modal = document.getElementById("myModal");
+
 	// the input system will tick slowly.
 	var inputFPS = 2;  // 2 frames per second
 	var inputFrameTime = 1000/inputFPS; // Approx. 500ms per frame
@@ -48,15 +50,19 @@ $(document).ready(function() {
 	socket.on('update players', (data) => {
 		playerList = data.players;
 		render(data.players);
-		console.log("players updated");
+		// console.log("players updated");
 	});
 
 	socket.on('update timer', (data) => {
 		$("#timer").text("Time Remaining: " + data.timeLeft);
 	});
 
-	socket.on('end game session', () => {
+	socket.on('end game session', (data) => {
+		modal.style.display = "block";
 
+		$("#btnToAftermath").click(function() {
+			window.location.href = `/lobby?${data.params}`
+		});
 	});
 
 	/*
@@ -89,7 +95,7 @@ $(document).ready(function() {
 
 			if(isRunning === true)
 			{
-				console.log("sending player input");
+				// console.log("sending player input");
 				socket.emit("update player", { 
 					wasdState: { w: keyW, a: keyA, s: keyS, d: keyD }
 				});
@@ -106,7 +112,7 @@ $(document).ready(function() {
 
 	function render(players) {
 
-		console.log("Rendering: %d objects", mapData.tiles.length + players.length);
+		// console.log("Rendering: %d objects", mapData.tiles.length + players.length);
 		
   		var canvas = document.getElementById("myCanvas");
 		var context = canvas.getContext("2d");

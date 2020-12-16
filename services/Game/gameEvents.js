@@ -1,11 +1,9 @@
-
-var gameSessionManager = require('../gameSession');
+const { gameSessions } = require('../gameSession');
 
 module.exports.playerCollisionEvent = function(collider, collidee, ruleset) {
 
-	const gameSessionID = gameSessionManager.WhereIsPlayer(collider.name);
-
-	console.log(`${collider.name} has collided with ${collidee.name} in a ${ruleset} game.`);
+	// console.log(`${collider.name} has collided with ${collidee.name} in a ${ruleset} game.`);
+	var gameSessionManager = require('../gameSession');
 
 	switch(ruleset)
 	{
@@ -14,6 +12,7 @@ module.exports.playerCollisionEvent = function(collider, collidee, ruleset) {
 			{
 				collidee.color = "grey";
 				collidee.isFrozen = true;
+				const gameSessionID = gameSessionManager.WhereIsPlayer(collidee.name);
 				gameSessionManager.UpdatePlayer(gameSessionID, collidee);
 			}
 			else
@@ -28,6 +27,7 @@ module.exports.playerCollisionEvent = function(collider, collidee, ruleset) {
 				collidee.isHot = true;
 				collidee.isFast = true;
 				collidee.color = "white";
+				const gameSessionID = gameSessionManager.WhereIsPlayer(collider.name);
 				gameSessionManager.UpdatePlayer(gameSessionID, collidee);
 			}
 			else
@@ -38,4 +38,61 @@ module.exports.playerCollisionEvent = function(collider, collidee, ruleset) {
 		break;
 	}
 	
+	module.exports.GameEnd = function(gameSessionID) {
+
+		var gameSessionManager = require('../gameSession');
+
+		var players = gameSessionManager.GetAllPlayers(gameSessionID);
+		var options = gameSessionManager.GetOptions(gameSessionID);
+
+		var gameResults = { "winners": [], "losers": [] };
+
+		// get the predators and prey.
+		var activePredators = players.filter(player => {
+			return player.isHot;
+		});
+
+		var activePrey = players.filter(player => {
+			return !player.isFrozen && !player.isHot; // people who are neither frozen nor hot
+		});
+
+		var inactivePrey = players.filter(player => {
+			return player.isFrozen && !player.isHot;
+		})
+
+		switch(options.ruleset)
+		{
+			case "lastman":
+				if(activePrey.length > 0)
+				{
+					gameResults.winners = activePrey;
+					gameResults.losers = activePredators.concat(inactivePrey);
+				}
+				else
+				{
+					gameResults.winners = activePredators;
+					gameResults.losers = activePrey.concat(inactivePrey);
+				}
+				
+				break;
+
+			case "infection":
+				if(activePrey.length > 0)
+				{
+					gameResults.winners = activePrey;
+					gameResults.losers = activePredators;
+				}
+				else
+				{
+					gameResults.winners = activePredators;
+					gameResults.losers = activePrey;
+				}
+				break;
+		}
+
+		console.log(gameResults);
+
+		// save in the db here //
+	}
+
 };

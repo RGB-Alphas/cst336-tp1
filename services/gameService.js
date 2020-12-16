@@ -24,13 +24,14 @@ module.exports = function(socket, client) {
 
 		userRegistry.AddUser(client.username, alias, userId, sessionId);
 		var gameSessionID = gameSessionManager.WhereIsPlayer(alias);
+		gameSessionManager.EnterWorld(gameSessionID, alias);
 		client.join(`${gameSessionID}`);
 		
 		userAdded = true;
 
 		// var players = gameSessionManager.GetAllPlayers(gameSessionID);
 		var options = gameSessionManager.GetOptions(gameSessionID);
-		var timeLeft = parseInt(options.time);
+		// var timeLeft = parseInt(options.time);
 
 		var mapData = gameSessionManager.GetMapData(gameSessionID);
 
@@ -43,6 +44,8 @@ module.exports = function(socket, client) {
 		client.emit('game_entered', { mapData: mapData, options: options });
 
 		console.log(JSON.stringify(data));
+
+		// if(gameSessionManager.StartGameSession(gameSessionID))
 		
 		var updatePlayerInterval = setInterval(function() {
 
@@ -61,26 +64,42 @@ module.exports = function(socket, client) {
 		
 		var timerInterval = setInterval(function() {
 
+			var timeLeft = gameSessionManager.GetTimeLeft(gameSessionID);
+			var isTime = gameSessionManager.HasSessionEnded(gameSessionID);
+
 			socket.to(`${gameSessionID}`).emit("update timer", {
 				timeLeft: timeLeft
 			});
 
-			timeLeft--;
-			
-			if(timeLeft < 0)
+			if(isTime)
 			{
-				timeLeft = 0;
+				var sessionName = gameSessionManager.GetSessionName(gameSessionID);
 				gameIsRunning = false;
-				socket.to(`${gameSessionID}`).emit('end game session');
-				
+				socket.to(`${gameSessionID}`).emit('end game session', {
+					params: `lobbyName=${sessionName}`
+				});
+
 				clearInterval(timerInterval); // call last
 			}
 		}, second);
 	});
 
+	function saveGameResults(results) {
+
+		console.log(results);
+		// save game stuff to database
+		// gameResults = { players: [ { name: playerAlias, hasWon: bool, points: int } ] };
+		// Can use .forEach(player => {}) or for loop. updating each player as you go.
+		// userRegistry can retrieve the ID.
+		// gameResults.players[i].name
+		// gameResults.players[i].hasWon
+		// gameResults.players[i].points
+
+	}
+
 	client.on('update player', (data) => {
 
-		if(userAdded)
+		if(userAdded && gameIsRunning)
 		{
 			// identify player
 			const alias = userRegistry.GetAliasByUserName(client.username);
@@ -157,7 +176,7 @@ module.exports = function(socket, client) {
 				{
 					return false;
 				}
-			})
+			});
 			
 			// how much we are moving this frame:
 			var speed = 20;
@@ -171,7 +190,8 @@ module.exports = function(socket, client) {
 			if(hasCollided === false)
 				gameSessionManager.UpdatePlayerRelativePosition(gameSessionID, alias, xOffset, yOffset);
 
-			// console.log(`${gameSessionID}: ${alias} moved Rel(${xOffset}, ${yOffset}).`)
+			// console.log(`${gameSessionID}: ${alias} moved Rel(${xOffset}, ${yOffset}).`);
+
 			socket.to(`${gameSessionID}`).emit("update players", { 
 				players: gameSessionManager.GetAllPlayers(gameSessionID) 
 			});

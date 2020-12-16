@@ -1,4 +1,5 @@
 var mapGenerator = require('./Game/maps');
+// var gameEvent = require('./Game/gameEvents');
 
 
 // Define a game session:
@@ -6,6 +7,8 @@ var mapGenerator = require('./Game/maps');
 // players:
 //		alias, (x,y), isHot <-- used for 'tagging' people.
 // 	hasPowerup, isFast, isBig,
+
+var second = 1000;
 
 var gameSessions = [];
 var GameSessionCount = 0;
@@ -17,21 +20,24 @@ function getRandomNumber(min, max) {
 	return Math.random() * (max - min) + min;
 }
 
-
 (function() {
 
 	// Adds a game session and returns a sessionID.
 	module.exports.AddGameSession = function(sessionName, playerAliases, options) {
 
+		options.time = parseInt(options.time); // making sure it's an integer...
+
 		// define a session object
-		var newSession = { "id": GameSessionID, "name": sessionName, "players": [], mapData: [], "options": options };
+		var newSession = { "id": GameSessionID, "name": sessionName, "players": [], "occupants": playerAliases.length, mapData: [], "options": options,
+								"hasStarted": true, "hasEnded": false };
 
 		// add players to the object. we can't do this directly with "session.players = players"
 		// because there is extra data.
 		for(var i = 0; i < playerAliases.length; i++)
 		{
 			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, "radius": 20, "color": "red",
-				"isHot": false, "isFrozen": false, "isPoweredUp": false, "isFast": false, "isBig": false };
+				"isHot": false, "isFrozen": false, "isPoweredUp": false, "isFast": false, "isBig": false,
+				"hasEnteredWorld": false };
 
 			newSession.players.push(newPlayer);
 		}
@@ -41,6 +47,16 @@ function getRandomNumber(min, max) {
 		GameSessionID++;
 
 		return newSession.id;
+	};
+
+	module.exports.GetSessionName = function(gameSessionID) {
+
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID );
+
+		if(sessionIndex === -1)
+			return;
+
+		return gameSessions[sessionIndex].name;
 	};
 
 	module.exports.Initialize = function(gameSessionID) {
@@ -67,6 +83,23 @@ function getRandomNumber(min, max) {
 		var newPredatorAlias = gameSessions[sessionIndex].players[randomIndex].name;
 		this.UpdatePlayerFlags(gameSessionID, newPredatorAlias, true, false, true, false);
 		gameSessions[sessionIndex].players[randomIndex].color = "white";
+
+		gameSessions[sessionIndex].hasStarted = true;
+
+		newSessionTimer = setInterval(function() {	// when a session hasStarted = true we create a timer for that session.
+
+			if(gameSessions[sessionIndex].options.time > 0) // This will decrement
+			{
+				gameSessions[sessionIndex].options.time--;
+			}
+			else
+			{
+				gameSessions[sessionIndex].hasEnded = true;
+				var gameEvent = require('./Game/gameEvents');
+				gameEvent.GameEnd(gameSessions[sessionIndex].id);
+				clearInterval(newSessionTimer);
+			}
+		}, second);
 	};
 
 	module.exports.GetMapData = function(gameSessionID) {
@@ -76,6 +109,44 @@ function getRandomNumber(min, max) {
 			return;
 
 		return gameSessions[sessionIndex].mapData;
+	};
+
+	module.exports.EnterWorld = function(gameSessionID, playerAlias) {
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
+
+		if(sessionIndex === -1)
+			return;
+
+		var playerIndex = gameSessions[sessionIndex].players.findIndex(player => player.name === playerAlias);
+
+		gameSessions[sessionIndex].players[playerIndex].hasEnteredWorld = true;
+	};
+
+	module.exports.HasSessionBegun = function(gameSessionID) {
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
+
+		if(sessionIndex === -1)
+			return false;
+
+		return gameSessions[sessionIndex].hasStarted;
+	};
+
+	module.exports.HasSessionEnded = function(gameSessionID) {
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID);
+
+		if(sessionIndex === -1)
+			return false;
+
+		return gameSessions[sessionIndex].hasEnded;
+	};
+
+	module.exports.GetTimeLeft = function(sessionID) {
+		var sessionIndex = gameSessions.findIndex(session => session.id === sessionID);
+
+		if(sessionIndex === -1)
+			return false;
+
+		return gameSessions[sessionIndex].options.time;
 	};
 
 	module.exports.WhereIsPlayer = function(playerAlias) {
@@ -109,7 +180,8 @@ function getRandomNumber(min, max) {
 			return;
 
 		var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, 
-				"isHot": false, "isPoweredUp": false, "isFast": false, "isBig": false };
+				"isHot": false, "isPoweredUp": false, "isFast": false, "isBig": false,
+				"hasEnteredWorld": false };
 
 		gameSessions[sessionIndex].players.push(newPlayer);
 	};
@@ -165,7 +237,7 @@ function getRandomNumber(min, max) {
 
 		if(sessionIndex === -1)
 		{
-			console.log("UpdatePlayer() session not found");
+			console.log(`UpdatePlayer(${gameSessionID}, ${player.name}) session not found.`);
 			return;
 		}
 			
@@ -174,7 +246,7 @@ function getRandomNumber(min, max) {
 
 		if(playerIndex === -1)
 		{
-			console.log("UpdatePlayer() player not found");
+			console.log(`UpdatePlayer(${gameSessionID}, ${player.name}) player not found.`);
 			return;
 		}
 
