@@ -59,6 +59,7 @@
 				return !player.isFrozen && !player.isHot; // people who are neither frozen nor hot
 			});
 
+
 			var inactivePrey = players.filter(player => {
 				return player.isFrozen && !player.isHot;
 			})

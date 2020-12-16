@@ -76,6 +76,7 @@ $(document).ready(function() {
 	});
 
 	socket.on('ready check success', () => {
+	
 		window.location.href = '/game';
 	});
 
