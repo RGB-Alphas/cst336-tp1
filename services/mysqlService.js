@@ -205,11 +205,11 @@ module.exports = { MySQLConnection: connection };
 	}//gameOver
 	*/
 	
-	module.exports.updateMapStats = function(mapID){
-		var sql = 'UPDATE mapStats SET gamesPlayed = gamesPlayed + 1 ';
-      	sql += 'WHERE id = ?;';
+	module.exports.updateMapStats = function(mapName){
+		var sql = 'UPDATE mapStats SET playCount = playCount + 1 ';
+      	sql += 'WHERE mapName = ?;';
 		connection.query(sql,
-		mapID, (err, res) => {
+		mapName, (err, res) => {
 		
 			if(err) {
 				console.log("Error Updating into DB, Error Code!:");
