@@ -18,6 +18,7 @@ module.exports = function(socket, client) {
 
 		if(addedUser)
 			return;
+
 		const userName = data.userName;
 		const alias = data.alias;
 		const userId = data.userId;
@@ -25,11 +26,7 @@ module.exports = function(socket, client) {
 		var sessionID = client.id;
 		avatarUrl = data.avatarUrl;
 
-		console.log("Received: %s", userName);
-
-		
-
-		
+		console.log("%s has entered the lounge.", userName);
 
 		if(!userRegistry.IsOnline(userName))
 		{
@@ -59,6 +56,7 @@ module.exports = function(socket, client) {
 		const userName = client.username;
 		const alias = userRegistry.GetAliasByUserName(userName);
 		const lobbyName = data.lobbyName;
+		const userID = userRegistry.GetUserID(userName);
 
 		if(lobbyRegistry.PasswordRequiredFor(lobbyName)) 
 		{
@@ -68,7 +66,7 @@ module.exports = function(socket, client) {
 		}
 		else 
 		{
-			if(lobbyRegistry.JoinLobby(lobbyName, alias))
+			if(lobbyRegistry.JoinLobby(lobbyName, alias, userID))
 			{
 				console.log(`${userName} added to ${lobbyName} (no password required).`);
 				client.emit('join_lobby_request_accepted');
@@ -88,15 +86,17 @@ module.exports = function(socket, client) {
 
 		const userName = client.username;
 		const alias = userRegistry.GetAliasByUserName(userName);
+		const userID = userRegistry.GetUserID(userName);
 
 		console.log(`Testing name and password against ${lobbyName} credentials`);
 		if(lobbyRegistry.Authenticate(lobbyName, password))
 		{
 			// this will fail if the lobby doesnt exist or is full.
-			if(lobbyRegistry.JoinLobby(lobbyName, alias))
+			if(lobbyRegistry.JoinLobby(lobbyName, alias, userID))
 			{
 				console.log(`${userName}'s join request accepted for ${lobbyName}`);
 				client.emit('join_lobby_request_accepted');
+				addedUser = false;
 			}
 			else
 			{
@@ -115,18 +115,25 @@ module.exports = function(socket, client) {
 	// add lobby flow
 	client.on('lobby-add-request', (data) => {
 
-		if(!addedUser)
-			return;
+		console.log(`on(lobby-add-request): Lobby add request`);
+		console.log(data);
+
+		//if(!addedUser)
+		//	return;
 
 		const lobbyName = data.lobbyName;
 		const lobbyPassword = data.lobbyPassword;
 		const lobbyCapacity = data.lobbyCapacity;
 		const userAlias = userRegistry.GetAliasByUserName(client.username);
+		const userID = userRegistry.GetUserID(client.username);
+
+		console.log(`Lobby added by user: ${userAlias}:${userID}`);
+
 		var successful = lobbyRegistry.AddLobby(lobbyName, lobbyPassword, lobbyCapacity);
 
 		if(successful) {
 
-			lobbyRegistry.JoinLobby(lobbyName, userAlias);
+			lobbyRegistry.JoinLobby(lobbyName, userAlias, userID);
 
 			// tell the client it was successful.
 			client.emit('lobby-add-request-accepted');

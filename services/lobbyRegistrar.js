@@ -31,9 +31,8 @@ module.exports = { LobbyID: LobbyID };
 
 (function() {
 
-	module.exports.WhereisPlayer = function(name)
+	module.exports.WhereisPlayer = function(alias)
 	{
-		
 		for(var i = 0; i < lobbyList.length; i++)
 		{
 			var lobby = lobbyList[i];
@@ -41,7 +40,7 @@ module.exports = { LobbyID: LobbyID };
 			for(var j = 0; j < lobby.occupants; j++)
 			{
 				//console.log(`Comparing (${name} === ${players[j]})`);
-				if(name === players[j].name)
+				if(alias === players[j].name)
 				{
 					//console.log("match found!");
 					return lobby.name;
@@ -49,6 +48,7 @@ module.exports = { LobbyID: LobbyID };
 			}
 		}
 
+		console.log(`WhereisPlayer(${alias}): Can not find this player in any lobby.`);
 		var lobbyErrorText = `unknown`;
 		return lobbyErrorText;
 	};
@@ -60,22 +60,28 @@ module.exports = { LobbyID: LobbyID };
 
 		// lobby exists, exit
 		const lobbyIndex = lobbyList.findIndex(lobby => lobby.name === name);
-		if(lobbyIndex != -1)
-			return false;
 
-		// it's unique, let's add it.
-		var id = LobbyID;
+		if(lobbyIndex === -1)
+		{
+			// it's unique, let's add it.
+			var id = LobbyID;
 
-		const lobby = {"id": id, "name": name, "password": password, "occupants": 0, "capacity": playerCapacity,
-			"players": [],
-			"options": {
-			"map": "destiny", "time": "30", "ruleset": "lastman" }};
+			const lobby = {"id": id, "name": name, "password": password, "occupants": 0, "capacity": playerCapacity,
+				"players": [],
+				"options": {
+				"map": "destiny", "time": "30", "ruleset": "lastman" }};
 	
-		console.log(`Adding lobby: ${lobby.id}, ${lobby.name}, ${lobby.password}`);
-		lobbyList.push(lobby);
-		lobbyCount++;
-		LobbyID++;
-		return true; // make this return false if the lobby name is unavailable
+			console.log(`AddLobby(${name}): ${lobby.id}, ${lobby.name}, ${lobby.password}`);
+			lobbyList.push(lobby);
+			lobbyCount++;
+			LobbyID++;
+			return true; // make this return false if the lobby name is unavailable
+		}
+		else
+		{
+			console.log(`AddLobby(${name}): Name must be unique. Registration denied.`);
+			return false;
+		}
 	};
 
 	/*
@@ -167,7 +173,7 @@ module.exports = { LobbyID: LobbyID };
 
 	// returns true if the player name was registered to the lobby.
 	// returns false if the player name could not be added.
-	module.exports.JoinLobby = function(lobbyName, playerName) {
+	module.exports.JoinLobby = function(lobbyName, playerName, playerID) {
 
 		// if the lobby doesn't exist, exit.
 		const lobbyIndex = lobbyList.findIndex(lobby => { return lobby.name === lobbyName } );
@@ -183,8 +189,8 @@ module.exports = { LobbyID: LobbyID };
 
 		if(current < capacity)
 		{
-			console.log(`Adding ${playerName} to lobby: ${lobbyName}.`);
-			lobbyList[lobbyIndex].players.push( { "name": playerName, "isReady": false } );
+			console.log(`Adding ${playerName}:${playerID} to lobby: ${lobbyName}.`);
+			lobbyList[lobbyIndex].players.push( { "name": playerName, "id": playerID, "isReady": false } );
 			lobbyList[lobbyIndex].occupants++;
 			return true;
 		}
@@ -219,7 +225,7 @@ module.exports = { LobbyID: LobbyID };
 		console.log(`Checking if '${lobbyName}' requires a password`);
 
 		if(!lobby) {
-			console.log("Lobby not found. :(");
+			console.log(`PasswordRequiredFor(${lobbyName}): Lobby not found.`);
 			return false;
 		}
 
@@ -302,6 +308,6 @@ module.exports = { LobbyID: LobbyID };
 
 	module.exports.GetLobbyCount = function() {
 		return lobbyList.length;
-	}
+	};
 
 }());

@@ -40,63 +40,76 @@
 
 			break;
 		}
+	}
 		
-		module.exports.GameEnd = function(gameSessionID) {
+	module.exports.GameEnd = function(gameSessionID) {
 
-			var gameSessionManager = require('../gameSession');
+		var gameSessionManager = require('../gameSession');
 
-			var players = gameSessionManager.GetAllPlayers(gameSessionID);
-			var options = gameSessionManager.GetOptions(gameSessionID);
+		var players = gameSessionManager.GetAllPlayers(gameSessionID);
+		var options = gameSessionManager.GetOptions(gameSessionID);
 
-			var gameResults = { "winners": [], "losers": [] };
+		var gameResults = { "winners": [], "losers": [] };
 
-			// get the predators and prey.
-			var activePredators = players.filter(player => {
-				return player.isHot;
-			});
+		// get the predators and prey.
+		var activePredators = players.filter(player => {
+			return player.isHot;
+		});
 
-			var activePrey = players.filter(player => {
-				return !player.isFrozen && !player.isHot; // people who are neither frozen nor hot
-			});
+		var activePrey = players.filter(player => {
+			return !player.isFrozen && !player.isHot; // people who are neither frozen nor hot
+		});
 
-			var inactivePrey = players.filter(player => {
-				return player.isFrozen && !player.isHot;
-			})
+		var inactivePrey = players.filter(player => {
+			return player.isFrozen && !player.isHot;
+		});
 
-			switch(options.ruleset)
-			{
-				case "lastman":
-					if(activePrey.length > 0)
-					{
-						gameResults.winners = activePrey;
-						gameResults.losers = activePredators.concat(inactivePrey);
-					}
-					else
-					{
-						gameResults.winners = activePredators;
-						gameResults.losers = activePrey.concat(inactivePrey);
-					}
-					
-					break;
+		switch(options.ruleset)
+		{
+			case "lastman":
+				if(activePrey.length > 0)
+				{
+					gameResults.winners = activePrey;
+					gameResults.losers = activePredators.concat(inactivePrey);
+				}
+				else
+				{
+					gameResults.winners = activePredators;
+					gameResults.losers = activePrey.concat(inactivePrey);
+				}
+				
+				break;
 
-				case "infection":
-					if(activePrey.length > 0)
-					{
-						gameResults.winners = activePrey;
-						gameResults.losers = activePredators;
-					}
-					else
-					{
-						gameResults.winners = activePredators;
-						gameResults.losers = activePrey;
-					}
-					break;
-			}
-
-			console.log(gameResults);
-
-			// save in the db here //
+			case "infection":
+				if(activePrey.length > 0)
+				{
+					gameResults.winners = activePrey;
+					gameResults.losers = activePredators;
+				}
+				else
+				{
+					gameResults.winners = activePredators;
+					gameResults.losers = activePrey;
+				}
+				break;
 		}
 
+		console.log(gameResults);
+		gameSessionManager.RemoveGameSession(gameSessionID);
+
+		// save in the db here //
+		var sql = require('../mysqlService');
+		gameResults.winners.forEach((player, i) => {
+         sql.updateUserStats(player.userId, true, function(results){
+         	console.log(results + "The game data has been inserted into the DB");
+         })//callback function
+      });//for each
+      gameResults.losers.forEach((player, i) => {
+         sql.updateUserStats(player.userId, false, function(results){
+         	console.log(results + "The game data has been inserted into the DB");
+         })//callback function
+      });//for each
+      sql.updateMapStats(options.map);
 	};
+
 }());

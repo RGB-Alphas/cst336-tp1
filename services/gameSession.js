@@ -23,31 +23,52 @@ function getRandomNumber(min, max) {
 (function() {
 
 	// Adds a game session and returns a sessionID.
-	module.exports.AddGameSession = function(sessionName, playerAliases, options) {
+	module.exports.AddGameSession = function(sessionName, players, options) {
 
-		options.time = parseInt(options.time); // making sure it's an integer...
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID );
 
-		// define a session object
-		var newSession = { "id": GameSessionID, "name": sessionName, "players": [], "occupants": playerAliases.length, mapData: [], "options": options,
-								"hasStarted": true, "hasEnded": false };
-
-		// add players to the object. we can't do this directly with "session.players = players"
-		// because there is extra data.
-		for(var i = 0; i < playerAliases.length; i++)
+		if(sessionIndex === -1)
 		{
-			var newPlayer = { "name": playerAliases[i], "x": -1, "y": -1, "radius": 20, "color": "red",
-				"isHot": false, "isFrozen": false, "isPoweredUp": false, "isFast": false, "isBig": false,
-				"hasEnteredWorld": false };
+			options.time = parseInt(options.time); // making sure it's an integer...
 
-			newSession.players.push(newPlayer);
+			// define a session object
+			var newSession = { "id": GameSessionID, "name": sessionName, "players": [], "occupants": players.length, mapData: [], "options": options,
+									"hasStarted": true, "hasEnded": false };
+
+			// add players to the object. we can't do this directly with "session.players = players"
+			// because there is extra data.
+			for(var i = 0; i < players.length; i++)
+			{
+				var newPlayer = { "id": players[i].id, "name": players[i].alias, "x": -1, "y": -1, "radius": 20, "color": "red",
+					"isHot": false, "isFrozen": false, "isPoweredUp": false, "isFast": false, "isBig": false,
+					"hasEnteredWorld": false };
+
+				newSession.players.push(newPlayer);
+			}
+
+			gameSessions.push(newSession);
+			GameSessionCount++;
+			GameSessionID++;
+
+			return newSession.id;
+		}
+		else
+		{
+			return gameSessions[sessionIndex].id
 		}
 
-		gameSessions.push(newSession);
-		GameSessionCount++;
-		GameSessionID++;
-
-		return newSession.id;
+		
 	};
+
+	module.exports.IsSessionRunning = function(gameSessionID) {
+
+		var sessionIndex = gameSessions.findIndex(session => session.id === gameSessionID );
+
+		if(sessionIndex === -1)
+			return false;
+
+		return ( gameSessions[sessionIndex].hasStarted && !gameSessions[sessionIndex].hasEnded );
+	}
 
 	module.exports.GetSessionName = function(gameSessionID) {
 
@@ -168,7 +189,7 @@ function getRandomNumber(min, max) {
 
 		//console.log(`Can not find '${playerAlias}' in any game`);
 		console.log(`I don't know where ${playerAlias} is...`);
-		return -1;
+		return false;
 	};
 
 	// might not need...

@@ -95,6 +95,7 @@ module.exports = { MySQLConnection: connection };
           }//*if user has a record update record
 		});//*selectUserStats()
 	}//*addUserStats
+
 	module.exports.selectUserStats = function(userID ,callback) {
 		connection.query('SELECT * FROM userStats WHERE userID = ?', 
     	userID, (err, res, fields) => 
@@ -195,13 +196,14 @@ module.exports = { MySQLConnection: connection };
         	});	//select query
 	};//selectUser()
 		
+	/*	No! - *Peter Griffin Voice*
 	module.exports.gameOver = function(mapID, userID, won, callback)
 	{
 		//this.updateUserStats(userID, won);
 		//this.updateMapStats(mapID);
 		
 	}//gameOver
-	
+	*/
 	
 	module.exports.updateMapStats = function(mapID){
 		var sql = 'UPDATE mapStats SET gamesPlayed = gamesPlayed + 1 ';

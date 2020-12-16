@@ -39,7 +39,7 @@ $(document).ready(function() {
 	// User joined messages
 	console.log("Emitting: %s, %s", userName, displayName);
 
-	socket.emit('enter_lounge', { userName: userName, alias: displayName, avatarUrl: avatarUrl } );
+	socket.emit('enter_lounge', { userName: userName, alias: displayName, avatarUrl: avatarUrl, userId: userId } );
 
 	/* SOCKET EVENTS */
 	socket.on('lounge_entered', (data) => {

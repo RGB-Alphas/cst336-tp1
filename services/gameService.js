@@ -2,6 +2,7 @@ var userRegistry = require('./userRegistrar');
 var gameSessionManager = require('./gameSession');
 var physics = require('./Game/physics');
 var gameEvent = require('./Game/gameEvents');
+const { gameSessionID } = require('./gameSession');
 
 // config
 var serverFPS = 20;	// 20 updates per second.
@@ -65,13 +66,14 @@ module.exports = function(socket, client) {
 		var timerInterval = setInterval(function() {
 
 			var timeLeft = gameSessionManager.GetTimeLeft(gameSessionID);
-			var isTime = gameSessionManager.HasSessionEnded(gameSessionID);
+
+			// var isTime = gameSessionManager.IsSessionRunning(gameSessionID);
 
 			socket.to(`${gameSessionID}`).emit("update timer", {
 				timeLeft: timeLeft
 			});
 
-			if(isTime)
+			if(timeLeft === 0 || timeLeft === false)
 			{
 				var sessionName = gameSessionManager.GetSessionName(gameSessionID);
 				gameIsRunning = false;
@@ -99,11 +101,19 @@ module.exports = function(socket, client) {
 
 	client.on('update player', (data) => {
 
-		if(userAdded && gameIsRunning)
+		if(userAdded)
 		{
 			// identify player
 			const alias = userRegistry.GetAliasByUserName(client.username);
 			const gameSessionID = gameSessionManager.WhereIsPlayer(alias);
+
+			if(gameSessionID === false) // WhereIsPlayer failed, running is pointless
+				return;
+
+			var isRunning = gameSessionManager.IsSessionRunning(gameSessionID);
+
+			if(isRunning === false)
+				return;
 
 			// get the map data.
 			const mapData = gameSessionManager.GetMapData(gameSessionID);

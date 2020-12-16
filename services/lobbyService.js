@@ -26,12 +26,12 @@ module.exports = function(socket, client) {
 		var sessionID = client.id;
 		var userId = data.userId;
 
-		if(!userRegistry.IsOnline(userName))
-		{
+		//if(!userRegistry.IsOnline(userName))
+		//{
 			userRegistry.AddUser(userName, alias, userId, sessionID);
 			client.username = userName;
 			addedUser = true;
-		}
+		//}
 
 		// var lobby = lobbyRegistry.GetAllLobbies().find(lobby => lobby.name == lobbyName);
 		var lobby = lobbyRegistry.GetLobbyByName(lobbyName);
@@ -97,15 +97,19 @@ module.exports = function(socket, client) {
 		else {
 			const lobby = lobbyRegistry.GetLobbyByName(lobbyName);
 
+			console.log(`Lobby data for: '${lobbyName}'`);
+			console.log(lobby);
+
 			// add a game session and get an id.
 			var sessionID = gameSessionManager.AddGameSession(
 				lobbyName, 
 				lobby.players.map(player => { 
-					return player.name 
+					return { id: player.id, alias: player.name } 
 					}),
 				lobby.options);
 			gameSessionManager.Initialize(sessionID);
 			socket.to(`${lobbyName}`).emit('ready check success');
+			addedUser = false;
 		}
 	});
 
@@ -200,6 +204,7 @@ module.exports = function(socket, client) {
 			console.log(`Left [${lobbyName}], here's the new info for it:`);
 			console.log(JSON.stringify(lobby));
 
+
 			var isEmpty = lobbyRegistry.RemoveLobbyIfEmpty(lobbyName);
 
 			if(isEmpty === true)
@@ -209,6 +214,7 @@ module.exports = function(socket, client) {
 					lobbyCount: lobbyRegistry.GetLobbyCount()
 				});
 			}
+	
 
 			userRegistry.RemoveUser(client.username);
 			addedUser = false;

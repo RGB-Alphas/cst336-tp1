@@ -9,7 +9,10 @@ module.exports = { usersOnline: usersOnline };
 
 	module.exports.AddUser = function(name, alias, userId, sessionId) {
 		
-		var indexOfExistingUser = userProfiles.findIndex(user => user.name === name);
+		var indexOfExistingUser = userProfiles.findIndex(user => user.name === name );
+
+		console.log("Before adding a user: ");
+		console.log(userProfiles);
 
 		if(indexOfExistingUser === -1) // user doesn't exist. we add them.
 		{
@@ -18,26 +21,35 @@ module.exports = { usersOnline: usersOnline };
 			userProfiles.push(entry);
 			usersOnline++;
 
+			console.log("After adding a user: ");
+			console.log(userProfiles);
+
 			return true;
 		}
 
+		console.log("Add failed.");
 		return false;
 	};
 
 	module.exports.RemoveUser = function(name) {
 
-		var indexOfExistingUser = userProfiles.findIndex(profile => { return profile.name === name });
+		var indexOfExistingUser = userProfiles.findIndex(user => user.name === name );
 
-		if(indexOfExistingUser >= 0)
+		console.log("Before removing a user: ");
+		console.log(userProfiles);
+
+		if(indexOfExistingUser === -1)
 		{
-			userProfiles.splice(indexOfExistingUser, 1);
-			usersOnline--;
-			console.log(`${name} is now logged out.`);
-			return true;
+			return false;
 		}
 
-		console.log(`${name} can not be logged out because this person does not exist.`);
-		return false;
+		userProfiles.splice(indexOfExistingUser, 1);
+		usersOnline--;
+		console.log(`${name} is now logged out.`);
+
+		console.log("After removing a user: ");
+		console.log(userProfiles);
+		return true;
 	}
 
 	module.exports.IsOnline = function(name) {
@@ -67,6 +79,15 @@ module.exports = { usersOnline: usersOnline };
 		}
 		return "Unknown Alias";
 	};
+
+	module.exports.GetUserID = function(userName) {
+		var userIndex = userProfiles.findIndex(profile => profile.name === userName);
+
+		if(userIndex === -1)
+			return false;
+
+		return userProfiles[userIndex].userId;
+	}
 
 	module.exports.GetUsers = function() {
 		return userProfiles;
