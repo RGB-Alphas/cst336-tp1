@@ -4,24 +4,7 @@
 // only users (for now at least).
 
 
-var lobbyList = [
-	{ "id": 996, "name": "lobby1", "password": "123", "occupants": 1, "capacity": 1, "players": [ { "name:": "Dummy1", "isReady": false } ],
-      "options": {
-         "map": "destiny", "time": "30", "ruleset": "lastman" }
-   	},
-	{ "id": 997, "name": "lobby2", "password": "123", "occupants": 1, "capacity": 2, "players": [ { "name:": "Dummy1", "isReady": false } ],
-		"options": {
-			"map": "destiny", "time": "30", "ruleset": "lastman" }
-		},
-	{ "id": 998, "name": "lobby3", "password": "", "occupants": 1, "capacity": 4, "players": [ { "name:": "Dummy1", "isReady": false } ],
-		"options": {
-			"map": "destiny", "time": "30", "ruleset": "lastman" }
-		},
-	{ "id": 999, "name": "lobby4", "password": "", "occupants": 1, "capacity": 8, "players": [ { "name:": "Dummy1", "isReady": false } ],
-		"options": {
-			"map": "destiny", "time": "30", "ruleset": "lastman" }
-		},
-];
+var lobbyList = [];
 var lobbyCount = lobbyList.length;
 let LobbyID = 1000; // user id's start at 1,000 (for now)
 
