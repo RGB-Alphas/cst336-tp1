@@ -56,6 +56,7 @@ module.exports = function(socket, client) {
 			client.to(`${lobbyName}`).broadcast.emit('lobby user joined', {
 				userAlias: alias,
 				sessionID: sessionID,
+				players: players,
 				playerCount: lobby.players.length
 			});
 		}

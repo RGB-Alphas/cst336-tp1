@@ -137,15 +137,21 @@ $(document).ready(function() {
 	socket.on('lobby user joined', (data) => {
 		const newAlias = data.userAlias;
 		const newAliasID = data.sessionID;
+		users = data.players;
 		userCount = data.playerCount;
 		//console.log(data.userAlias + ' joined');
 		//console.log("%d users online.", data.onlineCount);
 
 		$("#playerListHeading").html(`Users: ${userCount}`);
-		$("#playerList").append(
-			`<li class="list-item">${newAlias}</li>`);
 		$("#messageList").append(
 			`<li class="list-item">${newAlias} has joined.</li>`);
+
+		$("#playerList").empty();
+		for(i = 0; i < userCount; i++)
+		{
+			$("#playerList").append(
+				`<li class="list-item">${users[i]}</li>`);
+		}
 	});
 
 	socket.on('lobby user left', (data) => {
@@ -159,6 +165,7 @@ $(document).ready(function() {
 		$("#playerListHeading").html(`Users: ${userCount}`);
 		$("#messageList").append(
 			`<li class="list-item">${newAlias} has left.</li>`);
+			
 		$("#playerList").empty();
 		for(i = 0; i < userCount; i++)
 		{
