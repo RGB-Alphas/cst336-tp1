@@ -125,7 +125,7 @@ module.exports = function(socket, client) {
 		var successful = lobbyRegistry.AddLobby(lobbyName, lobbyPassword, lobbyCapacity);
 
 		if(successful) {
-
+			console.log(userAlias + "lksd;jflas;jfdfsadlk;j");
 			lobbyRegistry.JoinLobby(lobbyName, userAlias);
 
 			// tell the client it was successful.
