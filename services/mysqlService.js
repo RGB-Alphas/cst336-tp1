@@ -97,7 +97,8 @@ module.exports = { MySQLConnection: connection };
 	}//*addUserStats
 
 	module.exports.selectUserStats = function(userID ,callback) {
-		connection.query('SELECT * FROM userStats WHERE userID = ?', 
+		userID = parseInt(userID);
+		connection.query('SELECT * FROM userStats WHERE userID = ? ', 
     	userID, (err, res, fields) => 
     	{
     		if(err){

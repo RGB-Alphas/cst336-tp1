@@ -97,21 +97,21 @@
 		console.log(gameResults);
 		gameSessionManager.RemoveGameSession(gameSessionID);
 
-		/*
+		
 		// save in the db here //
 		var sql = require('../mysqlService');
 		gameResults.winners.forEach((player, i) => {
-         sql.updateUserStats(player.userId, true, function(results){
+         sql.addUserStats(player.id, true, function(results){
          	console.log(results + "The game data has been inserted into the DB");
          })//callback function
       });//for each
       gameResults.losers.forEach((player, i) => {
-         sql.updateUserStats(player.userId, false, function(results){
+         sql.addUserStats(player.id, false, function(results){
          	console.log(results + "The game data has been inserted into the DB");
          })//callback function
       });//for each
 		sql.updateMapStats(options.map);
-		*/
+		
 	};
 
 }());
